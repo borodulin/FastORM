@@ -1,9 +1,11 @@
 <?php
 
-declare(strict_types=true);
+declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
+use FastOrm\ConnectionInterface;
+use FastOrm\Schema\CommandFetchInterface;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
@@ -39,4 +41,6 @@ interface QueryInterface
     public function unionAll(QueryInterface $query): self;
 
     public function where(): SearchExpressionInterface;
+
+    public function prepare(ConnectionInterface $connection, array $params = []): CommandFetchInterface;
 }

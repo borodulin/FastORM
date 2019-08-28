@@ -1,15 +1,19 @@
 <?php
 
-declare(strict_types=true);
+declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
+use FastOrm\ConnectionInterface;
+use FastOrm\QueryBuilder;
+use FastOrm\Schema\Command;
+use FastOrm\Schema\CommandFetchInterface;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\GroupByClause;
 use FastOrm\SQL\Clause\JoinClause;
-use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
+use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\Clause\OrderByClause;
 use FastOrm\SQL\Clause\SelectClause;
 use FastOrm\SQL\Clause\SelectClauseInterface;
@@ -185,5 +189,12 @@ class Query implements
     public function fullJoin($join): OnClauseInterface
     {
         return $this->join->addJoin($join, 'full join');
+    }
+
+    public function prepare(ConnectionInterface $connection, array $params = []): CommandFetchInterface
+    {
+        $queryBuilder = new QueryBuilder();
+        $sql = $queryBuilder->getSQL();
+        return new Command($connection, $sql, $params);
     }
 }

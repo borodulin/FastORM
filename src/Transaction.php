@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=true);
+declare(strict_types=1);
 
 namespace FastOrm;
 
@@ -94,7 +94,9 @@ class Transaction
                 $schema->setTransactionIsolationLevel($isolationLevel);
             }
 
-            $logger && $logger->debug('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : ''));
+            $logger && $logger->debug(
+                'Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : '')
+            );
 
             if ($eventDispatcher) {
                 $eventDispatcher->dispatch($this->eventFactory->beginTransaction($this));

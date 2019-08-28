@@ -1,11 +1,10 @@
 <?php
 
-declare(strict_types=true);
+declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
 use FastOrm\SQL\QueryInterface;
-use SplStack;
 
 class JoinClause implements ClauseInterface
 {
@@ -18,13 +17,13 @@ class JoinClause implements ClauseInterface
     public function __construct(QueryInterface $query)
     {
         $this->clauseTraitConstruct($query);
-        $this->joins = new SplStack();
+        $this->joins = [];
     }
 
     public function addJoin($join, $joinType): OnClauseInterface
     {
         $onClause = new OnClause($this->query, $join, $joinType);
-        $this->joins->push($onClause);
+        $this->joins[] = $onClause;
         return $onClause;
     }
 }

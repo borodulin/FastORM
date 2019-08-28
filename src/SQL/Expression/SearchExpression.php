@@ -1,9 +1,10 @@
 <?php
 
-declare(strict_types=true);
+declare(strict_types=1);
 
 namespace FastOrm\SQL\Expression;
 
+use FastOrm\SQL\Clause\ClauseInterface;
 use FastOrm\SQL\Operator\BetweenColumnsOperator;
 use FastOrm\SQL\Operator\BetweenOperator;
 use FastOrm\SQL\Operator\CompareOperator;
@@ -21,7 +22,7 @@ use FastOrm\SQL\Operator\OperatorListInterface;
 use FastOrm\SQL\QueryInterface;
 use SplStack;
 
-class SearchExpression implements SearchExpressionInterface
+class SearchExpression implements SearchExpressionInterface, ClauseInterface
 {
 
     /**
@@ -104,5 +105,15 @@ class SearchExpression implements SearchExpressionInterface
         $this->operators->push(new Operator($operator, $this->not));
         $this->not = null;
         return $this->compound;
+    }
+
+    public function getQuery(): QueryInterface
+    {
+        // TODO: Implement getQuery() method.
+    }
+
+    public function buildClause(): string
+    {
+        // TODO: Implement buildClause() method.
     }
 }

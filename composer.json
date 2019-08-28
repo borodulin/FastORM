@@ -19,6 +19,9 @@
         "psr/log": "^1.1",
         "php-ds/php-ds": "^1.2"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^8.2"
+    },
     "autoload": {
         "psr-4": {
             "FastOrm\\": "src/"

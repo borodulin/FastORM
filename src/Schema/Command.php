@@ -1,16 +1,18 @@
 <?php
 
-declare(strict_types=true);
+declare(strict_types=1);
 
 namespace FastOrm\Schema;
 
 use FastOrm\ConnectionInterface;
+use FastOrm\Fetch\Fetch;
+use FastOrm\Fetch\FetchInterface;
 use PDO;
 use PDOStatement;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
-class Command implements LoggerAwareInterface
+class Command implements CommandExecuteInterface, CommandFetchInterface, LoggerAwareInterface
 {
     /**
      * @var ConnectionInterface
@@ -45,7 +47,7 @@ class Command implements LoggerAwareInterface
      * @return PDOStatement
      * @throws DbException
      */
-    protected function prepare()
+    public function getPdoStatement()
     {
         try {
             $pdoStatement = $this->pdo->prepare($this->sql);
@@ -101,20 +103,13 @@ class Command implements LoggerAwareInterface
         $this->logger = $logger;
     }
 
-    /**
-     * Executes the SQL statement and returns the value of the first column in the first row of data.
-     * This method is best used when only a single value is needed for a query.
-     * @return string|null|false the value of the first column in the first row of the query result.
-     * False is returned if there is no value.
-     * @throws DbException
-     */
-    public function queryScalar()
+    public function execute(array $params = []): bool
     {
-        $pdoStatement = $this->prepare();
-        $result = $pdoStatement->fetchColumn();
-        if (is_resource($result) && get_resource_type($result) === 'stream') {
-            return stream_get_contents($result);
-        }
-        return $result;
+        // TODO: Implement execute() method.
+    }
+
+    public function fetch(array $params = []): FetchInterface
+    {
+        return new Fetch($this->bindValues($params));
     }
 }
