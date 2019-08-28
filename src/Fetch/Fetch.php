@@ -6,6 +6,7 @@ namespace FastOrm\Fetch;
 
 use FastOrm\Schema\Command;
 use FastOrm\Schema\DbException;
+use PDOStatement;
 
 class Fetch implements FetchInterface
 {
@@ -14,22 +15,42 @@ class Fetch implements FetchInterface
      * @var Command
      */
     private $command;
+    /**
+     * @var PDOStatement
+     */
+    private $pdoStatement;
 
+    /**
+     * Fetch constructor.
+     * @param Command $command
+     * @throws DbException
+     */
     public function __construct(Command $command)
     {
         $this->command = $command;
+        $this->pdoStatement = $this->command->getPdoStatement();
     }
 
     private $indexBy;
 
+    /**
+     * @return object
+     */
     public function one(): object
     {
-        // TODO: Implement one() method.
+        $result = $this->pdoStatement->fetch();
+        $this->pdoStatement->closeCursor();
+        return $result;
     }
 
+    /**
+     * @return array
+     */
     public function column(): array
     {
-        // TODO: Implement column() method.
+        $result = $this->pdoStatement->fetchColumn();
+        $this->pdoStatement->closeCursor();
+        return $result;
     }
 
     /**
@@ -37,21 +58,23 @@ class Fetch implements FetchInterface
      * This method is best used when only a single value is needed for a query.
      * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
-     * @throws DbException
      */
     public function scalar()
     {
-        $pdoStatement = $this->command->getPdoStatement();
-        $result = $pdoStatement->fetchColumn();
+        $result = $this->pdoStatement->fetchColumn();
         if (is_resource($result) && get_resource_type($result) === 'stream') {
             return stream_get_contents($result);
         }
+        $this->pdoStatement->closeCursor();
         return $result;
     }
 
+    /**
+     * @return bool
+     */
     public function exists(): bool
     {
-        // TODO: Implement exists() method.
+        return (bool) $this->scalar();
     }
 
 
@@ -61,15 +84,23 @@ class Fetch implements FetchInterface
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function all(): array
     {
-        // TODO: Implement all() method.
+        $result = $this->pdoStatement->fetchColumn();
+        $this->pdoStatement->closeCursor();
+        return $result;
     }
 
     public function batch(int $batchSize = 100): BatchInterface
     {
-        // TODO: Implement batch() method.
+        return new Batch();
     }
 
-
+    public function cancel()
+    {
+        $this->pdoStatement = null;
+    }
 }

@@ -111,9 +111,4 @@ class SearchExpression implements SearchExpressionInterface, ClauseInterface
     {
         // TODO: Implement getQuery() method.
     }
-
-    public function buildClause(): string
-    {
-        // TODO: Implement buildClause() method.
-    }
 }

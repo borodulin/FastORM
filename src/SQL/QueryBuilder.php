@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm;
 
+use FastOrm\Schema\SchemaInterface;
+use FastOrm\SQL\Builder\BuilderFactory;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\GroupByClause;
 use FastOrm\SQL\Clause\JoinClause;
@@ -47,8 +49,13 @@ class QueryBuilder implements QueryBuilderInterface
      * @var UnionClause
      */
     private $unionClause;
+    /**
+     * @var SchemaInterface
+     */
+    private $schema;
 
     public function __construct(
+        SchemaInterface $schema,
         SelectClause $selectClause,
         FromClause $fromClause,
         JoinClause $joinClause,
@@ -58,7 +65,7 @@ class QueryBuilder implements QueryBuilderInterface
         OrderByClause $orderByClause,
         UnionClause $unionClause
     ) {
-
+        $this->schema = $schema;
         $this->selectClause = $selectClause;
         $this->fromClause = $fromClause;
         $this->joinClause = $joinClause;
@@ -71,15 +78,16 @@ class QueryBuilder implements QueryBuilderInterface
 
     public function getSQL(): string
     {
+        $factory = new BuilderFactory($this->schema);
         return implode(' ', array_filter([
-            $this->selectClause->buildClause(),
-            $this->fromClause->buildClause(),
-            $this->joinClause->buildClause(),
-            $this->whereClause->buildClause(),
-            $this->groupByClause->buildClause(),
-            $this->havingClause->buildClause(),
-            $this->unionClause->buildClause(),
-            $this->orderByClause->buildClause(),
+            $factory($this->selectClause)->build(),
+            $factory($this->fromClause)->build(),
+            $factory($this->joinClause)->build(),
+            $factory($this->whereClause)->build(),
+            $factory($this->groupByClause)->build(),
+            $factory($this->havingClause)->build(),
+            $factory($this->unionClause)->build(),
+            $factory($this->orderByClause)->build(),
         ]));
     }
 }

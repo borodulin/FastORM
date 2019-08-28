@@ -193,7 +193,17 @@ class Query implements
 
     public function prepare(ConnectionInterface $connection, array $params = []): CommandFetchInterface
     {
-        $queryBuilder = new QueryBuilder();
+        $queryBuilder = new QueryBuilder(
+            $connection->getSchema(),
+            $this->select,
+            $this->from,
+            $this->join,
+            $this->where,
+            $this->groupBy,
+            $this->having,
+            $this->orderBy,
+            $this->union
+        );
         $sql = $queryBuilder->getSQL();
         return new Command($connection, $sql, $params);
     }

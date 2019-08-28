@@ -1,10 +1,8 @@
 <?php
 
-
 namespace FastOrm\Tests\SQL;
 
-
-use FastOrm\QueryBuilder;
+use FastOrm\Connection;
 use FastOrm\SQL\Query;
 use PHPUnit\Framework\TestCase;
 
@@ -12,10 +10,10 @@ class QueryBuilderTest extends TestCase
 {
     public function testQuery()
     {
+        $connection = new Connection();
         $query = new Query();
-        $query->from('table')
+        $command = $query->from('table')
             ->alias('t')
-            ->prepare();
-
+            ->prepare($connection);
     }
 }

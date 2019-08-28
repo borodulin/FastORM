@@ -59,7 +59,6 @@ class Command implements CommandExecuteInterface, CommandFetchInterface, LoggerA
             if ($pdoStatement === false) {
                 throw new DbException("Failed to prepare SQL: $this->sql", null);
             }
-//            $this->bindParams();
             $this->logger && $this->logger->debug('Statement prepared');
         } catch (\Exception $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $this->sql";
@@ -103,9 +102,24 @@ class Command implements CommandExecuteInterface, CommandFetchInterface, LoggerA
         $this->logger = $logger;
     }
 
+    /**
+     * @param array $params
+     * @return bool
+     * @throws DbException
+     */
     public function execute(array $params = []): bool
     {
-        // TODO: Implement execute() method.
+        if ($this->sql == '') {
+            return false;
+        }
+        $pdoStatement = $this->getPdoStatement();
+
+        try {
+            return $pdoStatement->execute();
+        } catch (\Exception $e) {
+            // TODO log & handle
+//            $e = $this->schema->convertException($e, $rawSql);
+        }
     }
 
     public function fetch(array $params = []): FetchInterface

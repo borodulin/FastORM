@@ -44,4 +44,9 @@ class Schema implements SchemaInterface, SavepointInterface
     {
         // TODO: Implement getPdoType() method.
     }
+
+    public function getClauseBuilderClassMap(): array
+    {
+        // TODO: Implement getClauseBuilderClassMap() method.
+    }
 }

@@ -15,4 +15,6 @@ interface SchemaInterface
     public function quoteColumnName(string $name): string;
 
     public function getPdoType($value);
+
+    public function getClauseBuilderClassMap(): array;
 }
