@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace FastOrm\SQL;
 
 use FastOrm\ConnectionInterface;
-use FastOrm\QueryBuilder;
-use FastOrm\Schema\Command;
-use FastOrm\Schema\CommandFetchInterface;
+use FastOrm\Driver\Command;
+use FastOrm\Driver\CommandFetchInterface;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\GroupByClause;
@@ -194,7 +193,7 @@ class Query implements
     public function prepare(ConnectionInterface $connection, array $params = []): CommandFetchInterface
     {
         $queryBuilder = new QueryBuilder(
-            $connection->getSchema(),
+            $connection,
             $this->select,
             $this->from,
             $this->join,
@@ -205,6 +204,6 @@ class Query implements
             $this->union
         );
         $sql = $queryBuilder->getSQL();
-        return new Command($connection, $sql, $params);
+        return new Command($connection->getPDO(), $sql, $params);
     }
 }

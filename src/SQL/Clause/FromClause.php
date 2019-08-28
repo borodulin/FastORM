@@ -34,7 +34,7 @@ class FromClause implements ClauseInterface
     public function setAlias($alias): void
     {
         /** @var AliasClause $alias */
-        $aliasClause = $this->from->current();
+        $aliasClause = $this->from->top();
         $aliasClause->setAlias($alias);
     }
 }

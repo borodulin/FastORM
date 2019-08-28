@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\Fetch;
 
-use FastOrm\Schema\Command;
-use FastOrm\Schema\DbException;
+use FastOrm\Driver\Command;
+use FastOrm\Driver\DbException;
 use PDOStatement;
 
 class Fetch implements FetchInterface

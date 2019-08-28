@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm;
 
-use FastOrm\Event\EventFactory;
-use FastOrm\Schema\SavepointInterface;
+use FastOrm\Event\TransactionEvent;
+use FastOrm\Driver\SavepointInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 
 class Transaction
 {
@@ -30,26 +32,28 @@ class Transaction
      */
     const SERIALIZABLE = 'SERIALIZABLE';
 
+
     /**
      * @var int the nesting level of the transaction. 0 means the outermost level.
      */
     private $level = 0;
-
     /**
      * @var ConnectionInterface
      */
     private $connection;
     /**
-     * @var EventFactory
+     * @var LoggerInterface
      */
-    private $eventFactory;
+    private $logger;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function __construct(
-        ConnectionInterface $connection,
-        EventFactory $eventFactory
+        ConnectionInterface $connection
     ) {
         $this->connection = $connection;
-        $this->eventFactory = $eventFactory;
     }
 
 
@@ -79,99 +83,102 @@ class Transaction
      * At the time of this writing affected DBMS are MSSQL and SQLite.
      *
      * [isolation level]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     * @return Transaction
      * @throws NotSupportedException
      */
-    public function begin(string $isolationLevel = null)
+    public function begin(string $isolationLevel = null): Transaction
     {
-        $this->connection->open();
-
-        $logger = $this->connection->getLogger();
-        $eventDispatcher = $this->connection->getEventDispatcher();
-        $schema = $this->connection->getSchema();
+        $pdo = $this->connection->getPDO();
 
         if ($this->level === 0) {
             if ($isolationLevel !== null) {
-                $schema->setTransactionIsolationLevel($isolationLevel);
+                $this->connection->setTransactionIsolationLevel($isolationLevel);
             }
 
-            $logger && $logger->debug(
+            $this->logger && $this->logger->debug(
                 'Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : '')
             );
-
-            if ($eventDispatcher) {
-                $eventDispatcher->dispatch($this->eventFactory->beginTransaction($this));
-            }
-            $this->connection->getPDO()->beginTransaction();
+            $this->eventDispatcher && $this->eventDispatcher
+                ->dispatch(new TransactionEvent($this, TransactionEvent::EVENT_BEGIN));
+            $pdo->beginTransaction();
             $this->level = 1;
 
-            return;
+            return $this;
         }
 
-        if ($schema instanceof SavepointInterface) {
-            $logger && $logger->debug('Set savepoint ' . $this->level);
-            $schema->createSavepoint('LEVEL' . $this->level);
+        if ($this->connection instanceof SavepointInterface) {
+            $this->logger && $this->logger
+                ->debug('Set savepoint ' . $this->level);
+            $this->connection->createSavepoint('LEVEL' . $this->level);
         } else {
-            $logger && $logger->info('Transaction not started: nested transaction not supported');
+            $this->logger && $this->logger
+                ->info('Transaction not started: nested transaction not supported');
             throw new NotSupportedException('Transaction not started: nested transaction not supported.');
         }
         $this->level++;
+        return $this;
     }
 
     /**
      * Commits a transaction.
      * @throws Exception if the transaction is not active
      */
-    public function commit(): void
+    public function commit(): Transaction
     {
         if (!$this->getIsActive()) {
             throw new Exception('Failed to commit transaction: transaction was inactive.');
         }
-        $logger = $this->connection->getLogger();
-        $schema = $this->connection->getSchema();
         $this->level--;
         if ($this->level === 0) {
-            $logger && $logger->debug('Commit transaction');
+            $this->logger && $this->logger
+                ->debug('Commit transaction');
             $this->connection->getPDO()->commit();
-            $this->connection->getEventDispatcher()->dispatch($this->eventFactory->commitTransaction($this));
-            return;
+            $this->eventDispatcher && $this->eventDispatcher
+                ->dispatch(new TransactionEvent($this, TransactionEvent::EVENT_COMMIT));
+            return $this;
         }
 
-        if ($schema instanceof SavepointInterface) {
-            $logger && $logger->debug('Release savepoint ' . $this->level);
-            $schema->releaseSavepoint('LEVEL' . $this->level);
+        if ($this->connection instanceof SavepointInterface) {
+            $this->logger && $this->logger
+                ->debug('Release savepoint ' . $this->level);
+            $this->connection->releaseSavepoint('LEVEL' . $this->level);
         } else {
-            $logger && $logger->info('Transaction not committed: nested transaction not supported');
+            $this->logger && $this->logger
+                ->info('Transaction not committed: nested transaction not supported');
         }
+        return $this;
     }
 
     /**
      * Rolls back a transaction.
      */
-    public function rollBack(): void
+    public function rollBack(): Transaction
     {
         if (!$this->getIsActive()) {
             // do nothing if transaction is not active: this could be the transaction is committed
             // but the event handler to "commitTransaction" throw an exception
-            return;
+            return $this;
         }
-
-        $logger = $this->connection->getLogger();
 
         $this->level--;
         if ($this->level === 0) {
-            $logger && $logger->debug('Roll back transaction');
+            $this->logger && $this->logger
+                ->debug('Roll back transaction');
             $this->connection->getPDO()->rollBack();
-            $this->connection->getEventDispatcher()->dispatch($this->eventFactory->rollbackTransaction($this));
-            return;
+            $this->eventDispatcher && $this->eventDispatcher
+                ->dispatch(new TransactionEvent($this, TransactionEvent::EVENT_ROLLBACK));
+            return $this;
         }
 
-        $schema = $this->connection->getSchema();
-        if ($schema instanceof SavepointInterface) {
-            $logger && $logger->debug('Roll back to savepoint ' . $this->level);
-            $schema->rollBackSavepoint('LEVEL' . $this->level);
+        if ($this->connection instanceof SavepointInterface) {
+            $this->logger && $this->logger
+                ->debug('Roll back to savepoint ' . $this->level);
+            $this->connection->rollBackSavepoint('LEVEL' . $this->level);
         } else {
-            $logger && $logger->info('Transaction not rolled back: nested transaction not supported');
+            $this->logger && $this->logger
+                ->info('Transaction not rolled back: nested transaction not supported');
         }
+        return $this;
     }
 
     /**
@@ -183,17 +190,19 @@ class Transaction
      * @param string $level The transaction isolation level to use for this transaction.
      * This can be one of [[READ_UNCOMMITTED]], [[READ_COMMITTED]], [[REPEATABLE_READ]] and [[SERIALIZABLE]] but
      * also a string containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`.
+     * @return Transaction
      * @throws Exception if the transaction is not active
      * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
-    public function setIsolationLevel(string $level)
+    public function setIsolationLevel(string $level): Transaction
     {
         if (!$this->getIsActive()) {
             throw new Exception('Failed to set isolation level: transaction was inactive.');
         }
-        $logger = $this->connection->getLogger();
-        $logger && $logger->debug('Setting transaction isolation level to ' . $level);
-        $this->connection->getSchema()->setTransactionIsolationLevel($level);
+        $this->logger && $this->logger
+            ->debug('Setting transaction isolation level to ' . $level);
+        $this->connection->setTransactionIsolationLevel($level);
+        return $this;
     }
 
     /**
@@ -202,5 +211,22 @@ class Transaction
     public function getLevel(): int
     {
         return $this->level;
+    }
+
+    /**
+     * Sets a logger instance on the object.
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return void
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 }
