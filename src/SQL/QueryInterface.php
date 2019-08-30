@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace FastOrm\SQL;
 
 use FastOrm\ConnectionInterface;
-use FastOrm\Driver\CommandFetchInterface;
+use FastOrm\Driver\CommandInterface;
 use FastOrm\SQL\Clause\AliasClauseInterface;
-use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
+use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\Expression\SearchExpressionInterface;
+use FastOrm\SQL\SearchCondition\SearchConditionInterface;
 
-interface QueryInterface
+interface QueryInterface extends ExpressionInterface
 {
     public function select($columns): SelectClauseInterface;
 
@@ -30,7 +30,7 @@ interface QueryInterface
 
     public function groupBy($columns): self;
 
-    public function having(): SearchExpressionInterface;
+    public function having(): SearchConditionInterface;
 
     public function limit(int $limit): OffsetClauseInterface;
 
@@ -40,7 +40,7 @@ interface QueryInterface
 
     public function unionAll(QueryInterface $query): self;
 
-    public function where(): SearchExpressionInterface;
+    public function where(): SearchConditionInterface;
 
-    public function prepare(ConnectionInterface $connection, array $params = []): CommandFetchInterface;
+    public function prepare(ConnectionInterface $connection): CommandInterface;
 }

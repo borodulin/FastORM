@@ -4,26 +4,23 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\QueryInterface;
-
-class JoinClause implements ClauseInterface
+class JoinClause extends AbstractClause
 {
-    use ClauseTrait {
-        ClauseTrait::__construct as private clauseTraitConstruct;
-    }
 
-    private $joins;
-
-    public function __construct(QueryInterface $query)
-    {
-        $this->clauseTraitConstruct($query);
-        $this->joins = [];
-    }
+    private $joins = [];
 
     public function addJoin($join, $joinType): OnClauseInterface
     {
-        $onClause = new OnClause($this->query, $join, $joinType);
+        $onClause = new JoinItem($this->query, $join, $joinType);
         $this->joins[] = $onClause;
         return $onClause;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJoins(): array
+    {
+        return $this->joins;
     }
 }

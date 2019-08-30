@@ -7,10 +7,9 @@ namespace FastOrm\Driver;
 use FastOrm\ConnectionInterface;
 use FastOrm\Event\ConnectionEvent;
 use FastOrm\NotSupportedException;
-use FastOrm\SQL\Builder\ClauseBuilderFactory;
-use FastOrm\SQL\Builder\ClauseBuilderFactoryInterface;
-use FastOrm\SQL\Expression\ExpressionBuilderFactory;
-use FastOrm\SQL\Expression\ExpressionBuilderFactoryInterface;
+use FastOrm\SQL\BuilderFactory;
+use FastOrm\SQL\BuilderFactoryInterface;
+use FastOrm\SQL\ExpressionInterface;
 use FastOrm\Transaction;
 use PDO;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -42,13 +41,33 @@ abstract class AbstractConnection implements ConnectionInterface
      * @var array
      */
     protected $options;
+    /**
+     * @var BuilderFactory
+     */
+    private $builderFactory;
 
-    public function __construct($dsn, $username, $password, $options = [])
-    {
+    /**
+     * AbstractConnection constructor.
+     * @param $dsn
+     * @param $username
+     * @param $password
+     * @param array $options
+     * @param BuilderFactoryInterface|null $builderFactory
+     */
+    public function __construct(
+        string $dsn,
+        string $username = null,
+        string $password = null,
+        array $options = [],
+        BuilderFactoryInterface $builderFactory = null
+    ) {
         $this->dsn = $dsn;
         $this->username = $username;
         $this->password = $password;
         $this->options = $options;
+        if ($builderFactory === null) {
+            $this->builderFactory = new BuilderFactory($this);
+        }
     }
 
     public function getPDO(): PDO
@@ -142,13 +161,13 @@ abstract class AbstractConnection implements ConnectionInterface
         $this->pdoExec('SET NAMES ' . $this->pdo->quote($charset));
     }
 
-    public function createClauseBuilderFactory(): ClauseBuilderFactoryInterface
+    public function getBuilderFactory(): BuilderFactoryInterface
     {
-        return new ClauseBuilderFactory();
+        return $this->builderFactory;
     }
 
-    public function createExpressionBuilderFactory(): ExpressionBuilderFactoryInterface
+    public function buildExpression(ExpressionInterface $expression): string
     {
-        return new ExpressionBuilderFactory();
+        return $this->builderFactory->build($expression)->getText();
     }
 }

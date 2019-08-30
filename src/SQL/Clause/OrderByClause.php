@@ -6,10 +6,8 @@ namespace FastOrm\SQL\Clause;
 
 use FastOrm\SQL\Expression\ExpressionInterface;
 
-class OrderByClause implements ClauseInterface
+class OrderByClause extends AbstractClause
 {
-    use ClauseTrait;
-
     private $columns;
 
     public function addOrderBy($columns): void
@@ -34,5 +32,13 @@ class OrderByClause implements ClauseInterface
                 }
             }
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColumns()
+    {
+        return $this->columns;
     }
 }

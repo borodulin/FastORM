@@ -1,0 +1,89 @@
+<?php
+
+declare(strict_types=1);
+
+namespace FastOrm\SQL;
+
+use FastOrm\ConnectionAwareInterface;
+use FastOrm\ConnectionInterface;
+use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
+use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;
+use FastOrm\SQL\Clause\Builder\HavingClauseBuilder;
+use FastOrm\SQL\Clause\Builder\JoinClauseBuilder;
+use FastOrm\SQL\Clause\Builder\LimitClauseBuilder;
+use FastOrm\SQL\Clause\Builder\OrderByClauseBuilder;
+use FastOrm\SQL\Clause\Builder\SelectClauseBuilder;
+use FastOrm\SQL\Clause\Builder\UnionClauseBuilder;
+use FastOrm\SQL\Clause\Builder\WhereClauseBuilder;
+use FastOrm\SQL\Clause\FromClause;
+use FastOrm\SQL\Clause\GroupByClause;
+use FastOrm\SQL\Clause\HavingClause;
+use FastOrm\SQL\Clause\JoinClause;
+use FastOrm\SQL\Clause\LimitClause;
+use FastOrm\SQL\Clause\OrderByClause;
+use FastOrm\SQL\Clause\SelectClause;
+use FastOrm\SQL\Clause\UnionClause;
+use FastOrm\SQL\Clause\WhereClause;
+use FastOrm\SQL\SearchCondition\Builder\CompoundBuilder;
+use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
+use FastOrm\SQL\SearchCondition\Compound;
+use FastOrm\SQL\SearchCondition\SearchCondition;
+use InvalidArgumentException;
+
+class BuilderFactory implements BuilderFactoryInterface
+{
+    private static $defaultClassMap = [
+        SelectClause::class => SelectClauseBuilder::class,
+        FromClause::class => FromClauseBuilder::class,
+        WhereClause::class => WhereClauseBuilder::class,
+        JoinClause::class => JoinClauseBuilder::class,
+        GroupByClause::class => GroupByClauseBuilder::class,
+        HavingClause::class => HavingClauseBuilder::class,
+        UnionClause::class => UnionClauseBuilder::class,
+        OrderByClause::class => OrderByClauseBuilder::class,
+        LimitClause::class => LimitClauseBuilder::class,
+
+        Compound::class => CompoundBuilder::class,
+        SearchCondition::class => SearchConditionBuilder::class,
+    ];
+    /**
+     * @var array
+     */
+    private $classMap;
+    /**
+     * @var ConnectionInterface
+     */
+    private $connection;
+
+    public function __construct(ConnectionInterface $connection, array $classMap = [])
+    {
+        $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
+        $this->connection = $connection;
+    }
+
+    /**
+     * @param ExpressionInterface $expression
+     * @return BuilderInterface
+     */
+    public function build(ExpressionInterface $expression): BuilderInterface
+    {
+        $classBuilder = $this->classMap[get_class($expression)] ?? null;
+        if ($classBuilder) {
+            $instance = new $classBuilder($expression);
+            if (!$instance instanceof BuilderInterface) {
+                throw new InvalidArgumentException();
+            }
+        } elseif ($expression instanceof BuilderInterface) {
+            $instance = $expression;
+        } else {
+            throw new InvalidArgumentException();
+        }
+        if ($instance instanceof ConnectionAwareInterface) {
+            $instance->setConnection($this->connection);
+        }
+        if ($instance instanceof BindParamsAwareInterface) {
+            $instance->setBindParams()
+        }
+        return $instance;
+    }
+}

@@ -4,39 +4,31 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\Operator\UnionOperator;
 use FastOrm\SQL\QueryInterface;
-use SplStack;
 
-class UnionClause implements ClauseInterface
+class UnionClause extends AbstractClause
 {
     /**
-     * @var QueryInterface
+     * @var UnionItem[]
      */
-    private $query;
-    /**
-     * @var SplStack
-     */
-    private $unions;
-
-    public function __construct(QueryInterface $query)
-    {
-        $this->query = $query;
-        $this->unions = new SplStack();
-    }
+    private $unions = [];
 
     public function addUnion(QueryInterface $query)
     {
-        $this->unions->push(new UnionOperator($query, false));
+        $this->unions[] = new UnionItem($query, false);
     }
 
     public function addUnionAll(QueryInterface $query)
     {
-        $this->unions->push(new UnionOperator($query, true));
+        $this->unions[] = new UnionItem($query, true);
     }
 
-    public function getQuery(): QueryInterface
+    /**
+     * @return UnionItem[]
+     */
+    public function getUnions(): array
     {
-        return $this->query;
+        return $this->unions;
     }
+
 }

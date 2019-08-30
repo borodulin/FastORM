@@ -7,5 +7,5 @@ use FastOrm\SQL\QueryInterface;
 
 interface OnClauseInterface
 {
-    public function on($condition): QueryInterface;
+    public function on(string $condition): QueryInterface;
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm;
 
-use FastOrm\SQL\Builder\ClauseBuilderFactoryInterface;
-use FastOrm\SQL\Expression\ExpressionBuilderFactoryInterface;
+use FastOrm\SQL\BuilderFactoryInterface;
+use FastOrm\SQL\ExpressionInterface;
 use PDO;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -39,7 +39,7 @@ interface ConnectionInterface extends LoggerAwareInterface
 
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void;
 
-    public function createClauseBuilderFactory(): ClauseBuilderFactoryInterface;
+    public function getBuilderFactory(): BuilderFactoryInterface;
 
-    public function createExpressionBuilderFactory(): ExpressionBuilderFactoryInterface;
+    public function buildExpression(ExpressionInterface $expression): string;
 }

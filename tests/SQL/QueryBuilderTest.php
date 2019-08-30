@@ -28,6 +28,8 @@ class QueryBuilderTest extends TestCase
         $query = new Query();
         $command = $query->from('table')
             ->alias('t')
+            ->where()->not()->in('col1', [1,2,3])
+            ->orderBy('1')
             ->prepare($connection);
         $command->fetch();
     }

@@ -7,21 +7,14 @@ namespace FastOrm\SQL\Clause;
 use FastOrm\SQL\QueryInterface;
 use SplStack;
 
-class FromClause implements ClauseInterface
+class FromClause extends AbstractClause
 {
-    private $query;
-
     private $from;
 
     public function __construct(QueryInterface $query)
     {
-        $this->query = $query;
+        parent::__construct($query);
         $this->from = new SplStack();
-    }
-
-    public function getQuery(): QueryInterface
-    {
-        return $this->query;
     }
 
     public function addFrom($from): void
@@ -36,5 +29,13 @@ class FromClause implements ClauseInterface
         /** @var AliasClause $alias */
         $aliasClause = $this->from->top();
         $aliasClause->setAlias($alias);
+    }
+
+    /**
+     * @return SplStack
+     */
+    public function getFrom(): SplStack
+    {
+        return $this->from;
     }
 }

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-class GroupByClause implements ClauseInterface
+class GroupByClause extends AbstractClause
 {
-    use ClauseTrait;
-
     private $columns;
 
     public function addGroupBy($columns): void
@@ -21,5 +19,13 @@ class GroupByClause implements ClauseInterface
                 $this->columns[] = $columns;
             }
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColumns()
+    {
+        return $this->columns;
     }
 }

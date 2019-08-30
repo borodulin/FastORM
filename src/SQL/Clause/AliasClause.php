@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-class AliasClause implements ClauseInterface
+class AliasClause extends AbstractClause
 {
-    use ClauseTrait;
-
     private $expression;
 
     private $alias;

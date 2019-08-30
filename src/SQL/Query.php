@@ -7,20 +7,29 @@ namespace FastOrm\SQL;
 use FastOrm\ConnectionInterface;
 use FastOrm\Driver\Command;
 use FastOrm\Driver\CommandFetchInterface;
+use FastOrm\Driver\CommandInterface;
+use FastOrm\Driver\BindParamsInterface;
+use FastOrm\SQL\Clause\AbstractSearchConditionClause;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\GroupByClause;
+use FastOrm\SQL\Clause\HavingClause;
 use FastOrm\SQL\Clause\JoinClause;
+use FastOrm\SQL\Clause\LimitClause;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
 use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\Clause\OrderByClause;
 use FastOrm\SQL\Clause\SelectClause;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\UnionClause;
-use FastOrm\SQL\Expression\SearchExpression;
-use FastOrm\SQL\Expression\SearchExpressionInterface;
-use FastOrm\SQL\Operator\CompoundInterface;
+use FastOrm\SQL\Clause\WhereClause;
+use FastOrm\SQL\SearchCondition\CompoundInterface;
+use FastOrm\SQL\SearchCondition\SearchConditionInterface;
 
+/**
+ * Class Query
+ * @package FastOrm\SQL
+ */
 class Query implements
     CompoundInterface,
     SelectClauseInterface,
@@ -40,29 +49,21 @@ class Query implements
      */
     private $groupBy;
     /**
-     * @var SearchExpressionInterface
+     * @var HavingClause
      */
     private $having;
     /**
-     * @var int
+     * @var LimitClause
      */
     private $limit;
-    /**
-     * @var int
-     */
-    private $offset;
     /**
      * @var OrderByClause
      */
     private $orderBy;
     /**
-     * @var SearchExpressionInterface
+     * @var WhereClause
      */
     private $where;
-    /**
-     * @var SearchExpressionInterface
-     */
-    private $activeSearchExpression;
     /**
      * @var UnionClause
      */
@@ -71,27 +72,22 @@ class Query implements
      * @var JoinClause
      */
     private $join;
+    /**
+     * @var AbstractSearchConditionClause
+     */
+    private $activeSearchConditionClause;
 
     public function __construct()
     {
         $this->select = new SelectClause($this);
         $this->from = new FromClause($this);
         $this->join = new JoinClause($this);
-        $this->where = new SearchExpression($this);
+        $this->where = new WhereClause($this);
         $this->groupBy = new GroupByClause($this);
-        $this->having = new SearchExpression($this);
+        $this->having = new HavingClause($this);
         $this->orderBy = new OrderByClause($this);
         $this->union = new UnionClause($this);
-    }
-
-    public function and(): SearchExpressionInterface
-    {
-        return $this->activeSearchExpression;
-    }
-
-    public function or(): SearchExpressionInterface
-    {
-        return $this->activeSearchExpression;
+        $this->limit = new LimitClause($this);
     }
 
     public function select($columns): SelectClauseInterface
@@ -102,7 +98,7 @@ class Query implements
 
     public function distinct(): QueryInterface
     {
-        $this->select->distinct();
+        $this->select->setDistinct(true);
         return $this;
     }
 
@@ -124,9 +120,10 @@ class Query implements
         return $this;
     }
 
-    public function having(): SearchExpressionInterface
+    public function having(): SearchConditionInterface
     {
-        return $this->activeSearchExpression = $this->having;
+        $this->activeSearchConditionClause = $this->having;
+        return $this->having->getSearchCondition();
     }
 
     public function orderBy($columns): QueryInterface
@@ -135,15 +132,15 @@ class Query implements
         return $this;
     }
 
-    public function limit($limit): OffsetClauseInterface
+    public function limit(int $limit): OffsetClauseInterface
     {
-        $this->limit = $limit;
+        $this->limit->setLimit($limit);
         return $this;
     }
 
     public function offset(int $offset): QueryInterface
     {
-        $this->offset = $offset;
+        $this->limit->setOffset($offset);
         return $this;
     }
 
@@ -159,9 +156,9 @@ class Query implements
         return $this;
     }
 
-    public function where(): SearchExpressionInterface
+    public function where(): SearchConditionInterface
     {
-        return $this->activeSearchExpression = $this->where;
+        return $this->where->getSearchCondition();
     }
 
 
@@ -190,7 +187,7 @@ class Query implements
         return $this->join->addJoin($join, 'full join');
     }
 
-    public function prepare(ConnectionInterface $connection, array $params = []): CommandFetchInterface
+    public function prepare(ConnectionInterface $connection): CommandInterface
     {
         $queryBuilder = new QueryBuilder(
             $connection,
@@ -201,9 +198,21 @@ class Query implements
             $this->groupBy,
             $this->having,
             $this->orderBy,
-            $this->union
+            $this->union,
+            $this->limit
         );
-        $sql = $queryBuilder->getSQL();
-        return new Command($connection->getPDO(), $sql, $params);
+        $command = new Command($connection->getPDO());
+        $sql = $queryBuilder->getText();
+        return new Command($connection->getPDO(), $sql);
+    }
+
+    public function and(): SearchConditionInterface
+    {
+        return $this->activeSearchConditionClause->and();
+    }
+
+    public function or(): SearchConditionInterface
+    {
+        return $this->activeSearchConditionClause->or();
     }
 }

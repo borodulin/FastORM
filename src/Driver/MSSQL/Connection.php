@@ -27,7 +27,6 @@ class Connection extends AbstractConnection implements SavepointInterface
     /**
      * Creates a new savepoint.
      * @param string $name the savepoint name
-     * @throws DbException
      */
     public function createSavepoint($name): void
     {
@@ -46,7 +45,6 @@ class Connection extends AbstractConnection implements SavepointInterface
     /**
      * Rolls back to a previously created savepoint.
      * @param string $name the savepoint name
-     * @throws DbException
      */
     public function rollBackSavepoint(string $name): void
     {

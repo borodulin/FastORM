@@ -5,16 +5,23 @@ declare(strict_types=1);
 namespace FastOrm\SQL;
 
 use FastOrm\ConnectionInterface;
+use FastOrm\Driver\BindParamsInterface;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\GroupByClause;
+use FastOrm\SQL\Clause\HavingClause;
 use FastOrm\SQL\Clause\JoinClause;
+use FastOrm\SQL\Clause\LimitClause;
 use FastOrm\SQL\Clause\OrderByClause;
 use FastOrm\SQL\Clause\SelectClause;
 use FastOrm\SQL\Clause\UnionClause;
-use FastOrm\SQL\Expression\SearchExpression;
+use FastOrm\SQL\Clause\WhereClause;
 
-class QueryBuilder implements QueryBuilderInterface
+class QueryBuilder implements BuilderInterface
 {
+    /**
+     * @var ConnectionInterface
+     */
+    private $connection;
     /**
      * @var SelectClause
      */
@@ -28,7 +35,7 @@ class QueryBuilder implements QueryBuilderInterface
      */
     private $joinClause;
     /**
-     * @var SearchExpression
+     * @var WhereClause
      */
     private $whereClause;
     /**
@@ -36,7 +43,7 @@ class QueryBuilder implements QueryBuilderInterface
      */
     private $groupByClause;
     /**
-     * @var SearchExpression
+     * @var HavingClause
      */
     private $havingClause;
     /**
@@ -48,20 +55,21 @@ class QueryBuilder implements QueryBuilderInterface
      */
     private $unionClause;
     /**
-     * @var ConnectionInterface
+     * @var LimitClause
      */
-    private $connection;
+    private $limitClause;
 
     public function __construct(
         ConnectionInterface $connection,
         SelectClause $selectClause,
         FromClause $fromClause,
         JoinClause $joinClause,
-        SearchExpression $whereClause,
+        WhereClause $whereClause,
         GroupByClause $groupByClause,
-        SearchExpression $havingClause,
+        HavingClause $havingClause,
         OrderByClause $orderByClause,
-        UnionClause $unionClause
+        UnionClause $unionClause,
+        LimitClause $limitClause
     ) {
         $this->connection = $connection;
         $this->selectClause = $selectClause;
@@ -72,20 +80,22 @@ class QueryBuilder implements QueryBuilderInterface
         $this->havingClause = $havingClause;
         $this->orderByClause = $orderByClause;
         $this->unionClause = $unionClause;
+        $this->limitClause = $limitClause;
     }
 
-    public function getSQL(): string
+    public function getText(BindParamsInterface $bindParams): string
     {
-        $clauseBuilderFactory = $this->connection->createClauseBuilderFactory();
+        $clauseBuilderFactory = $this->connection->getBuilderFactory();
         return implode(' ', array_filter([
-            $clauseBuilderFactory->build($this->selectClause)->getSql(),
-            $clauseBuilderFactory->build($this->fromClause)->getSql(),
-            $clauseBuilderFactory->build($this->joinClause)->getSql(),
-            $clauseBuilderFactory->build($this->whereClause)->getSql(),
-            $clauseBuilderFactory->build($this->groupByClause)->getSql(),
-            $clauseBuilderFactory->build($this->havingClause)->getSql(),
-            $clauseBuilderFactory->build($this->unionClause)->getSql(),
-            $clauseBuilderFactory->build($this->orderByClause)->getSql(),
+            $clauseBuilderFactory->build($this->selectClause)->getText(),
+            $clauseBuilderFactory->build($this->fromClause)->getText(),
+            $clauseBuilderFactory->build($this->joinClause)->getText(),
+            $clauseBuilderFactory->build($this->whereClause)->getText(),
+            $clauseBuilderFactory->build($this->groupByClause)->getText(),
+            $clauseBuilderFactory->build($this->havingClause)->getText(),
+            $clauseBuilderFactory->build($this->unionClause)->getText(),
+            $clauseBuilderFactory->build($this->orderByClause)->getText(),
+            $clauseBuilderFactory->build($this->limitClause)->getText(),
         ]));
     }
 }
