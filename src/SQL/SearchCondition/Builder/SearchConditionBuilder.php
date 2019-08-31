@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Builder;
 
-use FastOrm\ConnectionAwareInterface;
-use FastOrm\ConnectionAwareTrait;
+use FastOrm\Driver\DriverAwareInterface;
+use FastOrm\Driver\DriverAwareTrait;
 use FastOrm\SQL\BuilderInterface;
 use FastOrm\SQL\SearchCondition\Operator\NotOperatorInterface;
 use FastOrm\SQL\SearchCondition\SearchCondition;
 
-class SearchConditionBuilder implements BuilderInterface, ConnectionAwareInterface
+class SearchConditionBuilder implements BuilderInterface, DriverAwareInterface
 {
-    use ConnectionAwareTrait;
+    use DriverAwareTrait;
 
     /**
      * @var SearchCondition
@@ -35,6 +35,6 @@ class SearchConditionBuilder implements BuilderInterface, ConnectionAwareInterfa
         } else {
             $text = $this->condition->isNot() ? 'NOT ' : '';
         }
-        return $text .  $this->connection->buildExpression($operator);
+        return $text .  $this->driver->buildExpression($operator);
     }
 }

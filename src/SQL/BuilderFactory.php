@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\ConnectionAwareInterface;
-use FastOrm\ConnectionInterface;
+use FastOrm\Driver\DriverAwareInterface;
+use FastOrm\Driver\DriverInterface;
 use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;
 use FastOrm\SQL\Clause\Builder\HavingClauseBuilder;
@@ -51,14 +51,14 @@ class BuilderFactory implements BuilderFactoryInterface
      */
     private $classMap;
     /**
-     * @var ConnectionInterface
+     * @var DriverInterface
      */
-    private $connection;
+    private $driver;
 
-    public function __construct(ConnectionInterface $connection, array $classMap = [])
+    public function __construct(DriverInterface $driver, array $classMap = [])
     {
         $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
-        $this->connection = $connection;
+        $this->driver = $driver;
     }
 
     /**
@@ -78,11 +78,11 @@ class BuilderFactory implements BuilderFactoryInterface
         } else {
             throw new InvalidArgumentException();
         }
-        if ($instance instanceof ConnectionAwareInterface) {
-            $instance->setConnection($this->connection);
+        if ($instance instanceof DriverAwareInterface) {
+            $instance->setDriver($this->driver);
         }
         if ($instance instanceof BindParamsAwareInterface) {
-            $instance->setBindParams()
+            $instance->setBindParams();
         }
         return $instance;
     }

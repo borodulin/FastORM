@@ -7,10 +7,13 @@ namespace FastOrm;
 use FastOrm\Event\TransactionEvent;
 use FastOrm\Driver\SavepointInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
-class Transaction
+class Transaction implements EventDispatcherAwareInterface
 {
+    use EventDispatcherAwareTrait, LoggerAwareTrait;
+
     /**
      * A constant representing the transaction isolation level `READ UNCOMMITTED`.
      * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
@@ -88,7 +91,7 @@ class Transaction
      */
     public function begin(string $isolationLevel = null): Transaction
     {
-        $pdo = $this->connection->getPDO();
+        $pdo = $this->connection->getPdo();
 
         if ($this->level === 0) {
             if ($isolationLevel !== null) {
@@ -106,10 +109,11 @@ class Transaction
             return $this;
         }
 
-        if ($this->connection instanceof SavepointInterface) {
+        $driver = $this->connection->getDriver();
+        if ($driver instanceof SavepointInterface) {
             $this->logger && $this->logger
                 ->debug('Set savepoint ' . $this->level);
-            $this->connection->createSavepoint('LEVEL' . $this->level);
+            $driver->createSavepoint($pdo, 'LEVEL' . $this->level);
         } else {
             $this->logger && $this->logger
                 ->info('Transaction not started: nested transaction not supported');
@@ -128,20 +132,22 @@ class Transaction
         if (!$this->getIsActive()) {
             throw new Exception('Failed to commit transaction: transaction was inactive.');
         }
+        $pdo = $this->connection->getPdo();
         $this->level--;
         if ($this->level === 0) {
             $this->logger && $this->logger
                 ->debug('Commit transaction');
-            $this->connection->getPDO()->commit();
+            $pdo->commit();
             $this->eventDispatcher && $this->eventDispatcher
                 ->dispatch(new TransactionEvent($this, TransactionEvent::EVENT_COMMIT));
             return $this;
         }
 
-        if ($this->connection instanceof SavepointInterface) {
+        $driver = $this->connection->getDriver();
+        if ($driver instanceof SavepointInterface) {
             $this->logger && $this->logger
                 ->debug('Release savepoint ' . $this->level);
-            $this->connection->releaseSavepoint('LEVEL' . $this->level);
+            $driver->releaseSavepoint($pdo, 'LEVEL' . $this->level);
         } else {
             $this->logger && $this->logger
                 ->info('Transaction not committed: nested transaction not supported');
@@ -159,21 +165,21 @@ class Transaction
             // but the event handler to "commitTransaction" throw an exception
             return $this;
         }
-
+        $pdo = $this->connection->getPdo();
         $this->level--;
         if ($this->level === 0) {
             $this->logger && $this->logger
                 ->debug('Roll back transaction');
-            $this->connection->getPDO()->rollBack();
+            $pdo->rollBack();
             $this->eventDispatcher && $this->eventDispatcher
                 ->dispatch(new TransactionEvent($this, TransactionEvent::EVENT_ROLLBACK));
             return $this;
         }
-
-        if ($this->connection instanceof SavepointInterface) {
+        $driver = $this->connection->getDriver();
+        if ($driver instanceof SavepointInterface) {
             $this->logger && $this->logger
                 ->debug('Roll back to savepoint ' . $this->level);
-            $this->connection->rollBackSavepoint('LEVEL' . $this->level);
+            $driver->rollBackSavepoint($pdo, 'LEVEL' . $this->level);
         } else {
             $this->logger && $this->logger
                 ->info('Transaction not rolled back: nested transaction not supported');
@@ -211,22 +217,5 @@ class Transaction
     public function getLevel(): int
     {
         return $this->level;
-    }
-
-    /**
-     * Sets a logger instance on the object.
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
-    {
-        $this->eventDispatcher = $eventDispatcher;
     }
 }

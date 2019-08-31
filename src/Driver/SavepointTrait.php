@@ -4,32 +4,37 @@ declare(strict_types=1);
 
 namespace FastOrm\Driver;
 
+use PDO;
+
 trait SavepointTrait
 {
     /**
      * Creates a new savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function createSavepoint($name): void
+    public function createSavepoint(PDO $pdo, string $name): void
     {
-        $this->pdoExec("SAVEPOINT $name");
+        $pdo->exec("SAVEPOINT $name");
     }
 
     /**
      * Releases an existing savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function releaseSavepoint(string $name): void
+    public function releaseSavepoint(PDO $pdo, string $name): void
     {
-        $this->pdoExec("RELEASE SAVEPOINT $name");
+        $pdo->exec("RELEASE SAVEPOINT $name");
     }
 
     /**
      * Rolls back to a previously created savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function rollBackSavepoint(string $name): void
+    public function rollBackSavepoint(PDO $pdo, string $name): void
     {
-        $this->pdoExec("ROLLBACK TO SAVEPOINT $name");
+        $pdo->exec("ROLLBACK TO SAVEPOINT $name");
     }
 }

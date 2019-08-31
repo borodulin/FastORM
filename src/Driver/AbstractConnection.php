@@ -111,7 +111,7 @@ abstract class AbstractConnection implements ConnectionInterface
 
     /**
      * Sets the isolation level of the current transaction.
-     * @param string $isolationLevel The transaction isolation level to use for this transaction.
+     * @param string $level The transaction isolation level to use for this transaction.
      * This can be one of
      * @see TransactionInterface::READ_UNCOMMITTED
      * @see TransactionInterface::READ_COMMITTED
@@ -119,9 +119,9 @@ abstract class AbstractConnection implements ConnectionInterface
      * @see TransactionInterface::SERIALIZABLE
      * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
-    public function setTransactionIsolationLevel(string $isolationLevel)
+    public function setTransactionIsolationLevel(string $level)
     {
-        $this->pdoExec("SET TRANSACTION ISOLATION LEVEL $isolationLevel");
+        $this->pdoExec("SET TRANSACTION ISOLATION LEVEL $level");
     }
 
     /**

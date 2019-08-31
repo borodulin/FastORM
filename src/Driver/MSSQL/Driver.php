@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace FastOrm\Driver\MSSQL;
 
-use FastOrm\Driver\AbstractConnection;
-use FastOrm\Driver\DbException;
+use FastOrm\Driver\AbstractDriver;
 use FastOrm\Driver\SavepointInterface;
 use PDO;
 
-class Connection extends AbstractConnection implements SavepointInterface
+class Driver extends AbstractDriver implements SavepointInterface
 {
-    protected function createPdoInstance(): PDO
-    {
-        $driverName = explode(':', $this->dsn)[0];
+
+    public function createPdoInstance(
+        string $dsn,
+        string $username = null,
+        string $passwd = null,
+        array $options = []
+    ): PDO {
+        $driverName = explode(':', $dsn)[0];
         if ($driverName === 'mssql' || $driverName === 'dblib') {
             $pdoClass = MssqlPDO::class;
         } elseif ($driverName === 'sqlsrv') {
@@ -21,33 +25,36 @@ class Connection extends AbstractConnection implements SavepointInterface
         } else {
             $pdoClass = PDO::class;
         }
-        return new $pdoClass($this->dsn, $this->username, $this->password, $this->options);
+        return new $pdoClass($dsn, $username, $passwd, $options);
     }
 
     /**
      * Creates a new savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function createSavepoint($name): void
+    public function createSavepoint(PDO $pdo, string $name): void
     {
-        $this->pdoExec("SAVE TRANSACTION $name");
+        $pdo->exec("SAVE TRANSACTION $name");
     }
 
     /**
      * Releases an existing savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function releaseSavepoint(string $name): void
+    public function releaseSavepoint(PDO $pdo, string $name): void
     {
         // does nothing as MSSQL does not support this
     }
 
     /**
      * Rolls back to a previously created savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function rollBackSavepoint(string $name): void
+    public function rollBackSavepoint(PDO $pdo, string $name): void
     {
-        $this->pdoExec("ROLLBACK TRANSACTION $name");
+        $pdo->exec("ROLLBACK TRANSACTION $name");
     }
 }

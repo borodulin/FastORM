@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Builder;
 
-use FastOrm\ConnectionAwareInterface;
-use FastOrm\ConnectionAwareTrait;
+use FastOrm\Driver\DriverAwareInterface;
+use FastOrm\Driver\DriverAwareTrait;
 use FastOrm\SQL\BuilderInterface;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\CompoundItem;
 
-class CompoundBuilder implements BuilderInterface, ConnectionAwareInterface
+class CompoundBuilder implements BuilderInterface, DriverAwareInterface
 {
-    use ConnectionAwareTrait;
+    use DriverAwareTrait;
 
     /**
      * @var Compound
@@ -30,7 +30,7 @@ class CompoundBuilder implements BuilderInterface, ConnectionAwareInterface
         /** @var CompoundItem $compoundItem */
         foreach ($this->compound->getCompounds() as $compoundItem) {
             $searchCondition = $compoundItem->getSearchCondition();
-            if ($text = $this->connection->buildExpression($searchCondition)) {
+            if ($text = $this->driver->buildExpression($searchCondition)) {
                 $conditions[$compoundItem->getCompound()][] = $text;
             }
         }

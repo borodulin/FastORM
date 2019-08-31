@@ -4,24 +4,23 @@ declare(strict_types=1);
 
 namespace FastOrm;
 
-use FastOrm\SQL\BuilderFactoryInterface;
+use FastOrm\Driver\DriverInterface;
 use FastOrm\SQL\ExpressionInterface;
 use PDO;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerAwareInterface;
 
-interface ConnectionInterface extends LoggerAwareInterface
+interface ConnectionInterface extends LoggerAwareInterface, EventDispatcherAwareInterface
 {
     /**
      * Sets the isolation level of the current transaction.
-     * @param string $isolationIsolationLevel
+     * @param string $isolationLevel
      * @see TransactionInterface::READ_UNCOMMITTED
      * @see TransactionInterface::READ_COMMITTED
      * @see TransactionInterface::REPEATABLE_READ
      * @see TransactionInterface::SERIALIZABLE
      * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
-    public function setTransactionIsolationLevel(string $isolationIsolationLevel);
+    public function setTransactionIsolationLevel(string $isolationLevel);
 
     /**
      * Starts a transaction.
@@ -31,15 +30,13 @@ interface ConnectionInterface extends LoggerAwareInterface
      */
     public function beginTransaction(string $isolationLevel = null): Transaction;
 
-    public function getPDO(): PDO;
+    public function getDriver(): DriverInterface;
+
+    public function getPdo(): PDO;
 
     public function getIsActive(): bool;
 
     public function close(): void;
-
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void;
-
-    public function getBuilderFactory(): BuilderFactoryInterface;
 
     public function buildExpression(ExpressionInterface $expression): string;
 }

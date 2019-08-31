@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
-use FastOrm\ConnectionAwareInterface;
-use FastOrm\ConnectionAwareTrait;
+use FastOrm\Driver\DriverAwareInterface;
+use FastOrm\Driver\DriverAwareTrait;
 use FastOrm\SQL\BuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-abstract class AbstractClauseBuilder implements BuilderInterface, ConnectionAwareInterface
+abstract class AbstractClauseBuilder implements BuilderInterface, DriverAwareInterface
 {
-    use ConnectionAwareTrait;
+    use DriverAwareTrait;
 
     protected function buildExpression(ExpressionInterface $expression): string
     {
-        return $this->connection->buildExpression($expression);
+        return $this->driver->buildExpression($expression);
     }
 }

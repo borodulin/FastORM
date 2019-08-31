@@ -4,23 +4,28 @@ declare(strict_types=1);
 
 namespace FastOrm\Driver;
 
+use PDO;
+
 interface SavepointInterface
 {
     /**
      * Creates a new savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function createSavepoint($name): void;
+    public function createSavepoint(PDO $pdo, string $name): void;
 
     /**
      * Releases an existing savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function releaseSavepoint(string $name): void;
+    public function releaseSavepoint(PDO $pdo, string $name): void;
 
     /**
      * Rolls back to a previously created savepoint.
+     * @param PDO $pdo
      * @param string $name the savepoint name
      */
-    public function rollBackSavepoint(string $name): void;
+    public function rollBackSavepoint(PDO $pdo, string $name): void;
 }
