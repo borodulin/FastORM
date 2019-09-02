@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace FastOrm\Fetch;
 
-use FastOrm\Driver\Command;
-use FastOrm\Driver\DbException;
+use PDO;
 use PDOStatement;
 
 class Fetch implements FetchInterface
 {
-
-    /**
-     * @var Command
-     */
-    private $command;
     /**
      * @var PDOStatement
      */
@@ -22,13 +16,11 @@ class Fetch implements FetchInterface
 
     /**
      * Fetch constructor.
-     * @param Command $command
-     * @throws DbException
+     * @param PDOStatement $pdoStatement
      */
-    public function __construct(Command $command)
+    public function __construct(PDOStatement $pdoStatement)
     {
-        $this->command = $command;
-        $this->pdoStatement = $this->command->getPdoStatement();
+        $this->pdoStatement = $pdoStatement;
     }
 
     private $indexBy;
@@ -48,8 +40,13 @@ class Fetch implements FetchInterface
      */
     public function column(): array
     {
-        $result = $this->pdoStatement->fetchColumn();
+        $this->pdoStatement->execute();
+//        $result = call_user_func_array([$this->pdoStatement, 'fetchColumn'], (array) PDO::FETCH_ASSOC);
+        $result = $this->pdoStatement->fetchAll(PDO::FETCH_COLUMN);
         $this->pdoStatement->closeCursor();
+        if ($result === false) {
+            return [];
+        }
         return $result;
     }
 
@@ -89,7 +86,11 @@ class Fetch implements FetchInterface
      */
     public function all(): array
     {
-        $result = $this->pdoStatement->fetchColumn();
+        if ($this->pdoStatement->execute()) {
+            $result = $this->pdoStatement->fetchAll();
+        } else {
+            $result = [];
+        }
         $this->pdoStatement->closeCursor();
         return $result;
     }

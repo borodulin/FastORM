@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FastOrm;
 
 use FastOrm\Driver\DriverInterface;
-use FastOrm\SQL\ExpressionInterface;
 use PDO;
 use Psr\Log\LoggerAwareInterface;
 
@@ -37,6 +36,4 @@ interface ConnectionInterface extends LoggerAwareInterface, EventDispatcherAware
     public function getIsActive(): bool;
 
     public function close(): void;
-
-    public function buildExpression(ExpressionInterface $expression): string;
 }

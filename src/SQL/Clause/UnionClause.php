@@ -30,5 +30,4 @@ class UnionClause extends AbstractClause
     {
         return $this->unions;
     }
-
 }

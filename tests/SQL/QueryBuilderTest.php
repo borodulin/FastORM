@@ -2,7 +2,7 @@
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\ConnectionFactory;
+use FastOrm\Connection;
 use FastOrm\NotSupportedException;
 use FastOrm\SQL\Query;
 use PHPUnit\Framework\TestCase;
@@ -14,9 +14,8 @@ class QueryBuilderTest extends TestCase
      */
     private function createConnection()
     {
-        $factory = new ConnectionFactory();
-        $db = __DIR__ . '/../db/test.db';
-        return $factory('sqlite:' . $db);
+        $db = __DIR__ . '/../db/test.sqlite';
+        return new Connection('sqlite:' . $db);
     }
 
     /**
@@ -26,11 +25,19 @@ class QueryBuilderTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = new Query();
-        $command = $query->from('table')
-            ->alias('t')
-            ->where()->not()->in('col1', [1,2,3])
-            ->orderBy('1')
+        $command = $query->from('table1')
+            ->select('c1')
+//            ->alias('t')
+            ->where()
+            //->not()->in('c1', [1,2,3])->or()
+            ->between('c1', ':p1', ':p2')
+            ->orderBy('c1')
             ->prepare($connection);
-        $command->fetch();
+        $fetch = $command->fetch();
+        $all = $fetch->column();
+        $this->assertSame([], $all);
+        $fetch = $command->fetch(['p1' => 1, 'p2' => 1]);
+        $all = $fetch->column();
+        $this->assertSame(['1'], $all);
     }
 }

@@ -7,7 +7,6 @@ namespace FastOrm;
 use FastOrm\Driver\DriverFactory;
 use FastOrm\Driver\DriverInterface;
 use FastOrm\Event\ConnectionEvent;
-use FastOrm\SQL\ExpressionInterface;
 use PDO;
 use Psr\Log\LoggerAwareTrait;
 
@@ -42,10 +41,6 @@ class Connection implements ConnectionInterface
      * @var PDO
      */
     private $pdo;
-    /**
-     * @var SQL\BuilderFactoryInterface
-     */
-    private $factory;
 
     /**
      * Connection constructor.
@@ -62,7 +57,6 @@ class Connection implements ConnectionInterface
         $this->password = $password;
         $this->options = $options;
         $this->driver = (new DriverFactory())($dsn);
-        $this->factory = $this->driver->createBuilderFactory();
     }
 
     /**
@@ -126,10 +120,5 @@ class Connection implements ConnectionInterface
         $this->pdo = null;
         $this->eventDispatcher && $this->eventDispatcher
             ->dispatch(new ConnectionEvent($this, ConnectionEvent::EVENT_AFTER_CLOSE));
-    }
-
-    public function buildExpression(ExpressionInterface $expression): string
-    {
-        return $this->factory->build($expression)->getText();
     }
 }

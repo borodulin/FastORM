@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FastOrm\SQL;
 
 use FastOrm\ConnectionInterface;
-use FastOrm\Driver\CommandInterface;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
 use FastOrm\SQL\Clause\OnClauseInterface;

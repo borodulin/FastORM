@@ -4,31 +4,31 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\OrderByClause;
-use FastOrm\SQL\Expression\ExpressionInterface;
+use FastOrm\SQL\ExpressionBuilderAwareInterface;
+use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 
-class OrderByClauseBuilder extends AbstractClauseBuilder
+
+class OrderByClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
 {
-    /**
-     * @var OrderByClause
-     */
-    private $clause;
+    use ExpressionBuilderAwareTrait;
 
-    public function __construct(OrderByClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
-
-    public function getText(): string
-    {
-        $columns = $this->clause->getColumns();
+        if (!$expression instanceof OrderByClause) {
+            throw new InvalidArgumentException();
+        }
+        $columns = $expression->getColumns();
         if (empty($columns)) {
             return '';
         }
         $orders = [];
         foreach ($columns as $name => $direction) {
             if ($direction instanceof ExpressionInterface) {
-//                $orders[] = $this->buildExpression($direction); TODO
+                $orders[] = $this->expressionBuilder->build($direction);
             } else {
                 $orders[] = $name . ($direction === SORT_DESC ? ' DESC' : '');
             }

@@ -6,9 +6,6 @@ namespace FastOrm\SQL;
 
 use FastOrm\ConnectionInterface;
 use FastOrm\Driver\Command;
-use FastOrm\Driver\CommandFetchInterface;
-use FastOrm\Driver\CommandInterface;
-use FastOrm\Driver\BindParamsInterface;
 use FastOrm\SQL\Clause\AbstractSearchConditionClause;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\FromClause;
@@ -39,39 +36,39 @@ class Query implements
     /**
      * @var SelectClause
      */
-    private $select;
+    protected $selectClause;
     /**
      * @var FromClause
      */
-    private $from;
+    protected $fromClause;
     /**
      * @var GroupByClause
      */
-    private $groupBy;
+    protected $groupByClause;
     /**
      * @var HavingClause
      */
-    private $having;
+    protected $havingClause;
     /**
      * @var LimitClause
      */
-    private $limit;
+    protected $limitClause;
     /**
      * @var OrderByClause
      */
-    private $orderBy;
+    protected $orderByClause;
     /**
      * @var WhereClause
      */
-    private $where;
+    protected $whereClause;
     /**
      * @var UnionClause
      */
-    private $union;
+    protected $unionClause;
     /**
      * @var JoinClause
      */
-    private $join;
+    protected $joinClause;
     /**
      * @var AbstractSearchConditionClause
      */
@@ -79,131 +76,122 @@ class Query implements
 
     public function __construct()
     {
-        $this->select = new SelectClause($this);
-        $this->from = new FromClause($this);
-        $this->join = new JoinClause($this);
-        $this->where = new WhereClause($this);
-        $this->groupBy = new GroupByClause($this);
-        $this->having = new HavingClause($this);
-        $this->orderBy = new OrderByClause($this);
-        $this->union = new UnionClause($this);
-        $this->limit = new LimitClause($this);
+        $this->selectClause = new SelectClause($this);
+        $this->fromClause = new FromClause($this);
+        $this->joinClause = new JoinClause($this);
+        $this->whereClause = new WhereClause($this);
+        $this->groupByClause = new GroupByClause($this);
+        $this->havingClause = new HavingClause($this);
+        $this->orderByClause = new OrderByClause($this);
+        $this->unionClause = new UnionClause($this);
+        $this->limitClause = new LimitClause($this);
     }
 
     public function select($columns): SelectClauseInterface
     {
-        $this->select->addColumns($columns);
+        $this->selectClause->addColumns($columns);
         return $this;
     }
 
     public function distinct(): QueryInterface
     {
-        $this->select->setDistinct(true);
+        $this->selectClause->setDistinct(true);
         return $this;
     }
 
     public function alias($alias): QueryInterface
     {
-        $this->from->setAlias($alias);
+        $this->fromClause->setAlias($alias);
         return $this;
     }
 
     public function from($from): AliasClauseInterface
     {
-        $this->from->addFrom($from);
+        $this->fromClause->addFrom($from);
         return $this;
     }
 
     public function groupBy($columns): QueryInterface
     {
-        $this->groupBy->addGroupBy($columns);
+        $this->groupByClause->addGroupBy($columns);
         return $this;
     }
 
     public function having(): SearchConditionInterface
     {
-        $this->activeSearchConditionClause = $this->having;
-        return $this->having->getSearchCondition();
+        $this->activeSearchConditionClause = $this->havingClause;
+        return $this->havingClause->getSearchCondition();
     }
 
     public function orderBy($columns): QueryInterface
     {
-        $this->orderBy->addOrderBy($columns);
+        $this->orderByClause->addOrderBy($columns);
         return $this;
     }
 
     public function limit(int $limit): OffsetClauseInterface
     {
-        $this->limit->setLimit($limit);
+        $this->limitClause->setLimit($limit);
         return $this;
     }
 
     public function offset(int $offset): QueryInterface
     {
-        $this->limit->setOffset($offset);
+        $this->limitClause->setOffset($offset);
         return $this;
     }
 
     public function union(QueryInterface $query): QueryInterface
     {
-        $this->union->addUnion($query);
+        $this->unionClause->addUnion($query);
         return $this;
     }
 
     public function unionAll(QueryInterface $query): QueryInterface
     {
-        $this->union->addUnionAll($query);
+        $this->unionClause->addUnionAll($query);
         return $this;
     }
 
     public function where(): SearchConditionInterface
     {
-        return $this->where->getSearchCondition();
+        $this->activeSearchConditionClause = $this->whereClause;
+        return $this->whereClause->getSearchCondition();
     }
 
 
     public function join($join, string $joinType = 'inner join'): OnClauseInterface
     {
-        return $this->join->addJoin($join, $joinType);
+        return $this->joinClause->addJoin($join, $joinType);
     }
 
     public function innerJoin($join): OnClauseInterface
     {
-        return $this->join->addJoin($join, 'inner join');
+        return $this->joinClause->addJoin($join, 'inner join');
     }
 
     public function leftJoin($join): OnClauseInterface
     {
-        return $this->join->addJoin($join, 'left join');
+        return $this->joinClause->addJoin($join, 'left join');
     }
 
     public function rightJoin($join): OnClauseInterface
     {
-        return $this->join->addJoin($join, 'right join');
+        return $this->joinClause->addJoin($join, 'right join');
     }
 
     public function fullJoin($join): OnClauseInterface
     {
-        return $this->join->addJoin($join, 'full join');
+        return $this->joinClause->addJoin($join, 'full join');
     }
 
     public function prepare(ConnectionInterface $connection): CommandInterface
     {
-        $queryBuilder = new QueryBuilder(
-            $connection,
-            $this->select,
-            $this->from,
-            $this->join,
-            $this->where,
-            $this->groupBy,
-            $this->having,
-            $this->orderBy,
-            $this->union,
-            $this->limit
-        );
         $command = new Command($connection->getPDO());
-        $sql = $queryBuilder->getText();
-        return new Command($connection->getPDO(), $sql);
+        $builder = $connection->getDriver()->createExpressionBuilder($command);
+        $sql = $builder->build($this);
+        $command->setSql($sql);
+        return $command;
     }
 
     public function and(): SearchConditionInterface

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\Driver\DriverAwareInterface;
-use FastOrm\Driver\DriverInterface;
 use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;
 use FastOrm\SQL\Clause\Builder\HavingClauseBuilder;
@@ -30,7 +28,7 @@ use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\SearchCondition;
 use InvalidArgumentException;
 
-class BuilderFactory implements BuilderFactoryInterface
+class ExpressionBuilder implements ExpressionBuilderInterface
 {
     private static $defaultClassMap = [
         SelectClause::class => SelectClauseBuilder::class,
@@ -45,45 +43,47 @@ class BuilderFactory implements BuilderFactoryInterface
 
         Compound::class => CompoundBuilder::class,
         SearchCondition::class => SearchConditionBuilder::class,
+
+        Query::class => QueryBuilder::class,
     ];
     /**
      * @var array
      */
     private $classMap;
     /**
-     * @var DriverInterface
+     * @var BindParamsInterface
      */
-    private $driver;
+    private $bindParams;
 
-    public function __construct(DriverInterface $driver, array $classMap = [])
+    public function __construct(BindParamsInterface $bindParams, array $classMap = [])
     {
         $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
-        $this->driver = $driver;
+        $this->bindParams = $bindParams;
     }
 
     /**
      * @param ExpressionInterface $expression
-     * @return BuilderInterface
+     * @return ExpressionBuilderInterface
      */
-    public function build(ExpressionInterface $expression): BuilderInterface
+    public function build(ExpressionInterface $expression): string
     {
         $classBuilder = $this->classMap[get_class($expression)] ?? null;
         if ($classBuilder) {
             $instance = new $classBuilder($expression);
-            if (!$instance instanceof BuilderInterface) {
+            if (!$instance instanceof ExpressionBuilderInterface) {
                 throw new InvalidArgumentException();
             }
-        } elseif ($expression instanceof BuilderInterface) {
+        } elseif ($expression instanceof ExpressionBuilderInterface) {
             $instance = $expression;
         } else {
             throw new InvalidArgumentException();
         }
-        if ($instance instanceof DriverAwareInterface) {
-            $instance->setDriver($this->driver);
-        }
         if ($instance instanceof BindParamsAwareInterface) {
-            $instance->setBindParams();
+            $instance->setBindParams($this->bindParams);
         }
-        return $instance;
+        if ($instance instanceof ExpressionBuilderAwareInterface) {
+            $instance->setExpressionBuilder($this);
+        }
+        return $instance->build($expression);
     }
 }

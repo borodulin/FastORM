@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\SQL\BuilderInterface;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 
 /**
  * Class InOperator
  * @package FastOrm\SQL\Operator
  */
-class InOperator implements OperatorInterface, BuilderInterface
+class InOperator implements OperatorInterface, ExpressionBuilderInterface
 {
     private $column;
     private $values;
@@ -26,8 +27,9 @@ class InOperator implements OperatorInterface, BuilderInterface
         $this->values = $values;
     }
 
-    public function getText(): string
+    public function build(ExpressionInterface $expression): string
     {
-        return "$this->column in :values";
+        $values = implode(',', $this->values);
+        return "$this->column in ($values)";
     }
 }

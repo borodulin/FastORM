@@ -4,43 +4,43 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\SelectClause;
+use FastOrm\SQL\ExpressionBuilderAwareInterface;
+use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\Query;
 
-class SelectClauseBuilder extends AbstractClauseBuilder
+class SelectClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
 {
-    /**
-     * @var SelectClause
-     */
-    private $clause;
+    use ExpressionBuilderAwareTrait;
 
-    public function __construct(SelectClause $clause)
-    {
-        $this->clause = $clause;
-    }
 
-    public function getText(): string
+    public function build(ExpressionInterface $expression): string
     {
-        $select = $this->clause->isDistinct() ? 'SELECT DISTINCT' : 'SELECT';
-        if ($selectOption = $this->clause->getOption() !== null) {
+        if (!$expression instanceof SelectClause) {
+            throw new InvalidArgumentException();
+        }
+        $select = $expression->isDistinct() ? 'SELECT DISTINCT' : 'SELECT';
+        if ($selectOption = $expression->getOption() !== null) {
             $select .= ' ' . $selectOption;
         }
-        $columns = $this->clause->getColumns();
+        $columns = $expression->getColumns();
         if (empty($columns)) {
             return $select . ' *';
         }
 
         foreach ($columns as $i => $column) {
-//            if ($column instanceof ExpressionInterface) {
-//                if (is_int($i)) {
-//                    $columns[$i] = $this->buildExpression($column, $params);
-//                } else {
-//                    $columns[$i] = $this->buildExpression($column, $params) . ' AS ' . $this->db->quoteColumnName($i);
-//                }
-//            } else
             if ($column instanceof Query) {
-                $sql = $this->buildQuery($column);
+                $sql = $this->expressionBuilder->build($column);
                 $columns[$i] = "($sql) AS " . $i;
+            } elseif ($column instanceof ExpressionInterface) {
+                if (is_int($i)) {
+                    $columns[$i] = $this->expressionBuilder->build($column);
+                } else {
+                    $columns[$i] = $this->expressionBuilder->build($column) . ' AS ' . $i;
+                }
             } elseif (is_string($i) && $i !== $column) {
 //                if (strpos($column, '(') === false) {
 //                }
@@ -55,10 +55,5 @@ class SelectClauseBuilder extends AbstractClauseBuilder
         }
 
         return $select . ' ' . implode(', ', $columns);
-    }
-
-    private function buildQuery(Query $column)
-    {
-        // TODO
     }
 }

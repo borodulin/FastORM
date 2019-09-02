@@ -26,7 +26,7 @@ class AliasClause extends AbstractClause
         $this->expression = $expression;
     }
 
-    public function getAlias(): string
+    public function getAlias(): ?string
     {
         return $this->alias;
     }

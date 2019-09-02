@@ -4,49 +4,49 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
-use FastOrm\Driver\BindParamsInterface;
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\AliasClause;
 use FastOrm\SQL\Clause\FromClause;
+use FastOrm\SQL\ExpressionBuilderAwareInterface;
+use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class FromClauseBuilder extends AbstractClauseBuilder
+class FromClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
 {
-    /**
-     * @var FromClause
-     */
-    protected $clause;
+    use ExpressionBuilderAwareTrait;
 
-    public function __construct(FromClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
-
-    public function getText(): string
-    {
-        $aliases = $this->clause->getFrom();
+        if (!$expression instanceof FromClause) {
+            throw new InvalidArgumentException();
+        }
+        $aliases = $expression->getFrom();
         if ($aliases->count() === 0) {
             return '';
         }
 
-        $from = [];
+        $result = [];
+
+        $counter = 0;
 
         /** @var AliasClause $alias */
         foreach ($aliases as $alias) {
-            $expression = $alias->getExpression();
-            if ($expression instanceof ExpressionInterface) {
-                $sql = $this->buildExpression($expression);
-                $from[] = "($sql) " . $alias->getAlias();
-            } elseif (is_string($expression)) {
-                $from[] = "$expression " . $alias->getAlias();
+            $from = $alias->getExpression();
+            $aliasName = $alias->getAlias() ?? 's' . ++$counter;
+            if ($from instanceof ExpressionInterface) {
+                $sql = $this->expressionBuilder->build($from);
+                $result[] = "($sql) " . $aliasName;
+            } elseif (is_string($from)) {
+                $result[] = "$from " . $aliasName;
             } elseif (strpos($alias, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $expression, $matches)) { // with alias
-                    $from[] = $matches[1] . ' ' . $matches[2];
+                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $from, $matches)) { // with alias
+                    $result[] = $matches[1] . ' ' . $matches[2];
                 } else {
-                    $from[] = $expression;
+                    $result[] = $from;
                 }
             }
         }
-
-        return 'FROM ' . implode(', ', $from);
+        return 'FROM ' . implode(', ', $result);
     }
 }

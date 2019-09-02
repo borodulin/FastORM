@@ -41,17 +41,16 @@ class Command implements CommandInterface, LoggerAwareInterface
      * @return PDOStatement
      * @throws DbException
      */
-    public function getPdoStatement()
+    public function getPdoStatement(): PDOStatement
     {
         try {
             $pdoStatement = $this->pdo->prepare($this->sql);
+            if ($pdoStatement === false) {
+                throw new DbException("Failed to prepare SQL: $this->sql", null);
+            }
             /** @var PdoValue $value */
             foreach ($this->params as $name => $value) {
                 $pdoStatement->bindValue($name, $value->getValue(), $value->getType());
-            }
-            $this->params = [];
-            if ($pdoStatement === false) {
-                throw new DbException("Failed to prepare SQL: $this->sql", null);
             }
             $this->logger && $this->logger->debug('Statement prepared');
         } catch (Exception $e) {
@@ -60,19 +59,6 @@ class Command implements CommandInterface, LoggerAwareInterface
             throw new DbException($message, $errorInfo, (int) $e->getCode(), $e);
         }
         return $pdoStatement;
-    }
-
-    public function bindValues(array $values): self
-    {
-        foreach ($values as $name => $value) {
-            if ($value instanceof PdoValue) {
-                $this->params[$name] = $value;
-            } else {
-                $type = $this->getPdoType($value);
-                $this->params[$name] = new PdoValue($value, $type);
-            }
-        }
-        return $this;
     }
 
     /**
@@ -97,6 +83,8 @@ class Command implements CommandInterface, LoggerAwareInterface
         if ($this->sql == '') {
             return false;
         }
+        $this->bindParams($params);
+
         $pdoStatement = $this->getPdoStatement();
 
         try {
@@ -115,7 +103,8 @@ class Command implements CommandInterface, LoggerAwareInterface
      */
     public function fetch(array $params = []): FetchInterface
     {
-        return new Fetch($this->bindValues($params));
+        $this->bindParams($params);
+        return new Fetch($this->getPdoStatement());
     }
 
     protected function getPdoType($data)
@@ -129,7 +118,7 @@ class Command implements CommandInterface, LoggerAwareInterface
             'NULL' => PDO::PARAM_NULL,
         ];
         $type = gettype($data);
-        return isset($typeMap[$type]) ?? PDO::PARAM_STR;
+        return $typeMap[$type] ?? PDO::PARAM_STR;
     }
 
     public function bindParams(array $params): CommandInterface
@@ -146,14 +135,15 @@ class Command implements CommandInterface, LoggerAwareInterface
     }
 
 
-    public function bindValue($value): CommandInterface
+    public function bindValue($value, string &$paramName = null): CommandInterface
     {
-        if (is_string($value) && (preg_match('/[@:](.+?)/', $value, $matches))) {
-            $this->params[$matches[1]] = null;
+        if (is_string($value) && (preg_match('/^[@:](.+)$/', $value, $matches))) {
+            $paramName = $matches[1];
+            $value = null;
         } else {
             $paramName = self::PARAM_PREFIX . ++$this->counter;
-            $this->bindParam($paramName, $value);
         }
+        $this->bindParam($paramName, $value);
         return $this;
     }
 

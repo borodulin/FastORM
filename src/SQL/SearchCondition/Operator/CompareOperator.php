@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\SQL\BuilderInterface;
+use FastOrm\SQL\BindParamsAwareInterface;
+use FastOrm\SQL\BindParamsAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 
-class CompareOperator implements OperatorInterface, BuilderInterface
+class CompareOperator implements OperatorInterface, BindParamsAwareInterface, ExpressionBuilderInterface
 {
+    use BindParamsAwareTrait;
 
     private $column;
     private $operator;
@@ -21,8 +25,9 @@ class CompareOperator implements OperatorInterface, BuilderInterface
         $this->value = $value;
     }
 
-    public function getText(): string
+    public function build(ExpressionInterface $expression): string
     {
-        return "$this->column $this->operator $this->value";
+        $this->bindParams->bindValue($this->value, $paramName);
+        return "$this->column $this->operator :$paramName";
     }
 }

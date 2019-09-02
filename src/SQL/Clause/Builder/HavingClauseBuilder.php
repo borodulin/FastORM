@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\HavingClause;
+use FastOrm\SQL\ExpressionBuilderAwareInterface;
+use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 
-class HavingClauseBuilder extends AbstractClauseBuilder
+class HavingClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
 {
-    /**
-     * @var HavingClause
-     */
-    private $clause;
+    use ExpressionBuilderAwareTrait;
 
-    public function __construct(HavingClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
-
-    public function getText(): string
-    {
-        $having = $this->buildExpression($this->clause->getCompound());
+        if (!$expression instanceof HavingClause) {
+            throw new InvalidArgumentException();
+        }
+        $having = $this->expressionBuilder->build($expression->getCompound());
 
         return $having === '' ? '' : 'HAVING ' . $having;
     }

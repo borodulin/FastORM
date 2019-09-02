@@ -6,10 +6,14 @@ namespace FastOrm\SQL\Clause\Builder;
 
 use FastOrm\SQL\Clause\JoinClause;
 use FastOrm\SQL\Clause\JoinItem;
+use FastOrm\SQL\ExpressionBuilderAwareInterface;
+use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class JoinClauseBuilder extends AbstractClauseBuilder
+class JoinClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
 {
+    use ExpressionBuilderAwareTrait;
 
     /**
      * @var JoinClause
@@ -21,7 +25,7 @@ class JoinClauseBuilder extends AbstractClauseBuilder
         $this->clause = $clause;
     }
 
-    public function getText(): string
+    public function build(ExpressionInterface $expression): string
     {
         $joins = $this->clause->getJoins();
         if (empty($joins)) {
@@ -34,7 +38,7 @@ class JoinClauseBuilder extends AbstractClauseBuilder
             $joinType = $joinItem->getJoinType();
             $join = $joinItem->getJoin();
             if ($join instanceof ExpressionInterface) {
-                $join = $this->buildExpression($join);
+                $join = $this->expressionBuilder->build($join);
             }
             $on = $joinItem->getOn();
             $result[] = "$joinType $join ON $on";
