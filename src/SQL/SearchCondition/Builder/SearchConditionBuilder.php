@@ -4,32 +4,37 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Builder;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\ExpressionBuilderAwareInterface;
-use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\Operator\NotOperatorInterface;
 use FastOrm\SQL\SearchCondition\SearchCondition;
 
-class SearchConditionBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
+class SearchConditionBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
-    use ExpressionBuilderAwareTrait;
+    use CompilerAwareTrait;
 
-    public function build(ExpressionInterface $expression): string
+    /**
+     * @var SearchCondition
+     */
+    private $condition;
+
+    public function __construct(SearchCondition $condition)
     {
-        if (!$expression instanceof SearchCondition) {
-            throw new InvalidArgumentException();
-        }
-        if (!$operator = $expression->getOperator()) {
+        $this->condition = $condition;
+    }
+
+    public function build(): string
+    {
+        if (!$operator = $this->condition->getOperator()) {
             return '';
         }
         $text = '';
         if ($operator instanceof NotOperatorInterface) {
-            $operator->setNot($expression->isNot());
+            $operator->setNot($this->condition->isNot());
         } else {
-            $text = $expression->isNot() ? 'NOT ' : '';
+            $text = $this->condition->isNot() ? 'NOT ' : '';
         }
-        return $text .  $this->expressionBuilder->build($operator);
+        return $text .  $this->compiler->compile($operator);
     }
 }

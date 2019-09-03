@@ -7,7 +7,6 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\SQL\BindParamsAwareInterface;
 use FastOrm\SQL\BindParamsAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
 
 class CompareOperator implements OperatorInterface, BindParamsAwareInterface, ExpressionBuilderInterface
 {
@@ -25,7 +24,7 @@ class CompareOperator implements OperatorInterface, BindParamsAwareInterface, Ex
         $this->value = $value;
     }
 
-    public function build(ExpressionInterface $expression): string
+    public function build(): string
     {
         $this->bindParams->bindValue($this->value, $paramName);
         return "$this->column $this->operator :$paramName";

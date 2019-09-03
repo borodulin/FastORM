@@ -62,10 +62,10 @@ class Connection implements ConnectionInterface
     /**
      * Sets the isolation level of the current transaction.
      * @param string $isolationLevel
-     * @see TransactionInterface::READ_UNCOMMITTED
-     * @see TransactionInterface::READ_COMMITTED
-     * @see TransactionInterface::REPEATABLE_READ
-     * @see TransactionInterface::SERIALIZABLE
+     * @see Transaction::READ_UNCOMMITTED
+     * @see Transaction::READ_COMMITTED
+     * @see Transaction::REPEATABLE_READ
+     * @see Transaction::SERIALIZABLE
      * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     public function setTransactionIsolationLevel(string $isolationLevel)

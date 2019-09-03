@@ -188,8 +188,8 @@ class Query implements
     public function prepare(ConnectionInterface $connection): CommandInterface
     {
         $command = new Command($connection->getPDO());
-        $builder = $connection->getDriver()->createExpressionBuilder($command);
-        $sql = $builder->build($this);
+        $compiler = $connection->getDriver()->createCompiler($command);
+        $sql = $compiler->compile($this);
         $command->setSql($sql);
         return $command;
     }

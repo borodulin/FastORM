@@ -7,7 +7,6 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\SQL\BindParamsAwareInterface;
 use FastOrm\SQL\BindParamsAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
 
 class BetweenOperator implements OperatorInterface, ExpressionBuilderInterface, BindParamsAwareInterface
 {
@@ -24,7 +23,7 @@ class BetweenOperator implements OperatorInterface, ExpressionBuilderInterface, 
         $this->intervalEnd = $intervalEnd;
     }
 
-    public function build(ExpressionInterface $expression): string
+    public function build(): string
     {
         $this->bindParams->bindValue($this->intervalStart, $paramStart);
         $this->bindParams->bindValue($this->intervalEnd, $paramEnd);

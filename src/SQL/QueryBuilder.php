@@ -1,30 +1,40 @@
 <?php
+/** @noinspection PhpMissingParentConstructorInspection */
 
 declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\InvalidArgumentException;
-
-class QueryBuilder extends Query implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
+class QueryBuilder extends Query implements ExpressionBuilderInterface, CompilerAwareInterface
 {
-    use ExpressionBuilderAwareTrait;
+    use CompilerAwareTrait;
 
-    public function build(ExpressionInterface $expression): string
+    /**
+     * @var Query
+     */
+    private $query;
+
+    /**
+     * QueryBuilder constructor.
+     * @param Query $query
+     */
+    public function __construct(Query $query)
     {
-        if (!$expression instanceof Query) {
-            throw new InvalidArgumentException();
-        }
+        $this->query = $query;
+    }
+
+    public function build(): string
+    {
         return implode(' ', array_filter([
-            $this->expressionBuilder->build($expression->selectClause),
-            $this->expressionBuilder->build($expression->fromClause),
-            $this->expressionBuilder->build($expression->joinClause),
-            $this->expressionBuilder->build($expression->whereClause),
-            $this->expressionBuilder->build($expression->groupByClause),
-            $this->expressionBuilder->build($expression->havingClause),
-            $this->expressionBuilder->build($expression->unionClause),
-            $this->expressionBuilder->build($expression->orderByClause),
-            $this->expressionBuilder->build($expression->limitClause),
+            $this->compiler->compile($this->query->selectClause),
+            $this->compiler->compile($this->query->fromClause),
+            $this->compiler->compile($this->query->joinClause),
+            $this->compiler->compile($this->query->whereClause),
+            $this->compiler->compile($this->query->groupByClause),
+            $this->compiler->compile($this->query->havingClause),
+            $this->compiler->compile($this->query->unionClause),
+            $this->compiler->compile($this->query->orderByClause),
+            $this->compiler->compile($this->query->limitClause),
         ]));
     }
 }

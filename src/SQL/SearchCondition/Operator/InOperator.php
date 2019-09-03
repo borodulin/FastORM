@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FastOrm\SQL\SearchCondition\Operator;
 
 use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
 
 /**
  * Class InOperator
@@ -27,7 +26,7 @@ class InOperator implements OperatorInterface, ExpressionBuilderInterface
         $this->values = $values;
     }
 
-    public function build(ExpressionInterface $expression): string
+    public function build(): string
     {
         $values = implode(',', $this->values);
         return "$this->column in ($values)";

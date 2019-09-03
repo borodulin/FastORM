@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
-use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\AliasClause;
 use FastOrm\SQL\Clause\FromClause;
-use FastOrm\SQL\ExpressionBuilderAwareInterface;
-use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class FromClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
+class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
-    use ExpressionBuilderAwareTrait;
+    use CompilerAwareTrait;
 
-    public function build(ExpressionInterface $expression): string
+    /**
+     * @var FromClause
+     */
+    private $clause;
+
+    public function __construct(FromClause $clause)
     {
-        if (!$expression instanceof FromClause) {
-            throw new InvalidArgumentException();
-        }
-        $aliases = $expression->getFrom();
+        $this->clause = $clause;
+    }
+
+    public function build(): string
+    {
+        $aliases = $this->clause->getFrom();
         if ($aliases->count() === 0) {
             return '';
         }
@@ -35,7 +41,7 @@ class FromClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilder
             $from = $alias->getExpression();
             $aliasName = $alias->getAlias() ?? 's' . ++$counter;
             if ($from instanceof ExpressionInterface) {
-                $sql = $this->expressionBuilder->build($from);
+                $sql = $this->compiler->compile($from);
                 $result[] = "($sql) " . $aliasName;
             } elseif (is_string($from)) {
                 $result[] = "$from " . $aliasName;

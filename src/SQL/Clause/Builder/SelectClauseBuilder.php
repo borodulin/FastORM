@@ -4,42 +4,47 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
-use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\SelectClause;
-use FastOrm\SQL\ExpressionBuilderAwareInterface;
-use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\Query;
 
-class SelectClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
+class SelectClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
-    use ExpressionBuilderAwareTrait;
+    use CompilerAwareTrait;
 
+    /**
+     * @var SelectClause
+     */
+    private $clause;
 
-    public function build(ExpressionInterface $expression): string
+    public function __construct(SelectClause $clause)
     {
-        if (!$expression instanceof SelectClause) {
-            throw new InvalidArgumentException();
-        }
-        $select = $expression->isDistinct() ? 'SELECT DISTINCT' : 'SELECT';
-        if ($selectOption = $expression->getOption() !== null) {
+        $this->clause = $clause;
+    }
+
+    public function build(): string
+    {
+        $select = $this->clause->isDistinct() ? 'SELECT DISTINCT' : 'SELECT';
+        if ($selectOption = $this->clause->getOption() !== null) {
             $select .= ' ' . $selectOption;
         }
-        $columns = $expression->getColumns();
+        $columns = $this->clause->getColumns();
         if (empty($columns)) {
             return $select . ' *';
         }
 
         foreach ($columns as $i => $column) {
             if ($column instanceof Query) {
-                $sql = $this->expressionBuilder->build($column);
+                $sql = $this->compiler->compile($column);
                 $columns[$i] = "($sql) AS " . $i;
             } elseif ($column instanceof ExpressionInterface) {
                 if (is_int($i)) {
-                    $columns[$i] = $this->expressionBuilder->build($column);
+                    $columns[$i] = $this->compiler->compile($column);
                 } else {
-                    $columns[$i] = $this->expressionBuilder->build($column) . ' AS ' . $i;
+                    $columns[$i] = $this->compiler->compile($column) . ' AS ' . $i;
                 }
             } elseif (is_string($i) && $i !== $column) {
 //                if (strpos($column, '(') === false) {

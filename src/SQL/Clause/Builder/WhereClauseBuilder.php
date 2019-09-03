@@ -4,23 +4,28 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
-use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\WhereClause;
-use FastOrm\SQL\ExpressionBuilderAwareInterface;
-use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
 
-class WhereClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
+class WhereClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
-    use ExpressionBuilderAwareTrait;
+    use CompilerAwareTrait;
 
-    public function build(ExpressionInterface $expression): string
+    /**
+     * @var WhereClause
+     */
+    private $clause;
+
+    public function __construct(WhereClause $clause)
     {
-        if (!$expression instanceof WhereClause) {
-            throw new InvalidArgumentException();
-        }
-        $where = $this->expressionBuilder->build($expression->getCompound());
+        $this->clause = $clause;
+    }
+
+    public function build(): string
+    {
+        $where = $this->compiler->compile($this->clause->getCompound());
 
         return $where === '' ? '' : 'WHERE ' . $where;
     }

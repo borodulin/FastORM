@@ -4,30 +4,35 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Builder;
 
-use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\GroupByClause;
-use FastOrm\SQL\ExpressionBuilderAwareInterface;
-use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class GroupByClauseBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
+class GroupByClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
-    use ExpressionBuilderAwareTrait;
+    use CompilerAwareTrait;
 
+    /**
+     * @var GroupByClause
+     */
+    private $clause;
 
-    public function build(ExpressionInterface $expression): string
+    public function __construct(GroupByClause $clause)
     {
-        if (!$expression instanceof GroupByClause) {
-            throw new InvalidArgumentException();
-        }
-        $columns = $expression->getColumns();
+        $this->clause = $clause;
+    }
+
+    public function build(): string
+    {
+        $columns = $this->clause->getColumns();
         if (empty($columns)) {
             return '';
         }
         foreach ($columns as $i => $column) {
             if ($column instanceof ExpressionInterface) {
-                $columns[$i] = $this->expressionBuilder->build($column);
+                $columns[$i] = $this->compiler->compile($column);
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $column;
             }

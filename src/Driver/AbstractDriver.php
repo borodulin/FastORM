@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace FastOrm\Driver;
 
 use FastOrm\SQL\BindParamsInterface;
-use FastOrm\SQL\ExpressionBuilder;
-use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\Compiler;
+use FastOrm\SQL\CompilerInterface;
 use PDO;
 
 class AbstractDriver implements DriverInterface
 {
-    public function createExpressionBuilder(BindParamsInterface $bindParams): ExpressionBuilderInterface
+    public function createCompiler(BindParamsInterface $bindParams): CompilerInterface
     {
-        return new ExpressionBuilder($bindParams);
+        return new Compiler($bindParams);
     }
 
     public function createPdoInstance(

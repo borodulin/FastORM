@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;
 use FastOrm\SQL\Clause\Builder\HavingClauseBuilder;
@@ -26,9 +27,8 @@ use FastOrm\SQL\SearchCondition\Builder\CompoundBuilder;
 use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\SearchCondition;
-use InvalidArgumentException;
 
-class ExpressionBuilder implements ExpressionBuilderInterface
+class Compiler implements CompilerInterface
 {
     private static $defaultClassMap = [
         SelectClause::class => SelectClauseBuilder::class,
@@ -46,6 +46,7 @@ class ExpressionBuilder implements ExpressionBuilderInterface
 
         Query::class => QueryBuilder::class,
     ];
+
     /**
      * @var array
      */
@@ -61,11 +62,7 @@ class ExpressionBuilder implements ExpressionBuilderInterface
         $this->bindParams = $bindParams;
     }
 
-    /**
-     * @param ExpressionInterface $expression
-     * @return ExpressionBuilderInterface
-     */
-    public function build(ExpressionInterface $expression): string
+    public function compile(ExpressionInterface $expression): string
     {
         $classBuilder = $this->classMap[get_class($expression)] ?? null;
         if ($classBuilder) {
@@ -81,9 +78,9 @@ class ExpressionBuilder implements ExpressionBuilderInterface
         if ($instance instanceof BindParamsAwareInterface) {
             $instance->setBindParams($this->bindParams);
         }
-        if ($instance instanceof ExpressionBuilderAwareInterface) {
-            $instance->setExpressionBuilder($this);
+        if ($instance instanceof CompilerAwareInterface) {
+            $instance->setCompiler($this);
         }
-        return $instance->build($expression);
+        return $instance->build();
     }
 }

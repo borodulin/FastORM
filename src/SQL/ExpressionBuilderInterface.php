@@ -6,5 +6,5 @@ namespace FastOrm\SQL;
 
 interface ExpressionBuilderInterface
 {
-    public function build(ExpressionInterface $expression): string;
+    public function build(): string;
 }

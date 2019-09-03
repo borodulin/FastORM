@@ -4,28 +4,33 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Builder;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\ExpressionBuilderAwareInterface;
-use FastOrm\SQL\ExpressionBuilderAwareTrait;
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\CompoundItem;
 
-class CompoundBuilder implements ExpressionBuilderInterface, ExpressionBuilderAwareInterface
+class CompoundBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
-    use ExpressionBuilderAwareTrait;
+    use CompilerAwareTrait;
 
-    public function build(ExpressionInterface $expression): string
+    /**
+     * @var Compound
+     */
+    private $compound;
+
+    public function __construct(Compound $compound)
     {
-        if (!$expression instanceof Compound) {
-            throw new InvalidArgumentException();
-        }
+        $this->compound = $compound;
+    }
+
+    public function build(): string
+    {
         $conditions = [];
         /** @var CompoundItem $compoundItem */
-        foreach ($expression->getCompounds() as $compoundItem) {
+        foreach ($this->compound->getCompounds() as $compoundItem) {
             $searchCondition = $compoundItem->getSearchCondition();
-            if ($text = $this->expressionBuilder->build($searchCondition)) {
+            if ($text = $this->compiler->compile($searchCondition)) {
                 $conditions[$compoundItem->getCompound()][] = $text;
             }
         }

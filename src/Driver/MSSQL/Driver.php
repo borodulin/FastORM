@@ -10,7 +10,13 @@ use PDO;
 
 class Driver extends AbstractDriver implements SavepointInterface
 {
-
+    /**
+     * @param string $dsn
+     * @param string|null $username
+     * @param string|null $passwd
+     * @param array $options
+     * @return PDO
+     */
     public function createPdoInstance(
         string $dsn,
         string $username = null,

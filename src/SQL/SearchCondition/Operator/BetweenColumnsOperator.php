@@ -7,7 +7,6 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\SQL\BindParamsAwareInterface;
 use FastOrm\SQL\BindParamsAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
 
 class BetweenColumnsOperator implements NotOperatorInterface, ExpressionBuilderInterface, BindParamsAwareInterface
 {
@@ -33,7 +32,7 @@ class BetweenColumnsOperator implements NotOperatorInterface, ExpressionBuilderI
         $this->not = $value;
     }
 
-    public function build(ExpressionInterface $expression): string
+    public function build(): string
     {
         $this->bindParams->bindValue($this->value, $paramName);
         return ":$paramName BETWEEN $this->intervalStartColumn AND $this->intervalEndColumn";

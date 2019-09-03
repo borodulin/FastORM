@@ -30,9 +30,12 @@ class Fetch implements FetchInterface
      */
     public function one(): object
     {
-        $result = $this->pdoStatement->fetch();
-        $this->pdoStatement->closeCursor();
-        return $result;
+        if ($this->pdoStatement->execute()) {
+            $result = $this->pdoStatement->fetch();
+            $this->pdoStatement->closeCursor();
+            return $result;
+        }
+        return null;
     }
 
     /**
@@ -40,14 +43,13 @@ class Fetch implements FetchInterface
      */
     public function column(): array
     {
-        $this->pdoStatement->execute();
-//        $result = call_user_func_array([$this->pdoStatement, 'fetchColumn'], (array) PDO::FETCH_ASSOC);
-        $result = $this->pdoStatement->fetchAll(PDO::FETCH_COLUMN);
-        $this->pdoStatement->closeCursor();
-        if ($result === false) {
-            return [];
+        if ($this->pdoStatement->execute()) {
+            $result = $this->pdoStatement->fetchAll(PDO::FETCH_COLUMN);
+            if (is_array($result)) {
+                return $result;
+            }
         }
-        return $result;
+        return [];
     }
 
     /**
@@ -88,11 +90,11 @@ class Fetch implements FetchInterface
     {
         if ($this->pdoStatement->execute()) {
             $result = $this->pdoStatement->fetchAll();
-        } else {
-            $result = [];
+            if (is_array($result)) {
+                return $result;
+            }
         }
-        $this->pdoStatement->closeCursor();
-        return $result;
+        return [];
     }
 
     public function batch(int $batchSize = 100): BatchInterface
