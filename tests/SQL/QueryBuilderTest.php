@@ -30,25 +30,11 @@ class QueryBuilderTest extends TestCase
         $command = $query
             ->select('c1')->distinct()
             ->from('table1')->alias('t1')
-            ->where()->expression('1=:p1', [':p1' => 1])
-//        between('c1', ':p1', ':p2')
-//            ->or($ex)->or()->and()
-//            ->and()->equal('c1', $query->and()->not()->equal())
+            ->where()
+//            ->expression('1=:p1', [':p1' => 1])
+            ->between('c1', ':p1', ':p2')
             ->orderBy('c1')
             ->prepare($connection);
-//        ['or',
-//            ['and',],
-//            ['and',],
-//
-//        ]
-//        $command = $query->from('table1')
-//            ->select('c1')
-        ////            ->alias('t')
-//            ->where()
-//            //->not()->in('c1', [1,2,3])->or()
-//            ->between('c1', ':p1', ':p2')
-//            ->orderBy('c1')
-//            ->prepare($connection);
         $fetch = $command->fetch();
         $all = $fetch->column();
         $this->assertSame([], $all);
