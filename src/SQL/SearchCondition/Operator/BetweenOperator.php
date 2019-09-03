@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\SQL\BindParamsAwareInterface;
-use FastOrm\SQL\BindParamsAwareTrait;
+use FastOrm\SQL\ParamsBinderAwareInterface;
+use FastOrm\SQL\ParamsBinderAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 
-class BetweenOperator implements OperatorInterface, ExpressionBuilderInterface, BindParamsAwareInterface
+class BetweenOperator implements OperatorInterface, ExpressionBuilderInterface, ParamsBinderAwareInterface
 {
-    use BindParamsAwareTrait;
+    use ParamsBinderAwareTrait;
 
     private $column;
     private $intervalStart;
@@ -25,8 +25,8 @@ class BetweenOperator implements OperatorInterface, ExpressionBuilderInterface, 
 
     public function build(): string
     {
-        $this->bindParams->bindValue($this->intervalStart, $paramStart);
-        $this->bindParams->bindValue($this->intervalEnd, $paramEnd);
+        $this->paramsBinder->bindValue($this->intervalStart, $paramStart);
+        $this->paramsBinder->bindValue($this->intervalEnd, $paramEnd);
         return "$this->column BETWEEN :$paramStart AND :$paramEnd";
     }
 }

@@ -52,11 +52,11 @@ class Compiler implements CompilerInterface
      */
     private $classMap;
     /**
-     * @var BindParamsInterface
+     * @var ParamsBinderInterface
      */
     private $bindParams;
 
-    public function __construct(BindParamsInterface $bindParams, array $classMap = [])
+    public function __construct(ParamsBinderInterface $bindParams, array $classMap = [])
     {
         $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
         $this->bindParams = $bindParams;
@@ -75,12 +75,22 @@ class Compiler implements CompilerInterface
         } else {
             throw new InvalidArgumentException();
         }
-        if ($instance instanceof BindParamsAwareInterface) {
-            $instance->setBindParams($this->bindParams);
+        if ($instance instanceof ParamsBinderAwareInterface) {
+            $instance->setParamsBinder($this->bindParams);
         }
         if ($instance instanceof CompilerAwareInterface) {
             $instance->setCompiler($this);
         }
         return $instance->build();
+    }
+
+    public function quoteColumnName(string $name): string
+    {
+        return '';
+    }
+
+    public function quoteTableName(string $name): string
+    {
+        return '';
     }
 }

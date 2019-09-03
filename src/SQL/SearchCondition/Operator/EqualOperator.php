@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\SQL\BindParamsAwareInterface;
-use FastOrm\SQL\BindParamsAwareTrait;
+use FastOrm\SQL\ParamsBinderAwareInterface;
+use FastOrm\SQL\ParamsBinderAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -15,9 +15,9 @@ class EqualOperator implements
     OperatorInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface,
-    BindParamsAwareInterface
+    ParamsBinderAwareInterface
 {
-    use CompilerAwareTrait, BindParamsAwareTrait;
+    use CompilerAwareTrait, ParamsBinderAwareTrait;
 
     private $column;
     private $value;
@@ -33,7 +33,7 @@ class EqualOperator implements
         if ($this->value instanceof ExpressionInterface) {
             $this->value = $this->compiler->compile($this->value);
         }
-        $this->bindParams->bindValue($this->value, $paramName);
+        $this->paramsBinder->bindValue($this->value, $paramName);
         return "$this->column = :$paramName";
     }
 }

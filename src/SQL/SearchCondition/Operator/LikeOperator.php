@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\SQL\BindParamsAwareInterface;
-use FastOrm\SQL\BindParamsAwareTrait;
+use FastOrm\SQL\ParamsBinderAwareInterface;
+use FastOrm\SQL\ParamsBinderAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -15,9 +15,9 @@ class LikeOperator implements
     OperatorInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface,
-    BindParamsAwareInterface
+    ParamsBinderAwareInterface
 {
-    use CompilerAwareTrait, BindParamsAwareTrait;
+    use CompilerAwareTrait, ParamsBinderAwareTrait;
 
     private $column;
     private $value;
@@ -35,7 +35,7 @@ class LikeOperator implements
             $value = $this->compiler->compile($this->value);
         }
         $value = "%$value%";
-        $this->bindParams->bindValue($value, $paramName);
+        $this->paramsBinder->bindValue($value, $paramName);
         return "$this->column LIKE :$paramName";
     }
 }

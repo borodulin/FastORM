@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-
-class Expression implements ExpressionInterface
+class Expression implements
+    ExpressionInterface,
+    ExpressionBuilderInterface,
+    ParamsBinderAwareInterface
 {
+    use ParamsBinderAwareTrait;
     /**
      * @var string
      */
@@ -21,19 +25,9 @@ class Expression implements ExpressionInterface
         $this->params = $params;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams(): array
+    public function build(): string
     {
-        return $this->params;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExpression(): string
-    {
+        $this->paramsBinder->bindParams($this->params);
         return $this->expression;
     }
 }

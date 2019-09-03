@@ -6,7 +6,7 @@ namespace FastOrm\SQL;
 
 use FastOrm\Fetch\FetchInterface;
 
-interface CommandInterface extends BindParamsInterface
+interface CommandInterface extends ParamsBinderInterface
 {
     public function fetch(array $params = []): FetchInterface;
 
