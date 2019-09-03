@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
+use FastOrm\Command\Command;
+use FastOrm\Command\CommandInterface;
 use FastOrm\ConnectionInterface;
-use FastOrm\Driver\Command;
 use FastOrm\SQL\Clause\AbstractSearchConditionClause;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\FromClause;

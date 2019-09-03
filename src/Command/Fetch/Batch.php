@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Fetch;
+namespace FastOrm\Command\Fetch;
 
 
 class Batch implements BatchInterface

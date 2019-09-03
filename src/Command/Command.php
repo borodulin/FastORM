@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver;
+namespace FastOrm\Command;
 
 use Exception;
-use FastOrm\Fetch\Fetch;
-use FastOrm\Fetch\FetchInterface;
-use FastOrm\SQL\CommandInterface;
+use FastOrm\Command\Fetch\Fetch;
+use FastOrm\Command\Fetch\FetchInterface;
 use PDO;
 use PDOException;
 use PDOStatement;

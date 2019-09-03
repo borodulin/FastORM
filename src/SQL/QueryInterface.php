@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
+use FastOrm\Command\CommandInterface;
 use FastOrm\ConnectionInterface;
 use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\OffsetClauseInterface;

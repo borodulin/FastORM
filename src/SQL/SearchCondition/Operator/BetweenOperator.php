@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\SQL\ParamsBinderAwareInterface;
-use FastOrm\SQL\ParamsBinderAwareTrait;
+use FastOrm\Command\ParamsBinderAwareInterface;
+use FastOrm\Command\ParamsBinderAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 
 class BetweenOperator implements OperatorInterface, ExpressionBuilderInterface, ParamsBinderAwareInterface

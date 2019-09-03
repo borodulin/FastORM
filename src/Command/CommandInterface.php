@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL;
+namespace FastOrm\Command;
 
-use FastOrm\Fetch\FetchInterface;
+
+use FastOrm\Command\Fetch\FetchInterface;
 
 interface CommandInterface extends ParamsBinderInterface
 {

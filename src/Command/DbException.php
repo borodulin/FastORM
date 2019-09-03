@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver;
+namespace FastOrm\Command;
 
 use FastOrm\Exception;
 

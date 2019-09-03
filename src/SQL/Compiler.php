@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
+use FastOrm\Command\ParamsBinderAwareInterface;
+use FastOrm\Command\ParamsBinderInterface;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;

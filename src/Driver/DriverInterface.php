@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\Driver;
 
-use FastOrm\SQL\ParamsBinderInterface;
+use FastOrm\Command\ParamsBinderInterface;
 use FastOrm\SQL\CompilerInterface;
 use PDO;
 
