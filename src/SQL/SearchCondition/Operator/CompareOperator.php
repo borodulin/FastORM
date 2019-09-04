@@ -11,8 +11,11 @@ use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class CompareOperator implements OperatorInterface, ParamsBinderAwareInterface,
-    ExpressionBuilderInterface, CompilerAwareInterface
+class CompareOperator implements
+    OperatorInterface,
+    ParamsBinderAwareInterface,
+    ExpressionBuilderInterface,
+    CompilerAwareInterface
 {
     use ParamsBinderAwareTrait, CompilerAwareTrait;
 
