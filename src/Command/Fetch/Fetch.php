@@ -39,12 +39,13 @@ class Fetch implements FetchInterface
     }
 
     /**
+     * @param int $columnNumber
      * @return array
      */
-    public function column(): array
+    public function column(int $columnNumber = 0): array
     {
         if ($this->pdoStatement->execute()) {
-            $result = $this->pdoStatement->fetchAll(PDO::FETCH_COLUMN);
+            $result = $this->pdoStatement->fetchAll(PDO::FETCH_COLUMN, $columnNumber);
             if (is_array($result)) {
                 return $result;
             }
@@ -55,12 +56,13 @@ class Fetch implements FetchInterface
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
+     * @param int $columnNumber
      * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      */
-    public function scalar()
+    public function scalar(int $columnNumber = 0)
     {
-        $result = $this->pdoStatement->fetchColumn();
+        $result = $this->pdoStatement->fetchColumn($columnNumber);
         if (is_resource($result) && get_resource_type($result) === 'stream') {
             return stream_get_contents($result);
         }
@@ -89,7 +91,14 @@ class Fetch implements FetchInterface
     public function all(): array
     {
         if ($this->pdoStatement->execute()) {
-            $result = $this->pdoStatement->fetchAll();
+            if ($this->indexBy) {
+                $result = [];
+                while ($row = $this->pdoStatement->fetch()) {
+                    $result[$row[$this->indexBy]] = $row;
+                }
+            } else {
+                $result = $this->pdoStatement->fetchAll();
+            }
             if (is_array($result)) {
                 return $result;
             }

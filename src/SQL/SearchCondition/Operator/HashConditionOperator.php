@@ -40,9 +40,8 @@ class HashConditionOperator implements
             if ($value instanceof ExpressionInterface || is_array($value)) {
                 $parts[] = $this->compiler->compile(new InOperator($column, $value));
             } else {
-//                if (strpos($column, '(') === false) {
-//                    $column = $this->queryBuilder->db->quoteColumnName($column);
-//                }
+                $column = $this->compiler->quoteColumnName($column);
+
                 if ($value === null) {
                     $parts[] = "$column IS NULL";
                 } else {

@@ -40,16 +40,19 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
         foreach ($aliases as $alias) {
             $from = $alias->getExpression();
             $aliasName = $alias->getAlias() ?? 's' . ++$counter;
+            $aliasName = $this->compiler->quoteTableName($aliasName);
             if ($from instanceof ExpressionInterface) {
                 $sql = $this->compiler->compile($from);
                 $result[] = "($sql) " . $aliasName;
             } elseif (is_string($from)) {
+                $from = $this->compiler->quoteTableName($from);
                 $result[] = "$from " . $aliasName;
             } elseif (strpos($alias, '(') === false) {
                 if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $from, $matches)) { // with alias
-                    $result[] = $matches[1] . ' ' . $matches[2];
+                    $result[] = $this->compiler->quoteTableName($matches[1])
+                        . ' ' . $this->compiler->quoteTableName($matches[2]);
                 } else {
-                    $result[] = $from;
+                    $result[] = $this->compiler->quoteTableName($from);
                 }
             }
         }

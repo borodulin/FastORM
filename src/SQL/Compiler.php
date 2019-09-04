@@ -88,11 +88,11 @@ class Compiler implements CompilerInterface
 
     public function quoteColumnName(string $name): string
     {
-        return '';
+        return $name;
     }
 
     public function quoteTableName(string $name): string
     {
-        return '';
+        return $name;
     }
 }

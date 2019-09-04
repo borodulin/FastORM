@@ -36,6 +36,12 @@ class LikeOperator implements
         }
         $value = "%$value%";
         $this->paramsBinder->bindValue($value, $paramName);
-        return "$this->column LIKE :$paramName";
+        $operator = $this->getOperator();
+        return "$this->column $operator :$paramName";
+    }
+
+    protected function getOperator()
+    {
+        return 'LIKE';
     }
 }

@@ -34,6 +34,7 @@ class EqualOperator implements
             $this->value = $this->compiler->compile($this->value);
         }
         $this->paramsBinder->bindValue($this->value, $paramName);
-        return "$this->column = :$paramName";
+        $column = $this->compiler->quoteColumnName($this->column);
+        return "$column = :$paramName";
     }
 }
