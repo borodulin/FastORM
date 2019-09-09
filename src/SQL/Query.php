@@ -7,21 +7,17 @@ namespace FastOrm\SQL;
 use FastOrm\Command\Command;
 use FastOrm\Command\CommandInterface;
 use FastOrm\ConnectionInterface;
-use FastOrm\SQL\Clause\AbstractSearchConditionClause;
-use FastOrm\SQL\Clause\AliasClauseInterface;
 use FastOrm\SQL\Clause\FromClause;
+use FastOrm\SQL\Clause\FromClauseInterface;
 use FastOrm\SQL\Clause\GroupByClause;
 use FastOrm\SQL\Clause\HavingClause;
-use FastOrm\SQL\Clause\JoinClause;
 use FastOrm\SQL\Clause\LimitClause;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
-use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\Clause\OrderByClause;
 use FastOrm\SQL\Clause\SelectClause;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\UnionClause;
 use FastOrm\SQL\Clause\WhereClause;
-use FastOrm\SQL\SearchCondition\CompoundInterface;
 use FastOrm\SQL\SearchCondition\SearchConditionInterface;
 
 /**
@@ -29,9 +25,6 @@ use FastOrm\SQL\SearchCondition\SearchConditionInterface;
  * @package FastOrm\SQL
  */
 class Query implements
-    CompoundInterface,
-    SelectClauseInterface,
-    AliasClauseInterface,
     OffsetClauseInterface
 {
     /**
@@ -66,20 +59,11 @@ class Query implements
      * @var UnionClause
      */
     protected $unionClause;
-    /**
-     * @var JoinClause
-     */
-    protected $joinClause;
-    /**
-     * @var AbstractSearchConditionClause
-     */
-    private $activeSearchConditionClause;
 
     public function __construct()
     {
         $this->selectClause = new SelectClause($this);
         $this->fromClause = new FromClause($this);
-        $this->joinClause = new JoinClause($this);
         $this->whereClause = new WhereClause($this);
         $this->groupByClause = new GroupByClause($this);
         $this->havingClause = new HavingClause($this);
@@ -91,7 +75,7 @@ class Query implements
     public function select($columns): SelectClauseInterface
     {
         $this->selectClause->addColumns($columns);
-        return $this;
+        return $this->selectClause;
     }
 
     public function distinct(): QueryInterface
@@ -100,16 +84,9 @@ class Query implements
         return $this;
     }
 
-    public function alias($alias): QueryInterface
+    public function from($from): FromClauseInterface
     {
-        $this->fromClause->setAlias($alias);
-        return $this;
-    }
-
-    public function from($from): AliasClauseInterface
-    {
-        $this->fromClause->addFrom($from);
-        return $this;
+        return $this->fromClause->addFrom($from);
     }
 
     public function groupBy($columns): QueryInterface
@@ -120,7 +97,6 @@ class Query implements
 
     public function having(): SearchConditionInterface
     {
-        $this->activeSearchConditionClause = $this->havingClause;
         return $this->havingClause->getSearchCondition();
     }
 
@@ -156,34 +132,7 @@ class Query implements
 
     public function where(): SearchConditionInterface
     {
-        $this->activeSearchConditionClause = $this->whereClause;
         return $this->whereClause->getSearchCondition();
-    }
-
-
-    public function join($join, string $joinType = 'inner join'): OnClauseInterface
-    {
-        return $this->joinClause->addJoin($join, $joinType);
-    }
-
-    public function innerJoin($join): OnClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'inner join');
-    }
-
-    public function leftJoin($join): OnClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'left join');
-    }
-
-    public function rightJoin($join): OnClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'right join');
-    }
-
-    public function fullJoin($join): OnClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'full join');
     }
 
     public function prepare(ConnectionInterface $connection): CommandInterface
@@ -193,15 +142,5 @@ class Query implements
         $sql = $compiler->compile($this);
         $command->setSql($sql);
         return $command;
-    }
-
-    public function and(): SearchConditionInterface
-    {
-        return $this->activeSearchConditionClause->and();
-    }
-
-    public function or(): SearchConditionInterface
-    {
-        return $this->activeSearchConditionClause->or();
     }
 }

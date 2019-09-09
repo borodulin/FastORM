@@ -123,6 +123,9 @@ class Command implements CommandInterface, LoggerAwareInterface
     public function bindParams(array $params): CommandInterface
     {
         foreach ($params as $name => $value) {
+            if (preg_match('/^[:@](.+)$/', $name, $matches)) {
+                $name = $matches[1];
+            }
             if ($value instanceof PdoValue) {
                 $this->params[$name] = $value;
             } else {

@@ -37,7 +37,14 @@ class HashConditionOperator implements
         $hash = $this->hash;
         $parts = [];
         foreach ($hash as $column => $value) {
-            if ($value instanceof ExpressionInterface || is_array($value)) {
+            if (is_int($column)) {
+                if ($value instanceof ExpressionInterface) {
+                    $parts[] = $this->compiler->compile(new ExpressionOperator($value));
+                }
+//                elseif (is_array($value)) {
+//
+//                }
+            } elseif ($value instanceof ExpressionInterface || is_array($value)) {
                 $parts[] = $this->compiler->compile(new InOperator($column, $value));
             } else {
                 $column = $this->compiler->quoteColumnName($column);

@@ -4,37 +4,35 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition;
 
-use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\QueryDecoratorTrait;
+use FastOrm\SQL\QueryInterface;
 use SplStack;
 
-class Compound implements ExpressionInterface
+class Compound implements CompoundInterface
 {
+    use QueryDecoratorTrait;
     /**
      * @var SplStack
      */
     private $compounds;
-    /**
-     * @var CompoundInterface
-     */
-    private $compound;
 
-    public function __construct(CompoundInterface $compound)
+    public function __construct(QueryInterface $query)
     {
         $this->compounds = new SplStack();
-        $this->compounds->push(new CompoundItem(new SearchCondition($compound), 'AND'));
-        $this->compound = $compound;
+        $this->compounds->push(new CompoundItem(new SearchCondition($this), 'AND'));
+        $this->query = $query;
     }
 
     public function and(): SearchConditionInterface
     {
-        $searchCondition = new SearchCondition($this->compound);
+        $searchCondition = new SearchCondition($this);
         $this->compounds->push(new CompoundItem($searchCondition, 'AND'));
         return $searchCondition;
     }
 
     public function or(): SearchConditionInterface
     {
-        $searchCondition = new SearchCondition($this->compound);
+        $searchCondition = new SearchCondition($this);
         $this->compounds->push(new CompoundItem($searchCondition, 'OR'));
         return $searchCondition;
     }

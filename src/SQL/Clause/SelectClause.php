@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace FastOrm\SQL\Clause;
 
 use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\QueryDecoratorTrait;
+use FastOrm\SQL\QueryInterface;
 
-class SelectClause extends AbstractClause
+class SelectClause implements SelectClauseInterface
 {
+    use QueryDecoratorTrait;
     /**
      * @var bool
      */
@@ -89,5 +92,11 @@ class SelectClause extends AbstractClause
     public function getColumns(): array
     {
         return $this->columns;
+    }
+
+    public function distinct(): QueryInterface
+    {
+        $this->distinct = true;
+        return $this->query;
     }
 }

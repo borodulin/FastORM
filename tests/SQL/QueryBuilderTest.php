@@ -1,46 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\Connection;
 use FastOrm\NotSupportedException;
 use FastOrm\SQL\Query;
 use FastOrm\SQL\SearchCondition\SearchConditionInterface;
+use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
 class QueryBuilderTest extends TestCase
 {
-    /**
-     * @throws NotSupportedException
-     */
-    private function createConnection()
-    {
-        $db = __DIR__ . '/../db/chinook.db';
-        return new Connection('sqlite:' . $db);
-    }
+    use TestConnectionTrait;
 
     /**
      * @throws NotSupportedException
      */
-    public function testQuery()
+    public function testParamBinding()
     {
         $connection = $this->createConnection();
         $query = new Query();
         /** @var SearchConditionInterface  $expression */
         $command = $query
-            ->select(['AlbumId', 'Title'])->distinct()
             ->from('albums')->alias('t1')
             ->where()
-//            ->expression('1=:p1', [':p1' => 1])
-            ->between('AlbumId', ':p1', ':p2')
-            ->orderBy('AlbumId')
+            ->expression('1=:p1', [':p1' => 1])
+            ->and()->between('AlbumId', ':p1', ':p2')
             ->prepare($connection);
         $fetch = $command->fetch();
-        $all = $fetch->column();
-        $this->assertSame([], $all);
-        $fetch = $command->fetch(['p1' => 1, 'p2' => 1]);
-        $all = $fetch->column();
-        $this->assertSame(['1'], $all);
+        $this->assertCount(0, $fetch->all());
+        $fetch = $command->fetch(['p2' => 10]);
+        $this->assertCount(10, $fetch->all());
+        $fetch = $command->fetch(['p1' => 2]);
+        $this->assertCount(0, $fetch->all());
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testOr()
+    {
+        $connection = $this->createConnection();
+        $query = new Query();
+        /** @var SearchConditionInterface  $expression */
+        $command = $query
+            ->from('albums')->alias('t1')
+            ->where()->not()->equal('AlbumId', 1)
+            ->and()->equal('AlbumId', 1)
+            ->prepare($connection);
+        $fetch = $command->fetch();
+        $this->assertCount(0, $fetch->all());
     }
 
     /**
@@ -52,15 +62,43 @@ class QueryBuilderTest extends TestCase
         $query = new Query();
         /** @var SearchConditionInterface  $expression */
         $command = $query
-            ->select(['AlbumId', 'Title'])->distinct()
             ->from('albums')->alias('t1')
-            ->where()->hashCondition(['AlbumId' => [1,2]])
+            ->where()->hashCondition(['AlbumId' => [1,':tt']])
             ->prepare($connection);
         $fetch = $command->fetch();
-        $all = $fetch->all();
-        $this->assertCount(2, $all);
-        $fetch = $command->fetch(['p1' => 1, 'p2' => 1]);
-        $all = $fetch->all();
-        $this->assertCount(1, $all);
+        $this->assertCount(1, $fetch->all());
+        $fetch = $command->fetch(['tt' => 2]);
+        $this->assertCount(2, $fetch->all());
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testJoin()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('tracks')->alias('t')
+            ->innerJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
+            ->innerJoin('media_types')->alias('mt')->on('mt.MediaTypeId=t.MediaTypeId')
+            ->limit(10)
+            ->prepare($connection);
+        $all = $command->fetch()->all();
+        $this->assertCount(10, $all);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testSelect()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->select(['TrackId', 'Name'])->select('*')
+            ->from('tracks')->alias('t')
+            ->limit(10)
+            ->prepare($connection);
+        $all = $command->fetch()->all();
+        $this->assertCount(10, $all);
     }
 }

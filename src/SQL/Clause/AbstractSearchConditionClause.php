@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
+use FastOrm\SQL\QueryInterface;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\CompoundInterface;
 use FastOrm\SQL\SearchCondition\SearchConditionInterface;
@@ -13,11 +14,11 @@ use FastOrm\SQL\SearchCondition\SearchConditionInterface;
  * @package FastOrm\SQL\Clause
  * @property CompoundInterface $query
  */
-class AbstractSearchConditionClause extends AbstractClause
+class AbstractSearchConditionClause extends AbstractClause implements CompoundInterface
 {
     private $compound;
 
-    public function __construct(CompoundInterface $query)
+    public function __construct(QueryInterface $query)
     {
         parent::__construct($query);
         $this->compound = new Compound($query);

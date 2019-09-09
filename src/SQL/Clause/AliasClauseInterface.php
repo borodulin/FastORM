@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\QueryInterface;
-
-interface AliasClauseInterface extends QueryInterface
+interface AliasClauseInterface
 {
-    public function alias($alias): QueryInterface;
+    public function alias($alias): FromClauseInterface;
 }

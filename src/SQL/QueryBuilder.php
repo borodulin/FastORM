@@ -28,7 +28,6 @@ class QueryBuilder extends Query implements ExpressionBuilderInterface, Compiler
         return implode(' ', array_filter([
             $this->compiler->compile($this->query->selectClause),
             $this->compiler->compile($this->query->fromClause),
-            $this->compiler->compile($this->query->joinClause),
             $this->compiler->compile($this->query->whereClause),
             $this->compiler->compile($this->query->groupByClause),
             $this->compiler->compile($this->query->havingClause),

@@ -56,6 +56,10 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
                 }
             }
         }
-        return 'FROM ' . implode(', ', $result);
+        $from = 'FROM ' . implode(', ', $result);
+        if ($join = $this->compiler->compile($this->clause->getJoinClause())) {
+            $from .= ' ' . $join;
+        }
+        return $from;
     }
 }

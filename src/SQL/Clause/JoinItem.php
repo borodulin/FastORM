@@ -4,29 +4,28 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\QueryInterface;
-
-class JoinItem implements OnClauseInterface
+class JoinItem implements JoinAliasClauseInterface
 {
     private $join;
     private $joinType;
     private $on;
+    private $alias;
     /**
-     * @var QueryInterface
+     * @var FromClauseInterface
      */
-    private $query;
+    private $fromClause;
 
-    public function __construct(QueryInterface $query, $join, $joinType)
+    public function __construct(FromClauseInterface $fromClause, $join, $joinType)
     {
         $this->join = $join;
         $this->joinType = $joinType;
-        $this->query = $query;
+        $this->fromClause = $fromClause;
     }
 
-    public function on(string $condition): QueryInterface
+    public function on(string $condition): FromClauseInterface
     {
         $this->on = $condition;
-        return $this->query;
+        return $this->fromClause;
     }
 
     /**
@@ -51,5 +50,19 @@ class JoinItem implements OnClauseInterface
     public function getOn(): string
     {
         return $this->on;
+    }
+
+    public function alias($alias): OnClauseInterface
+    {
+        $this->alias = $alias;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAlias()
+    {
+        return $this->alias;
     }
 }

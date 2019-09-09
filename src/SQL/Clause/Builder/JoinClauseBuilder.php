@@ -10,6 +10,7 @@ use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\InvalidSQLException;
 
 class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
@@ -25,6 +26,10 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
         $this->clause = $clause;
     }
 
+    /**
+     * @return string
+     * @throws InvalidSQLException
+     */
     public function build(): string
     {
         $joins = $this->clause->getJoins();
@@ -37,13 +42,28 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
         foreach ($joins as $joinItem) {
             $joinType = $joinItem->getJoinType();
             $join = $joinItem->getJoin();
-            if ($join instanceof ExpressionInterface) {
-                $join = $this->compiler->compile($join);
+            $alias = $joinItem->getAlias();
+            if (is_string($join)) {
+                if (strpos($join, '(') === false) {
+                    !$alias && $alias = $join;
+                    $join = $this->compiler->quoteTableName($join);
+                } elseif (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $join, $matches)) {
+                    $join = $this->compiler->quoteTableName($matches[1]);
+                    !$alias && $alias = $matches[2];
+                }
+            } elseif ($join instanceof ExpressionInterface) {
+                if (!$alias) {
+                    throw new InvalidSQLException('The Alias for JOIN SQL expression is required.');
+                }
+                $join = '(' . $this->compiler->compile($join) . ')';
+            } else {
+                throw new InvalidSQLException('Join SQL clause is invalid.');
             }
             $on = $joinItem->getOn();
-            $result[] = "$joinType $join ON $on";
+            $alias = $this->compiler->quoteTableName($alias);
+            $result[] = "$joinType $join $alias ON $on";
         }
 
-        return implode(' ', $joins);
+        return implode(' ', $result);
     }
 }
