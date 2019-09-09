@@ -46,11 +46,11 @@ class QueryBuilderTest extends TestCase
         /** @var SearchConditionInterface  $expression */
         $command = $query
             ->from('albums')->alias('t1')
-            ->where()->not()->equal('AlbumId', 1)
-            ->and()->equal('AlbumId', 1)
+            ->where()->equal('AlbumId', 1)
+            ->or()->equal('AlbumId', 2)
             ->prepare($connection);
         $fetch = $command->fetch();
-        $this->assertCount(0, $fetch->all());
+        $this->assertCount(2, $fetch->all());
     }
 
     /**

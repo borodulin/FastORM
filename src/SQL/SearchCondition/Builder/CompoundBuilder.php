@@ -31,13 +31,12 @@ class CompoundBuilder implements ExpressionBuilderInterface, CompilerAwareInterf
         foreach ($this->compound->getCompounds() as $compoundItem) {
             $searchCondition = $compoundItem->getSearchCondition();
             if ($text = $this->compiler->compile($searchCondition)) {
-                $conditions[$compoundItem->getCompound()][] = $text;
+                if ($compound = $compoundItem->getCompound()) {
+                    $conditions[] = $compound;
+                }
+                $conditions[] = $text;
             }
         }
-        $result = [];
-        foreach ($conditions as $compound => $pieces) {
-            $result[] = implode(" $compound ", $pieces);
-        }
-        return implode(' AND ', $result);
+        return implode(' ', $conditions);
     }
 }

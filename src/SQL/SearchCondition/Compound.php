@@ -19,21 +19,21 @@ class Compound implements CompoundInterface
     public function __construct(QueryInterface $query)
     {
         $this->compounds = new SplStack();
-        $this->compounds->push(new CompoundItem(new SearchCondition($this), 'AND'));
+        $this->compounds->add(0, new CompoundItem(new SearchCondition($this), ''));
         $this->query = $query;
     }
 
     public function and(): SearchConditionInterface
     {
         $searchCondition = new SearchCondition($this);
-        $this->compounds->push(new CompoundItem($searchCondition, 'AND'));
+        $this->compounds->add(0, new CompoundItem($searchCondition, 'AND'));
         return $searchCondition;
     }
 
     public function or(): SearchConditionInterface
     {
         $searchCondition = new SearchCondition($this);
-        $this->compounds->push(new CompoundItem($searchCondition, 'OR'));
+        $this->compounds->add(0, new CompoundItem($searchCondition, 'OR'));
         return $searchCondition;
     }
 
