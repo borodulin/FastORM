@@ -141,11 +141,13 @@ class Command implements CommandInterface, LoggerAwareInterface
     {
         if (is_string($value) && (preg_match('/^[@:](.+)$/', $value, $matches))) {
             $paramName = $matches[1];
-            $value = null;
+            if (!isset($this->params[$paramName])) {
+                $this->bindParam($paramName, null);
+            }
         } else {
             $paramName = self::PARAM_PREFIX . ++$this->counter;
+            $this->bindParam($paramName, null);
         }
-        $this->bindParam($paramName, $value);
         return $this;
     }
 
