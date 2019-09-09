@@ -146,7 +146,7 @@ class Command implements CommandInterface, LoggerAwareInterface
             }
         } else {
             $paramName = self::PARAM_PREFIX . ++$this->counter;
-            $this->bindParam($paramName, null);
+            $this->bindParam($paramName, $value);
         }
         return $this;
     }
