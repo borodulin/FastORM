@@ -4,53 +4,53 @@ declare(strict_types=1);
 
 namespace FastOrm\Command\Fetch;
 
+use FastOrm\Command\Command;
+use FastOrm\Command\DbException;
 use PDO;
-use PDOStatement;
 
 class Fetch implements FetchInterface
 {
     /**
-     * @var PDOStatement
+     * @var Command
      */
-    private $pdoStatement;
+    private $command;
 
     private $fetchStyle = PDO::FETCH_ASSOC;
 
     /**
      * Fetch constructor.
-     * @param PDOStatement $pdoStatement
+     * @param Command $command
      */
-    public function __construct(PDOStatement $pdoStatement)
+    public function __construct(Command $command)
     {
-        $this->pdoStatement = $pdoStatement;
+        $this->command = $command;
     }
 
     private $indexBy;
 
     /**
      * @return object
+     * @throws DbException
      */
     public function one(): object
     {
-        if ($this->pdoStatement->execute()) {
-            $result = $this->pdoStatement->fetch($this->fetchStyle);
-            $this->pdoStatement->closeCursor();
-            return $result;
-        }
-        return null;
+        $statement = $this->command->executeStatement();
+        $result = $statement->fetch($this->fetchStyle);
+        $statement->closeCursor();
+        return $result;
     }
 
     /**
      * @param int $columnNumber
      * @return array
+     * @throws DbException
      */
     public function column(int $columnNumber = 0): array
     {
-        if ($this->pdoStatement->execute()) {
-            $result = $this->pdoStatement->fetchAll(PDO::FETCH_COLUMN, $columnNumber);
-            if (is_array($result)) {
-                return $result;
-            }
+        $statement = $this->command->executeStatement();
+        $result = $statement->fetchAll(PDO::FETCH_COLUMN, $columnNumber);
+        if (is_array($result)) {
+            return $result;
         }
         return [];
     }
@@ -61,19 +61,22 @@ class Fetch implements FetchInterface
      * @param int $columnNumber
      * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
+     * @throws DbException
      */
     public function scalar(int $columnNumber = 0)
     {
-        $result = $this->pdoStatement->fetchColumn($columnNumber);
+        $statement = $this->command->executeStatement();
+        $result = $statement->fetchColumn($columnNumber);
         if (is_resource($result) && get_resource_type($result) === 'stream') {
             return stream_get_contents($result);
         }
-        $this->pdoStatement->closeCursor();
+        $statement->closeCursor();
         return $result;
     }
 
     /**
      * @return bool
+     * @throws DbException
      */
     public function exists(): bool
     {
@@ -89,32 +92,29 @@ class Fetch implements FetchInterface
 
     /**
      * @return array
+     * @throws DbException
      */
     public function all(): array
     {
-        if ($this->pdoStatement->execute()) {
-            if ($this->indexBy) {
-                $result = [];
-                while ($row = $this->pdoStatement->fetch($this->fetchStyle)) {
-                    $result[$row[$this->indexBy]] = $row;
-                }
-            } else {
-                $result = $this->pdoStatement->fetchAll($this->fetchStyle);
+        $statement = $this->command->executeStatement();
+        if ($this->indexBy) {
+            $result = [];
+            while ($row = $statement->fetch($this->fetchStyle)) {
+                $result[$row[$this->indexBy]] = $row;
             }
-            if (is_array($result)) {
-                return $result;
-            }
+        } else {
+            $result = $statement->fetchAll($this->fetchStyle);
         }
-        return [];
-    }
-
-    public function batch(int $batchSize = 100): BatchInterface
-    {
-        return new Batch();
+        return is_array($result) ? $result : [];
     }
 
     public function cancel()
     {
-        $this->pdoStatement = null;
+        $this->command = null;
+    }
+
+    public function cursor(): CursorInterface
+    {
+        return new Cursor($this->command);
     }
 }

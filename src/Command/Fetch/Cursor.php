@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\Command\Fetch;
 
-
+use FastOrm\Command\Command;
+use FastOrm\Command\DbException;
+use FastOrm\NotSupportedException;
+use Iterator;
 use PDO;
 use PDOStatement;
 
@@ -12,18 +15,41 @@ class Cursor implements CursorInterface
 {
 
     /**
+     * @var Command
+     */
+    private $command;
+
+    private $row;
+    private $key = -1;
+
+    private $fetchStyle = PDO::FETCH_ASSOC;
+    /**
+     * @var bool
+     */
+    private $scrollable = false;
+    /**
      * @var PDOStatement
      */
     private $statement;
 
-    private $row;
-    private $key = 0;
-
-    private $fetchStyle = PDO::FETCH_ASSOC;
-
-    public function __construct(PDOStatement $statement)
+    public function __construct(Command $command)
     {
-        $this->statement = $statement;
+        $this->command = $command;
+    }
+
+    /**
+     * @return PDOStatement
+     * @throws DbException
+     */
+    private function getStatement()
+    {
+        if ($this->scrollable) {
+            return $this->command->executeStatement([
+                PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL,
+            ]);
+        } else {
+            return $this->command->executeStatement();
+        }
     }
 
     /**
@@ -45,15 +71,8 @@ class Cursor implements CursorInterface
      */
     public function next()
     {
+        $this->row = $this->statement->fetch($this->fetchStyle);
         $this->key++;
-        $this->row = $this->statement->fetch(
-            $this->fetchStyle,
-            PDO::FETCH_ORI_ABS,
-            $this->key
-        );
-        if (false === $this->row) {
-            return null;
-        }
     }
 
     /**
@@ -83,10 +102,24 @@ class Cursor implements CursorInterface
      * Rewind the Iterator to the first element
      * @link https://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
+     * @throws DbException
+     * @throws NotSupportedException
      * @since 5.0.0
      */
     public function rewind()
     {
-        $this->key = 0;
+        if ($this->key < 0) {
+            $this->statement = $this->getStatement();
+            $this->row = $this->statement->fetch();
+            $this->key = 0;
+        } else {
+            throw new NotSupportedException('Cursor cannot rewind.');
+        }
+    }
+
+    public function scrollable(): Iterator
+    {
+        $this->scrollable = true;
+        return $this;
     }
 }

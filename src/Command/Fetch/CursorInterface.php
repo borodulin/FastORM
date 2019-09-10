@@ -8,5 +8,5 @@ use Iterator;
 
 interface CursorInterface extends Iterator
 {
-
+    public function scrollable(): Iterator;
 }

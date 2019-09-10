@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace FastOrm\Command;
 
 use Exception;
-use FastOrm\Command\Fetch\Cursor;
-use FastOrm\Command\Fetch\CursorInterface;
 use FastOrm\Command\Fetch\Fetch;
 use FastOrm\Command\Fetch\FetchInterface;
 use PDO;
@@ -43,7 +41,7 @@ class Command implements CommandInterface, LoggerAwareInterface
      * @return PDOStatement
      * @throws DbException
      */
-    public function getPdoStatement(array $options = []): PDOStatement
+    public function executeStatement(array $options = []): PDOStatement
     {
         try {
             $pdoStatement = $this->pdo->prepare($this->sql, $options);
@@ -53,6 +51,9 @@ class Command implements CommandInterface, LoggerAwareInterface
             /** @var PdoValue $value */
             foreach ($this->params as $name => $value) {
                 $pdoStatement->bindValue($name, $value->getValue(), $value->getType());
+            }
+            if (!$pdoStatement->execute()) {
+                throw new DbException("Failed to execute SQL: $this->sql");
             }
             $this->logger && $this->logger->debug('Statement prepared');
         } catch (Exception $e) {
@@ -77,25 +78,18 @@ class Command implements CommandInterface, LoggerAwareInterface
 
     /**
      * @param array $params
-     * @return bool
+     * @return int
      * @throws DbException
      */
-    public function execute(array $params = []): bool
+    public function execute(array $params = []): int
     {
         if ($this->sql == '') {
-            return false;
+            return 0;
         }
         $this->bindParams($params);
 
-        $pdoStatement = $this->getPdoStatement();
-
-        try {
-            return $pdoStatement->execute();
-        } catch (Exception $e) {
-            // TODO log & handle
-//            $e = $this->schema->convertException($e, $rawSql);
-        }
-        return false;
+        $statement = $this->executeStatement();
+        return $statement->rowCount();
     }
 
     protected function getPdoType($data)
@@ -171,22 +165,10 @@ class Command implements CommandInterface, LoggerAwareInterface
     /**
      * @param array $params
      * @return FetchInterface
-     * @throws DbException
      */
     public function fetch(array $params = []): FetchInterface
     {
         $this->bindParams($params);
-        return new Fetch($this->getPdoStatement());
-    }
-
-    /**
-     * @param array $params
-     * @return CursorInterface
-     * @throws DbException
-     */
-    public function cursor(array $params = []): CursorInterface
-    {
-        $this->bindParams($params);
-        return new Cursor($this->getPdoStatement([PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]));
+        return new Fetch($this);
     }
 }

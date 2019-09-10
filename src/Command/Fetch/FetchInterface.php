@@ -23,5 +23,5 @@ interface FetchInterface extends FetchIndexedInterface
 
     public function cancel();
 
-    public function batch(int $batchSize = 100): BatchInterface;
+    public function cursor(): CursorInterface;
 }
