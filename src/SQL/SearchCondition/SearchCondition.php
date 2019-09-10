@@ -30,11 +30,11 @@ class SearchCondition implements SearchConditionInterface
      */
     private $operator;
     /**
-     * @var CompoundInterface
+     * @var Compound
      */
     private $compound;
 
-    public function __construct(CompoundInterface $compound)
+    public function __construct(Compound $compound)
     {
         $this->compound = $compound;
     }
@@ -95,7 +95,7 @@ class SearchCondition implements SearchConditionInterface
         return $this->setOperator(new HashConditionOperator($hash));
     }
 
-    private function setOperator(OperatorInterface $operator): CompoundInterface
+    private function setOperator(OperatorInterface $operator): Compound
     {
         $this->operator = $operator;
         return $this->compound;
@@ -115,5 +115,13 @@ class SearchCondition implements SearchConditionInterface
     public function isNot(): bool
     {
         return $this->not;
+    }
+
+    /**
+     * @return Compound
+     */
+    public function getCompound(): Compound
+    {
+        return $this->compound;
     }
 }

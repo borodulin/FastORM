@@ -30,8 +30,8 @@ class EqualOperator implements
 
     public function build(): string
     {
-        if ($this->value instanceof ExpressionInterface) {
-            $this->value = $this->compiler->compile($this->value);
+        if ($this->value instanceof ExpressionInterface || is_array($this->value)) {
+            return $this->compiler->compile(new InOperator($this->column, $this->value));
         }
         $this->paramsBinder->bindValue($this->value, $paramName);
         $column = $this->compiler->quoteColumnName($this->column);

@@ -12,7 +12,6 @@ use FastOrm\SQL\SearchCondition\SearchConditionInterface;
 /**
  * Class AbstractSearchConditionClause
  * @package FastOrm\SQL\Clause
- * @property CompoundInterface $query
  */
 class AbstractSearchConditionClause extends AbstractClause implements CompoundInterface
 {

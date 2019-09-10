@@ -37,6 +37,6 @@ class CompoundBuilder implements ExpressionBuilderInterface, CompilerAwareInterf
                 $conditions[] = $text;
             }
         }
-        return implode(' ', $conditions);
+        return $conditions ? ' (' . implode(' ', $conditions) . ') ' : '';
     }
 }

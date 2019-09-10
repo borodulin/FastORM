@@ -39,4 +39,20 @@ class ExpressionOperator implements
         }
         return $this->expression;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getExpression()
+    {
+        return $this->expression;
+    }
+
+    /**
+     * @param mixed $expression
+     */
+    public function setExpression($expression): void
+    {
+        $this->expression = $expression;
+    }
 }
