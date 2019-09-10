@@ -14,6 +14,8 @@ class Fetch implements FetchInterface
      */
     private $pdoStatement;
 
+    private $fetchStyle = PDO::FETCH_ASSOC;
+
     /**
      * Fetch constructor.
      * @param PDOStatement $pdoStatement
@@ -31,7 +33,7 @@ class Fetch implements FetchInterface
     public function one(): object
     {
         if ($this->pdoStatement->execute()) {
-            $result = $this->pdoStatement->fetch();
+            $result = $this->pdoStatement->fetch($this->fetchStyle);
             $this->pdoStatement->closeCursor();
             return $result;
         }
@@ -93,11 +95,11 @@ class Fetch implements FetchInterface
         if ($this->pdoStatement->execute()) {
             if ($this->indexBy) {
                 $result = [];
-                while ($row = $this->pdoStatement->fetch()) {
+                while ($row = $this->pdoStatement->fetch($this->fetchStyle)) {
                     $result[$row[$this->indexBy]] = $row;
                 }
             } else {
-                $result = $this->pdoStatement->fetchAll();
+                $result = $this->pdoStatement->fetchAll($this->fetchStyle);
             }
             if (is_array($result)) {
                 return $result;

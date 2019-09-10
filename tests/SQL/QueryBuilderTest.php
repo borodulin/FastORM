@@ -53,7 +53,8 @@ class QueryBuilderTest extends TestCase
             })
             ->prepare($connection);
         $fetch = $command->fetch();
-        $this->assertCount(3, $fetch->all());
+        $all = $fetch->all();
+        $this->assertCount(3, $all);
     }
 
     /**

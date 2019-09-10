@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FastOrm\Command;
 
 use Exception;
+use FastOrm\Command\Fetch\Cursor;
+use FastOrm\Command\Fetch\CursorInterface;
 use FastOrm\Command\Fetch\Fetch;
 use FastOrm\Command\Fetch\FetchInterface;
 use PDO;
@@ -37,13 +39,14 @@ class Command implements CommandInterface, LoggerAwareInterface
     }
 
     /**
+     * @param array $options
      * @return PDOStatement
      * @throws DbException
      */
-    public function getPdoStatement(): PDOStatement
+    public function getPdoStatement(array $options = []): PDOStatement
     {
         try {
-            $pdoStatement = $this->pdo->prepare($this->sql);
+            $pdoStatement = $this->pdo->prepare($this->sql, $options);
             if ($pdoStatement === false) {
                 throw new DbException("Failed to prepare SQL: $this->sql", null);
             }
@@ -93,17 +96,6 @@ class Command implements CommandInterface, LoggerAwareInterface
 //            $e = $this->schema->convertException($e, $rawSql);
         }
         return false;
-    }
-
-    /**
-     * @param array $params
-     * @return FetchInterface
-     * @throws DbException
-     */
-    public function fetch(array $params = []): FetchInterface
-    {
-        $this->bindParams($params);
-        return new Fetch($this->getPdoStatement());
     }
 
     protected function getPdoType($data)
@@ -174,5 +166,27 @@ class Command implements CommandInterface, LoggerAwareInterface
     public function setSql(string $sql): void
     {
         $this->sql = $sql;
+    }
+
+    /**
+     * @param array $params
+     * @return FetchInterface
+     * @throws DbException
+     */
+    public function fetch(array $params = []): FetchInterface
+    {
+        $this->bindParams($params);
+        return new Fetch($this->getPdoStatement());
+    }
+
+    /**
+     * @param array $params
+     * @return CursorInterface
+     * @throws DbException
+     */
+    public function cursor(array $params = []): CursorInterface
+    {
+        $this->bindParams($params);
+        return new Cursor($this->getPdoStatement([PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]));
     }
 }

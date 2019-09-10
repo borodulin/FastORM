@@ -44,5 +44,4 @@ class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareIn
     {
         return 'LIKE';
     }
-
 }
