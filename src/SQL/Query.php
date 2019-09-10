@@ -18,7 +18,7 @@ use FastOrm\SQL\Clause\SelectClause;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\UnionClause;
 use FastOrm\SQL\Clause\WhereClause;
-use FastOrm\SQL\SearchCondition\SearchConditionInterface;
+use FastOrm\SQL\SearchCondition\ConditionInterface;
 
 /**
  * Class Query
@@ -95,9 +95,9 @@ class Query implements
         return $this;
     }
 
-    public function having(): SearchConditionInterface
+    public function having(): ConditionInterface
     {
-        return $this->havingClause->getSearchCondition();
+        return $this->havingClause->getCondition();
     }
 
     public function orderBy($columns): QueryInterface
@@ -130,9 +130,9 @@ class Query implements
         return $this;
     }
 
-    public function where(): SearchConditionInterface
+    public function where(): ConditionInterface
     {
-        return $this->whereClause->getSearchCondition();
+        return $this->whereClause->getCondition();
     }
 
     public function prepare(ConnectionInterface $connection): CommandInterface

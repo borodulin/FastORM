@@ -29,7 +29,7 @@ class CompoundBuilder implements ExpressionBuilderInterface, CompilerAwareInterf
         $conditions = [];
         /** @var CompoundItem $compoundItem */
         foreach ($this->compound->getCompounds() as $compoundItem) {
-            $searchCondition = $compoundItem->getSearchCondition();
+            $searchCondition = $compoundItem->getCondition();
             if ($text = $this->compiler->compile($searchCondition)) {
                 if ($compound = $compoundItem->getCompound()) {
                     $conditions[] = $compound;

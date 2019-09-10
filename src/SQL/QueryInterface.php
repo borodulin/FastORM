@@ -9,7 +9,7 @@ use FastOrm\ConnectionInterface;
 use FastOrm\SQL\Clause\FromClauseInterface;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
 use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\SearchCondition\SearchConditionInterface;
+use FastOrm\SQL\SearchCondition\ConditionInterface;
 
 interface QueryInterface extends ExpressionInterface
 {
@@ -19,7 +19,7 @@ interface QueryInterface extends ExpressionInterface
 
     public function groupBy($columns): QueryInterface;
 
-    public function having(): SearchConditionInterface;
+    public function having(): ConditionInterface;
 
     public function limit(int $limit): OffsetClauseInterface;
 
@@ -29,7 +29,7 @@ interface QueryInterface extends ExpressionInterface
 
     public function unionAll(QueryInterface $query): QueryInterface;
 
-    public function where(): SearchConditionInterface;
+    public function where(): ConditionInterface;
 
     public function prepare(ConnectionInterface $connection): CommandInterface;
 }

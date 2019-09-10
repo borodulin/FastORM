@@ -8,6 +8,6 @@ use FastOrm\SQL\QueryInterface;
 
 interface CompoundInterface extends QueryInterface
 {
-    public function and(): SearchConditionInterface;
-    public function or(): SearchConditionInterface;
+    public function and(): ConditionInterface;
+    public function or(): ConditionInterface;
 }

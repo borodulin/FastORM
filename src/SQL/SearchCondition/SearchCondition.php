@@ -18,7 +18,7 @@ use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 use FastOrm\SQL\SearchCondition\Operator\OperatorInterface;
 use FastOrm\SQL\SearchCondition\Operator\OperatorListInterface;
 
-class SearchCondition implements SearchConditionInterface
+class SearchCondition implements ConditionInterface
 {
 
     /**

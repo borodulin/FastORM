@@ -24,7 +24,7 @@ class CompoundItem
     /**
      * @return SearchCondition
      */
-    public function getSearchCondition(): SearchCondition
+    public function getCondition(): SearchCondition
     {
         return $this->searchCondition;
     }

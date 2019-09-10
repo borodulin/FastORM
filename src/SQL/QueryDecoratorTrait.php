@@ -9,7 +9,7 @@ use FastOrm\ConnectionInterface;
 use FastOrm\SQL\Clause\FromClauseInterface;
 use FastOrm\SQL\Clause\OffsetClauseInterface;
 use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\SearchCondition\SearchConditionInterface;
+use FastOrm\SQL\SearchCondition\ConditionInterface;
 
 trait QueryDecoratorTrait
 {
@@ -44,7 +44,7 @@ trait QueryDecoratorTrait
         return $this->query->groupBy($columns);
     }
 
-    public function having(): SearchConditionInterface
+    public function having(): ConditionInterface
     {
         return $this->query->having();
     }
@@ -69,7 +69,7 @@ trait QueryDecoratorTrait
         return $this->query->unionAll($query);
     }
 
-    public function where(): SearchConditionInterface
+    public function where(): ConditionInterface
     {
         return $this->query->where();
     }

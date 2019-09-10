@@ -23,25 +23,25 @@ class Compound implements CompoundInterface
         $this->query = $query;
     }
 
-    public function and(): SearchConditionInterface
+    public function and(): ConditionInterface
     {
         $searchCondition = new SearchCondition($this);
         $this->compounds->add(0, new CompoundItem($searchCondition, 'AND'));
         return $searchCondition;
     }
 
-    public function or(): SearchConditionInterface
+    public function or(): ConditionInterface
     {
         $searchCondition = new SearchCondition($this);
         $this->compounds->add(0, new CompoundItem($searchCondition, 'OR'));
         return $searchCondition;
     }
 
-    public function getSearchCondition(): SearchConditionInterface
+    public function getCondition(): ConditionInterface
     {
         /** @var CompoundItem $compoundItem */
         $compoundItem = $this->compounds->top();
-        return $compoundItem->getSearchCondition();
+        return $compoundItem->getCondition();
     }
 
     /**

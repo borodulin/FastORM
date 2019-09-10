@@ -6,7 +6,7 @@ namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
 use FastOrm\SQL\Query;
-use FastOrm\SQL\SearchCondition\SearchConditionInterface;
+use FastOrm\SQL\SearchCondition\ConditionInterface;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ class QueryBuilderTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = new Query();
-        /** @var SearchConditionInterface  $expression */
+        /** @var ConditionInterface  $expression */
         $command = $query
             ->from('albums')->alias('t1')
             ->where()
@@ -43,13 +43,13 @@ class QueryBuilderTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = new Query();
-        /** @var SearchConditionInterface  $expression */
+        /** @var ConditionInterface  $expression */
         $command = $query
             ->from('albums')->alias('t1')
             ->where()->equal('AlbumId', 1)
-            ->or()->equal('AlbumId', [2,3])
-            ->and()->expression(function (SearchConditionInterface $condition) {
-                return $condition->equal('AlbumId', [1,2])->or()->equal('AlbumId', 3);
+            ->or()->in('AlbumId', [2,3])
+            ->and()->expression(function (ConditionInterface $condition) {
+                return $condition->in('AlbumId', [1,2])->or()->equal('AlbumId', 3);
             })
             ->prepare($connection);
         $fetch = $command->fetch();
@@ -63,7 +63,7 @@ class QueryBuilderTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = new Query();
-        /** @var SearchConditionInterface  $expression */
+        /** @var ConditionInterface  $expression */
         $command = $query
             ->from('albums')->alias('t1')
             ->where()->hashCondition(['AlbumId' => [1,':tt']])
@@ -103,5 +103,22 @@ class QueryBuilderTest extends TestCase
             ->prepare($connection);
         $all = $command->fetch()->all();
         $this->assertCount(10, $all);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testLike()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('tracks')->alias('t')
+            ->where()->like('Name', 'rock')
+            ->limit(5)
+            ->prepare($connection);
+        $all = $command->fetch()->all();
+        foreach ($all as $row) {
+            $this->assertStringContainsStringIgnoringCase('rock', $row['Name']);
+        }
     }
 }

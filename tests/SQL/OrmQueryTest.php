@@ -6,7 +6,7 @@ namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
 use FastOrm\SQL\Query;
-use FastOrm\SQL\SearchCondition\SearchConditionInterface;
+use FastOrm\SQL\SearchCondition\ConditionInterface;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ class OrmQueryTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = new Query();
-        /** @var SearchConditionInterface  $expression */
+        /** @var ConditionInterface  $expression */
         $command = $query
             ->select(['AlbumId', 'Title'])->distinct()
             ->from('albums')->alias('t1')

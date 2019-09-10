@@ -4,21 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderAwareTrait;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
-
-class LikeOperator implements
-    OperatorInterface,
-    ExpressionBuilderInterface,
-    CompilerAwareInterface,
-    ParamsBinderAwareInterface
+class LikeOperator implements OperatorInterface
 {
-    use CompilerAwareTrait, ParamsBinderAwareTrait;
-
     private $column;
     private $value;
 
@@ -28,20 +15,19 @@ class LikeOperator implements
         $this->value = $value;
     }
 
-    public function build(): string
+    /**
+     * @return mixed
+     */
+    public function getValue()
     {
-        $value = $this->value;
-        if ($value instanceof ExpressionInterface) {
-            $value = $this->compiler->compile($this->value);
-        }
-        $value = "%$value%";
-        $this->paramsBinder->bindValue($value, $paramName);
-        $operator = $this->getOperator();
-        return "$this->column $operator :$paramName";
+        return $this->value;
     }
 
-    protected function getOperator()
+    /**
+     * @return mixed
+     */
+    public function getColumn()
     {
-        return 'LIKE';
+        return $this->column;
     }
 }

@@ -41,7 +41,7 @@ class SearchConditionBuilder implements ExpressionBuilderInterface, CompilerAwar
             $expression = $operator->getExpression();
             if (is_callable($expression)) {
                 $compound = new Compound($this->condition->getCompound()->getQuery());
-                $expression = call_user_func($expression, $compound->getSearchCondition());
+                $expression = call_user_func($expression, $compound->getCondition());
                 $operator->setExpression($expression);
             }
         }

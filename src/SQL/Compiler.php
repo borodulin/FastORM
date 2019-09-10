@@ -26,8 +26,10 @@ use FastOrm\SQL\Clause\SelectClause;
 use FastOrm\SQL\Clause\UnionClause;
 use FastOrm\SQL\Clause\WhereClause;
 use FastOrm\SQL\SearchCondition\Builder\CompoundBuilder;
+use FastOrm\SQL\SearchCondition\Builder\LikeOperatorBuilder;
 use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
 use FastOrm\SQL\SearchCondition\Compound;
+use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 use FastOrm\SQL\SearchCondition\SearchCondition;
 
 class Compiler implements CompilerInterface
@@ -45,7 +47,7 @@ class Compiler implements CompilerInterface
 
         Compound::class => CompoundBuilder::class,
         SearchCondition::class => SearchConditionBuilder::class,
-
+        LikeOperator::class => LikeOperatorBuilder::class,
         Query::class => QueryBuilder::class,
     ];
 
