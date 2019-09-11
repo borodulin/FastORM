@@ -82,21 +82,6 @@ class QueryBuilderTest extends TestCase
     /**
      * @throws NotSupportedException
      */
-    public function testSelect()
-    {
-        $connection = $this->createConnection();
-        $command = (new Query())
-            ->select(['TrackId', 'Name'])->select('*')
-            ->from('tracks')->alias('t')
-            ->limit(10)
-            ->prepare($connection);
-        $all = $command->fetch()->all();
-        $this->assertCount(10, $all);
-    }
-
-    /**
-     * @throws NotSupportedException
-     */
     public function testLike()
     {
         $connection = $this->createConnection();
@@ -139,5 +124,25 @@ class QueryBuilderTest extends TestCase
             ->prepare($connection);
         $row = $command->fetch()->one();
         $this->assertEquals(11, $row['TrackId']);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testGroupBy()
+    {
+        $connection = $this->createConnection();
+        $count = (int)(new Query())
+            ->select('count(1)')
+            ->from('genres')
+            ->prepare($connection)
+            ->fetch()->scalar();
+        $command = (new Query())
+            ->select(['GenreId', 'count(1) as cnt'])
+            ->from('tracks')->alias('t')
+            ->groupBy(['GenreId'])
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount($count, $rows);
     }
 }
