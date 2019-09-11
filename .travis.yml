@@ -23,7 +23,6 @@ jobs:
     - stage: Metrics and quality
       env: COVERAGE
       before_script:
-        - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
         - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
       script:
         - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
