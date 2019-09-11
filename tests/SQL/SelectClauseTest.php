@@ -46,8 +46,7 @@ class SelectClauseTest extends TestCase
                 'GenreName' => (new Query())
                     ->select('Name')
                     ->from('genres g')
-                    ->where()->expression('g.GenreId=t.GenreId')
-                    ->limit(1),
+                    ->where()->expression('g.GenreId=t.GenreId'),
             ])->select('*')
             ->from('tracks t')
             ->limit(10)
@@ -55,5 +54,24 @@ class SelectClauseTest extends TestCase
         $row = $command->fetch()->one();
         $this->assertArrayHasKey('GenreName', $row);
         $this->assertArrayHasKey('TrackId', $row);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testUnion()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->select([
+                'TrackId as id',
+                'Name'
+            ])
+            ->from('tracks t')
+            ->limit(10)
+            ->unionAll((new Query())->select(['AlbumId', 'Title'])->from('albums'))
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount(10, $rows);
     }
 }

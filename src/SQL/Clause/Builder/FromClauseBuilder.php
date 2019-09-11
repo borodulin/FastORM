@@ -51,8 +51,7 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
                         $aliasName = $this->compiler->quoteTableName($matches[2]);
                     }
                 }
-                $aliasName = $aliasName ?? $this->compiler->quoteTableName('s' . ++$counter);
-                $result[] = "$from " . $aliasName;
+                $result[] = $aliasName ? "$from $aliasName" : $from;
             }
         }
         $from = 'FROM ' . implode(', ', $result);

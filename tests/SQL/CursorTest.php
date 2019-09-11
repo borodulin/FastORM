@@ -9,6 +9,7 @@ use FastOrm\SQL\Query;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
+
 class CursorTest extends TestCase
 {
     use TestConnectionTrait;

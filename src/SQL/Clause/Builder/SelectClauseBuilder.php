@@ -9,7 +9,6 @@ use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
-use FastOrm\SQL\Query;
 
 class SelectClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
@@ -37,14 +36,12 @@ class SelectClauseBuilder implements ExpressionBuilderInterface, CompilerAwareIn
         }
 
         foreach ($columns as $i => $column) {
-            if ($column instanceof Query) {
+            if ($column instanceof ExpressionInterface) {
                 $sql = $this->compiler->compile($column);
-                $columns[$i] = "($sql) AS " . $this->compiler->quoteColumnName($i);
-            } elseif ($column instanceof ExpressionInterface) {
                 if (is_int($i)) {
-                    $columns[$i] = $this->compiler->compile($column);
+                    $columns[$i] = "($sql)";
                 } else {
-                    $columns[$i] = $this->compiler->compile($column) . ' AS ' . $this->compiler->quoteColumnName($i);
+                    $columns[$i] = "($sql) AS " . $this->compiler->quoteColumnName($i);
                 }
             } elseif (is_string($i) && $i !== $column) {
                 $column = $this->compiler->quoteColumnName($column);
