@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\Expression\ExpressionInterface;
+
+use FastOrm\SQL\ExpressionInterface;
 
 class OrderByClause extends AbstractClause
 {

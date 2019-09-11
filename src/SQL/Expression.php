@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsAwareTrait;
+
 class Expression implements
     ExpressionInterface,
     ExpressionBuilderInterface,
-    ParamsBinderAwareInterface
+    ParamsAwareInterface
 {
-    use ParamsBinderAwareTrait;
+    use ParamsAwareTrait;
     /**
      * @var string
      */
@@ -17,17 +20,17 @@ class Expression implements
     /**
      * @var array
      */
-    private $params;
+    private $bindParams;
 
     public function __construct(string $expression, array $params = [])
     {
         $this->expression = $expression;
-        $this->params = $params;
+        $this->bindParams = $params;
     }
 
     public function build(): string
     {
-        $this->paramsBinder->bindParams($this->params);
+        $this->params->bindAll($this->bindParams);
         return $this->expression;
     }
 }

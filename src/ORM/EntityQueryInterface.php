@@ -6,7 +6,6 @@ namespace FastOrm\ORM;
 
 use FastOrm\Command\CommandInterface;
 use FastOrm\ConnectionInterface;
-use FastOrm\SQL\Clause\OnClauseInterface;
 use FastOrm\SQL\QueryInterface;
 
 interface EntityQueryInterface extends QueryInterface

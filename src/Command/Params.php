@@ -13,10 +13,12 @@ class Params implements ParamsInterface
     private $params = [];
     private $counter = 0;
 
+    private $paramsPattern = '/^[:@](.+)$/';
+
     public function bindAll(array $params): void
     {
         foreach ($params as $name => $value) {
-            if (preg_match('/^[:@](.+)$/', $name, $matches)) {
+            if (preg_match($this->paramsPattern, $name, $matches)) {
                 $name = $matches[1];
             }
             if ($value instanceof PdoValue) {
@@ -30,7 +32,7 @@ class Params implements ParamsInterface
 
     public function bindValue($value): string
     {
-        if (is_string($value) && (preg_match('/^[@:](.+)$/', $value, $matches))) {
+        if (is_string($value) && (preg_match($this->paramsPattern, $value, $matches))) {
             $paramName = $matches[1];
             if (!isset($this->params[$paramName])) {
                 $this->bindOne($paramName, null);
