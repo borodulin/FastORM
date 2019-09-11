@@ -29,10 +29,10 @@ class Fetch implements FetchInterface
     private $indexBy;
 
     /**
-     * @return object
+     * @return array
      * @throws DbException
      */
-    public function one(): object
+    public function one(): array
     {
         $statement = $this->statementFactory->execute();
         $result = $statement->fetch($this->fetchStyle);

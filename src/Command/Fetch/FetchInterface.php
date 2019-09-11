@@ -6,7 +6,7 @@ namespace FastOrm\Command\Fetch;
 
 interface FetchInterface extends FetchIndexedInterface
 {
-    public function one(): object;
+    public function one(): array;
 
     public function column(int $columnNumber = 0): array;
 
