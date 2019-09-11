@@ -145,4 +145,27 @@ class QueryBuilderTest extends TestCase
         $rows = $command->fetch()->all();
         $this->assertCount($count, $rows);
     }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testHaving()
+    {
+        $connection = $this->createConnection();
+        $count = (int)(new Query())
+            ->select('count(1)')
+            ->from('genres')
+            ->where()->like('Name', 'Rock')
+            ->prepare($connection)
+            ->fetch()->scalar();
+        $command = (new Query())
+            ->select(['t.GenreId', 'count(1) as cnt'])
+            ->from('tracks t')->alias('t')
+            ->innerJoin('genres g')->on('g.GenreId=t.GenreId')
+            ->groupBy(['t.GenreId', 'g.Name'])
+            ->having()->like('g.Name', 'Rock')
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount($count, $rows);
+    }
 }

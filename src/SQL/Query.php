@@ -82,12 +82,6 @@ class Query implements
         return $this->selectClause;
     }
 
-    public function distinct(): QueryInterface
-    {
-        $this->selectClause->setDistinct(true);
-        return $this;
-    }
-
     public function from($from): FromClauseInterface
     {
         return $this->fromClause->addFrom($from);

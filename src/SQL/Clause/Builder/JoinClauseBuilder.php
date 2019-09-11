@@ -45,11 +45,11 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
             $alias = $joinItem->getAlias();
             if (is_string($join)) {
                 if (strpos($join, '(') === false) {
-                    !$alias && $alias = $join;
+                    if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $join, $matches)) {
+                        $join = $this->compiler->quoteTableName($matches[1]);
+                        $alias = $matches[2];
+                    }
                     $join = $this->compiler->quoteTableName($join);
-                } elseif (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $join, $matches)) {
-                    $join = $this->compiler->quoteTableName($matches[1]);
-                    !$alias && $alias = $matches[2];
                 }
             } elseif ($join instanceof ExpressionInterface) {
                 if (!$alias) {
@@ -60,7 +60,7 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
                 throw new InvalidSQLException('Join SQL clause is invalid.');
             }
             $on = $joinItem->getOn();
-            $alias = $this->compiler->quoteTableName($alias);
+            $alias && $alias = $this->compiler->quoteTableName($alias);
             $result[] = "$joinType $join $alias ON $on";
         }
 
