@@ -14,6 +14,7 @@ class CursorTest extends TestCase
     use TestConnectionTrait;
 
     /**
+     * @covers \FastOrm\Command\Fetch\Cursor
      * @throws NotSupportedException
      */
     public function testCursor()

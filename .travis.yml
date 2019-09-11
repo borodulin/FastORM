@@ -16,6 +16,7 @@ before_script:
 
 script:
   - vendor/bin/phpcs --standard=psr12 --extensions=php src
+  - vendor/bin/phpstan analyse ./src/
   - vendor/bin/phpunit
 
 jobs:
@@ -28,7 +29,3 @@ jobs:
         - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
       after_script:
         - ./vendor/bin/php-coveralls --no-interaction
-    - stage: Metrics and quality
-      env: STATIC_ANALYSIS
-      script:
-        - ./vendor/bin/phpstan analyse ./src/

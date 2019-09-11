@@ -10,11 +10,31 @@ use FastOrm\SQL\SearchCondition\ConditionInterface;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class QueryBuilderTest
+ * @package FastOrm\Tests\SQL
+ * @covers \FastOrm\Connection
+ * @covers \FastOrm\SQL\Query
+ * @covers \FastOrm\Command\Params
+ * @covers \FastOrm\Command\Command
+ * @covers \FastOrm\Command\Fetch\Fetch
+ * @covers \FastOrm\Command\PdoValue
+ * @covers \FastOrm\Command\StatementFactory
+ * @covers \FastOrm\Driver\AbstractDriver
+ * @covers \FastOrm\SQL\Clause\FromClause
+ * @covers \FastOrm\SQL\Clause\Builder\FromClauseBuilder
+ * @covers \FastOrm\Command\ParamsAwareTrait::setParams
+ * @covers \FastOrm\Driver\DriverFactory
+ * @covers \FastOrm\SQL\Clause\AbstractSearchConditionClause
+ */
 class QueryBuilderTest extends TestCase
 {
     use TestConnectionTrait;
 
     /**
+     * @covers \FastOrm\SQL\SearchCondition\Operator\BetweenOperator
+     * @covers \FastOrm\SQL\Clause\WhereClause
+     * @covers \FastOrm\SQL\SearchCondition\Compound
      * @throws NotSupportedException
      */
     public function testParamBinding()
@@ -37,6 +57,11 @@ class QueryBuilderTest extends TestCase
     }
 
     /**
+     * @covers \FastOrm\SQL\SearchCondition\SearchCondition
+     * @covers \FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder
+     * @covers \FastOrm\SQL\SearchCondition\Operator\ExpressionOperator
+     * @covers \FastOrm\SQL\SearchCondition\Compound
+     * @covers \FastOrm\SQL\SearchCondition\Builder\CompoundBuilder
      * @throws NotSupportedException
      */
     public function testOr()
@@ -58,6 +83,7 @@ class QueryBuilderTest extends TestCase
     }
 
     /**
+     * @covers \FastOrm\SQL\SearchCondition\Operator\HashConditionOperator
      * @throws NotSupportedException
      */
     public function testHashCondition()
@@ -76,6 +102,11 @@ class QueryBuilderTest extends TestCase
     }
 
     /**
+     * @covers \FastOrm\SQL\Clause\JoinClause
+     * @covers \FastOrm\SQL\Clause\Builder\JoinClauseBuilder
+     * @covers \FastOrm\SQL\Clause\AliasClause
+     * @covers \FastOrm\SQL\Clause\LimitClause
+     * @covers \FastOrm\SQL\Clause\Builder\LimitClauseBuilder
      * @throws NotSupportedException
      */
     public function testJoin()
@@ -92,6 +123,8 @@ class QueryBuilderTest extends TestCase
     }
 
     /**
+     * @covers \FastOrm\SQL\Clause\SelectClause
+     * @covers \FastOrm\SQL\Clause\Builder\SelectClauseBuilder
      * @throws NotSupportedException
      */
     public function testSelect()
@@ -107,6 +140,10 @@ class QueryBuilderTest extends TestCase
     }
 
     /**
+     * @covers \FastOrm\SQL\SearchCondition\Operator\LikeOperator
+     * @covers \FastOrm\Driver\Postgres\LikeOperatorBuilder
+     * @covers \FastOrm\SQL\Clause\Builder\LimitClauseBuilder
+     * @covers \FastOrm\SQL\Clause\AliasClause
      * @throws NotSupportedException
      */
     public function testLike()
