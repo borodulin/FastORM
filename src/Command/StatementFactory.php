@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\Command;
 
-use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -56,10 +55,9 @@ class StatementFactory implements LoggerAwareInterface
                 throw new DbException("Failed to execute SQL: $this->sql");
             }
             $this->logger && $this->logger->debug('Statement prepared');
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $this->sql";
-            $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
-            throw new DbException($message, $errorInfo, (int) $e->getCode(), $e);
+            throw new DbException($message, $e->errorInfo, (int) $e->getCode(), $e);
         }
         return $pdoStatement;
     }
