@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
+use FastOrm\Command\DbException;
 use FastOrm\NotSupportedException;
 use FastOrm\SQL\Query;
 use FastOrm\Tests\TestConnectionTrait;
@@ -29,7 +30,7 @@ class FromClauseTest extends TestCase
     /**
      * @throws NotSupportedException
      */
-    public function testJoin()
+    public function testJoins()
     {
         $connection = $this->createConnection();
         $command = (new Query())
@@ -70,5 +71,50 @@ class FromClauseTest extends TestCase
             ->prepare($connection);
         $all = $command->fetch()->all();
         $this->assertCount(10, $all);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testLeftJoin()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('tracks')->alias('t')
+            ->leftJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
+            ->limit(10)
+            ->prepare($connection);
+        $all = $command->fetch()->all();
+        $this->assertCount(10, $all);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testRightJoin()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('tracks')->alias('t')
+            ->rightJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
+            ->limit(10)
+            ->prepare($connection);
+        $this->expectException(DbException::class);
+        $command->fetch()->all();
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testFullJoin()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('tracks')->alias('t')
+            ->fullJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
+            ->limit(10)
+            ->prepare($connection);
+        $this->expectException(DbException::class);
+        $command->fetch()->all();
     }
 }

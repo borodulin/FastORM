@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
+use FastOrm\SQL\Expression;
 use FastOrm\SQL\Query;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +25,7 @@ class SelectClauseTest extends TestCase
                 'id' => 'TrackId',
                 'Name as name1',
                 'Name as name2',
+                new Expression('5')
             ])->select('*')
             ->from('tracks')->alias('t')
             ->limit(10)
@@ -33,6 +35,7 @@ class SelectClauseTest extends TestCase
         $this->assertArrayHasKey('name1', $row);
         $this->assertArrayHasKey('name2', $row);
         $this->assertArrayHasKey('TrackId', $row);
+        $this->assertArrayHasKey('5', $row);
     }
 
     /**

@@ -39,7 +39,7 @@ class SelectClauseBuilder implements ExpressionBuilderInterface, CompilerAwareIn
             if ($column instanceof ExpressionInterface) {
                 $sql = $this->compiler->compile($column);
                 if (is_int($i)) {
-                    $columns[$i] = "($sql)";
+                    $columns[$i] = $sql;
                 } else {
                     $columns[$i] = "($sql) AS " . $this->compiler->quoteColumnName($i);
                 }
