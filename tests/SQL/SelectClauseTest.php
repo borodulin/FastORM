@@ -74,4 +74,19 @@ class SelectClauseTest extends TestCase
         $rows = $command->fetch()->all();
         $this->assertCount(10, $rows);
     }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testDistinct()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->select('ArtistId as id')
+            ->distinct()
+            ->from('albums')
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount(204, $rows);
+    }
 }
