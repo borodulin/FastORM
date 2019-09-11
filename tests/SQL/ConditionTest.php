@@ -31,4 +31,49 @@ class ConditionTest extends TestCase
         $rows = $command->fetch()->all();
         $this->assertCount(2, $rows);
     }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testCompare()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('albums a')
+            ->where()->compare('AlbumId', '>', 10)
+            ->and()->not()->compare('AlbumId', '>', 11)
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount(1, $rows);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testBetweenColumns()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('employees e')
+            ->where()->betweenColumns('2000-01-01', 'BirthDate', 'HireDate')
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount(8, $rows);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testFilterHashCondition()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('employees e')
+            ->where()->filterHashCondition([
+                'State' => null,
+            ])
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount(8, $rows);
+    }
 }

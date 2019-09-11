@@ -35,6 +35,9 @@ class HashConditionOperator implements
     public function build(): string
     {
         $hash = $this->hash;
+        if (empty($hash)) {
+            return '';
+        }
         $parts = [];
         foreach ($hash as $column => $value) {
             if (is_int($column)) {

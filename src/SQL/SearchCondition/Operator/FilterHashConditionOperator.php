@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-class FilterHashConditionOperator implements OperatorInterface
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
+
+class FilterHashConditionOperator implements OperatorInterface, ExpressionBuilderInterface, CompilerAwareInterface
 {
+    use CompilerAwareTrait;
     /**
      * @var array
      */
@@ -18,5 +23,11 @@ class FilterHashConditionOperator implements OperatorInterface
     public function __construct(array $hash)
     {
         $this->hash = $hash;
+    }
+
+    public function build(): string
+    {
+        $hash = array_filter($this->hash);
+        return $this->compiler->compile(new HashConditionOperator($hash));
     }
 }
