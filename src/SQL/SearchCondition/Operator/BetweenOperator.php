@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderAwareTrait;
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -13,10 +13,10 @@ use FastOrm\SQL\ExpressionBuilderInterface;
 class BetweenOperator implements
     OperatorInterface,
     ExpressionBuilderInterface,
-    ParamsBinderAwareInterface,
+    ParamsAwareInterface,
     CompilerAwareInterface
 {
-    use ParamsBinderAwareTrait, CompilerAwareTrait;
+    use ParamsAwareTrait, CompilerAwareTrait;
 
     private $column;
     private $intervalStart;
@@ -31,8 +31,8 @@ class BetweenOperator implements
 
     public function build(): string
     {
-        $this->paramsBinder->bindValue($this->intervalStart, $paramStart);
-        $this->paramsBinder->bindValue($this->intervalEnd, $paramEnd);
+        $paramStart = $this->params->bindValue($this->intervalStart);
+        $paramEnd = $this->params->bindValue($this->intervalEnd);
         $column = $this->compiler->quoteColumnName($this->column);
         return "$column BETWEEN :$paramStart AND :$paramEnd";
     }

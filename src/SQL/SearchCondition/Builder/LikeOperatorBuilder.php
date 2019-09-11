@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace FastOrm\SQL\SearchCondition\Builder;
 
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderAwareTrait;
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 
-class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareInterface, ParamsBinderAwareInterface
+class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareInterface, ParamsAwareInterface
 {
-    use CompilerAwareTrait, ParamsBinderAwareTrait;
+    use CompilerAwareTrait, ParamsAwareTrait;
 
     /**
      * @var LikeOperator
@@ -34,7 +34,7 @@ class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareIn
             $value = $this->compiler->compile($value);
         }
         $value = "%$value%";
-        $this->paramsBinder->bindValue($value, $paramName);
+        $paramName = $this->params->bindValue($value);
         $operator = $this->getOperator();
         $column = $this->likeOperator->getColumn();
         return "$column $operator :$paramName";

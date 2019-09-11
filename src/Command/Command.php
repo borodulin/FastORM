@@ -4,64 +4,22 @@ declare(strict_types=1);
 
 namespace FastOrm\Command;
 
-use Exception;
 use FastOrm\Command\Fetch\Fetch;
 use FastOrm\Command\Fetch\FetchInterface;
 use PDO;
-use PDOException;
-use PDOStatement;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
 class Command implements CommandInterface, LoggerAwareInterface
 {
-    const PARAM_PREFIX = 'p';
     /**
-     * @var PDO
+     * @var StatementFactory
      */
-    private $pdo;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private $statementFactory;
 
-    private $params;
-    private $sql;
-    private $counter = 0;
-
-    public function __construct(PDO $pdo, string $sql = '', array $params = [])
+    public function __construct(PDO $pdo, string $sql = '', Params $params = null)
     {
-        $this->pdo = $pdo;
-        $this->sql = $sql;
-        $this->params = $params;
-    }
-
-    /**
-     * @param array $options
-     * @return PDOStatement
-     * @throws DbException
-     */
-    public function executeStatement(array $options = []): PDOStatement
-    {
-        try {
-            $pdoStatement = $this->pdo->prepare($this->sql, $options);
-            if ($pdoStatement === false) {
-                throw new DbException("Failed to prepare SQL: $this->sql", null);
-            }
-            /** @var PdoValue $value */
-            foreach ($this->params as $name => $value) {
-                $pdoStatement->bindValue($name, $value->getValue(), $value->getType());
-            }
-            if (!$pdoStatement->execute()) {
-                throw new DbException("Failed to execute SQL: $this->sql");
-            }
-            $this->logger && $this->logger->debug('Statement prepared');
-        } catch (Exception $e) {
-            $message = $e->getMessage() . "\nFailed to prepare SQL: $this->sql";
-            $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
-            throw new DbException($message, $errorInfo, (int) $e->getCode(), $e);
-        }
-        return $pdoStatement;
+        $this->statementFactory = new StatementFactory($pdo, $sql, $params);
     }
 
     /**
@@ -73,7 +31,7 @@ class Command implements CommandInterface, LoggerAwareInterface
      */
     public function setLogger(LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->statementFactory->setLogger($logger);
     }
 
     /**
@@ -83,92 +41,16 @@ class Command implements CommandInterface, LoggerAwareInterface
      */
     public function execute(array $params = []): int
     {
-        if ($this->sql == '') {
-            return 0;
-        }
-        $this->bindParams($params);
-
-        $statement = $this->executeStatement();
+        $statement = $this->statementFactory->execute($params);
         return $statement->rowCount();
     }
-
-    protected function getPdoType($data)
-    {
-        static $typeMap = [
-            // php type => PDO type
-            'boolean' => PDO::PARAM_BOOL,
-            'integer' => PDO::PARAM_INT,
-            'string' => PDO::PARAM_STR,
-            'resource' => PDO::PARAM_LOB,
-            'NULL' => PDO::PARAM_NULL,
-        ];
-        $type = gettype($data);
-        return $typeMap[$type] ?? PDO::PARAM_STR;
-    }
-
-    public function bindParams(array $params): CommandInterface
-    {
-        foreach ($params as $name => $value) {
-            if (preg_match('/^[:@](.+)$/', $name, $matches)) {
-                $name = $matches[1];
-            }
-            if ($value instanceof PdoValue) {
-                $this->params[$name] = $value;
-            } else {
-                $type = $this->getPdoType($value);
-                $this->params[$name] = new PdoValue($value, $type);
-            }
-        }
-        return $this;
-    }
-
-
-    public function bindValue($value, string &$paramName = null): CommandInterface
-    {
-        if (is_string($value) && (preg_match('/^[@:](.+)$/', $value, $matches))) {
-            $paramName = $matches[1];
-            if (!isset($this->params[$paramName])) {
-                $this->bindParam($paramName, null);
-            }
-        } else {
-            $paramName = self::PARAM_PREFIX . ++$this->counter;
-            $this->bindParam($paramName, $value);
-        }
-        return $this;
-    }
-
-    public function bindParam($name, $value, int $dataType = null): CommandInterface
-    {
-        if ($dataType === null) {
-            $dataType = $this->getPdoType($value);
-        }
-        $this->params[$name] = new PdoValue($value, $dataType);
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSql(): string
-    {
-        return $this->sql;
-    }
-
-    /**
-     * @param string $sql
-     */
-    public function setSql(string $sql): void
-    {
-        $this->sql = $sql;
-    }
-
     /**
      * @param array $params
      * @return FetchInterface
      */
     public function fetch(array $params = []): FetchInterface
     {
-        $this->bindParams($params);
-        return new Fetch($this);
+        $this->statementFactory->getParams()->bindAll($params);
+        return new Fetch($this->statementFactory);
     }
 }

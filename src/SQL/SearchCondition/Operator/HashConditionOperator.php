@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderAwareTrait;
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -15,9 +15,9 @@ class HashConditionOperator implements
     OperatorInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface,
-    ParamsBinderAwareInterface
+    ParamsAwareInterface
 {
-    use CompilerAwareTrait, ParamsBinderAwareTrait;
+    use CompilerAwareTrait, ParamsAwareTrait;
     /**
      * @var array
      */
@@ -52,7 +52,7 @@ class HashConditionOperator implements
                 if ($value === null) {
                     $parts[] = "$column IS NULL";
                 } else {
-                    $this->paramsBinder->bindValue($value, $paramName);
+                    $paramName = $this->params->bindValue($value);
                     $parts[] = "$column=:$paramName";
                 }
             }

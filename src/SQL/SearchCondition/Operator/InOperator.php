@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderAwareTrait;
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\Expression;
@@ -20,9 +20,9 @@ class InOperator implements
     OperatorInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface,
-    ParamsBinderAwareInterface
+    ParamsAwareInterface
 {
-    use CompilerAwareTrait, ParamsBinderAwareTrait;
+    use CompilerAwareTrait, ParamsAwareTrait;
 
     private $column;
     private $values;
@@ -71,7 +71,7 @@ class InOperator implements
             if ($value instanceof ExpressionInterface) {
                 $value = $this->compiler->compile($value);
             }
-            $this->paramsBinder->bindValue($value, $paramName);
+            $paramName = $this->params->bindValue($value);
             $result[] = ":$paramName";
         }
         return $result;

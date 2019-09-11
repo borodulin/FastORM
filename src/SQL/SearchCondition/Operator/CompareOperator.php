@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderAwareTrait;
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -13,11 +13,11 @@ use FastOrm\SQL\ExpressionInterface;
 
 class CompareOperator implements
     OperatorInterface,
-    ParamsBinderAwareInterface,
+    ParamsAwareInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface
 {
-    use ParamsBinderAwareTrait, CompilerAwareTrait;
+    use ParamsAwareTrait, CompilerAwareTrait;
 
     private $column;
     private $operator;
@@ -35,7 +35,7 @@ class CompareOperator implements
         if ($this->value instanceof ExpressionInterface) {
             $this->value = $this->compiler->compile($this->value);
         }
-        $this->paramsBinder->bindValue($this->value, $paramName);
+        $paramName = $this->params->bindValue($this->value);
         $column = $this->compiler->quoteColumnName($this->column);
         return "$column $this->operator :$paramName";
     }

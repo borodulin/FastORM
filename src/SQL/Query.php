@@ -6,6 +6,7 @@ namespace FastOrm\SQL;
 
 use FastOrm\Command\Command;
 use FastOrm\Command\CommandInterface;
+use FastOrm\Command\Params;
 use FastOrm\ConnectionInterface;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\FromClauseInterface;
@@ -137,10 +138,10 @@ class Query implements
 
     public function prepare(ConnectionInterface $connection): CommandInterface
     {
-        $command = new Command($connection->getPDO());
-        $compiler = $connection->getDriver()->createCompiler($command);
+        $params = new Params();
+        $compiler = $connection->getDriver()->createCompiler($params);
         $sql = $compiler->compile($this);
-        $command->setSql($sql);
+        $command = new Command($connection->getPDO(), $sql, $params);
         return $command;
     }
 }

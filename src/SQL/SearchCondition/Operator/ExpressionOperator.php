@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderAwareTrait;
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -15,25 +15,25 @@ class ExpressionOperator implements
     OperatorInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface,
-    ParamsBinderAwareInterface
+    ParamsAwareInterface
 {
-    use CompilerAwareTrait, ParamsBinderAwareTrait;
+    use CompilerAwareTrait, ParamsAwareTrait;
 
     private $expression;
     /**
      * @var array
      */
-    private $params;
+    private $bindParams;
 
     public function __construct($expression, array $params = [])
     {
         $this->expression = $expression;
-        $this->params = $params;
+        $this->bindParams = $params;
     }
 
     public function build(): string
     {
-        $this->paramsBinder->bindParams($this->params);
+        $this->params->bindAll($this->bindParams);
         if ($this->expression instanceof ExpressionInterface) {
             $this->expression = $this->compiler->compile($this->expression);
         }

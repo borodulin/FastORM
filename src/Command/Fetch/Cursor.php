@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\Command\Fetch;
 
-use FastOrm\Command\Command;
 use FastOrm\Command\DbException;
+use FastOrm\Command\StatementFactory;
 use FastOrm\NotSupportedException;
 use Iterator;
 use PDO;
@@ -15,9 +15,9 @@ class Cursor implements CursorInterface
 {
 
     /**
-     * @var Command
+     * @var StatementFactory
      */
-    private $command;
+    private $statementFactory;
 
     private $row;
     private $key = -1;
@@ -32,9 +32,9 @@ class Cursor implements CursorInterface
      */
     private $statement;
 
-    public function __construct(Command $command)
+    public function __construct(StatementFactory $statementFactory)
     {
-        $this->command = $command;
+        $this->statementFactory = $statementFactory;
     }
 
     /**
@@ -44,11 +44,11 @@ class Cursor implements CursorInterface
     private function getStatement()
     {
         if ($this->scrollable) {
-            return $this->command->executeStatement([
+            return $this->statementFactory->execute([], [
                 PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL,
             ]);
         } else {
-            return $this->command->executeStatement();
+            return $this->statementFactory->execute();
         }
     }
 

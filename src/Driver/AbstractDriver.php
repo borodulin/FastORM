@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace FastOrm\Driver;
 
-use FastOrm\Command\ParamsBinderInterface;
+use FastOrm\Command\ParamsInterface;
 use FastOrm\SQL\Compiler;
 use FastOrm\SQL\CompilerInterface;
 use PDO;
 
 class AbstractDriver implements DriverInterface
 {
-    public function createCompiler(ParamsBinderInterface $bindParams): CompilerInterface
+    public function createCompiler(ParamsInterface $params): CompilerInterface
     {
-        return new Compiler($bindParams);
+        return new Compiler($params);
     }
 
     public function createPdoInstance(

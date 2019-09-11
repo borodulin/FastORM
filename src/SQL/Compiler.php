@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\Command\ParamsBinderAwareInterface;
-use FastOrm\Command\ParamsBinderInterface;
+use FastOrm\Command\ParamsAwareInterface;
+use FastOrm\Command\ParamsInterface;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;
@@ -56,11 +56,11 @@ class Compiler implements CompilerInterface
      */
     private $classMap;
     /**
-     * @var ParamsBinderInterface
+     * @var ParamsInterface
      */
     private $bindParams;
 
-    public function __construct(ParamsBinderInterface $bindParams, array $classMap = [])
+    public function __construct(ParamsInterface $bindParams, array $classMap = [])
     {
         $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
         $this->bindParams = $bindParams;
@@ -79,8 +79,8 @@ class Compiler implements CompilerInterface
         } else {
             throw new InvalidArgumentException();
         }
-        if ($instance instanceof ParamsBinderAwareInterface) {
-            $instance->setParamsBinder($this->bindParams);
+        if ($instance instanceof ParamsAwareInterface) {
+            $instance->setParams($this->bindParams);
         }
         if ($instance instanceof CompilerAwareInterface) {
             $instance->setCompiler($this);

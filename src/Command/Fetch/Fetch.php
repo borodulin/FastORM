@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace FastOrm\Command\Fetch;
 
-use FastOrm\Command\Command;
 use FastOrm\Command\DbException;
+use FastOrm\Command\StatementFactory;
 use PDO;
 
 class Fetch implements FetchInterface
 {
     /**
-     * @var Command
+     * @var StatementFactory
      */
-    private $command;
+    private $statementFactory;
 
     private $fetchStyle = PDO::FETCH_ASSOC;
 
     /**
      * Fetch constructor.
-     * @param Command $command
+     * @param StatementFactory $statementFactory
      */
-    public function __construct(Command $command)
+    public function __construct(StatementFactory $statementFactory)
     {
-        $this->command = $command;
+        $this->statementFactory = $statementFactory;
     }
 
     private $indexBy;
@@ -34,7 +34,7 @@ class Fetch implements FetchInterface
      */
     public function one(): object
     {
-        $statement = $this->command->executeStatement();
+        $statement = $this->statementFactory->execute();
         $result = $statement->fetch($this->fetchStyle);
         $statement->closeCursor();
         return $result;
@@ -47,12 +47,9 @@ class Fetch implements FetchInterface
      */
     public function column(int $columnNumber = 0): array
     {
-        $statement = $this->command->executeStatement();
+        $statement = $this->statementFactory->execute();
         $result = $statement->fetchAll(PDO::FETCH_COLUMN, $columnNumber);
-        if (is_array($result)) {
-            return $result;
-        }
-        return [];
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -65,7 +62,7 @@ class Fetch implements FetchInterface
      */
     public function scalar(int $columnNumber = 0)
     {
-        $statement = $this->command->executeStatement();
+        $statement = $this->statementFactory->execute();
         $result = $statement->fetchColumn($columnNumber);
         if (is_resource($result) && get_resource_type($result) === 'stream') {
             return stream_get_contents($result);
@@ -96,7 +93,7 @@ class Fetch implements FetchInterface
      */
     public function all(): array
     {
-        $statement = $this->command->executeStatement();
+        $statement = $this->statementFactory->execute();
         if ($this->indexBy) {
             $result = [];
             while ($row = $statement->fetch($this->fetchStyle)) {
@@ -110,11 +107,22 @@ class Fetch implements FetchInterface
 
     public function cancel()
     {
-        $this->command = null;
+        $this->statementFactory = null;
     }
 
     public function cursor(): CursorInterface
     {
-        return new Cursor($this->command);
+        return new Cursor($this->statementFactory);
+    }
+
+    /**
+     * Fetch a two-column result into an array where the first column is a key and the second column is the value.
+     * @return array
+     * @throws DbException
+     */
+    public function map(): array
+    {
+        $statement = $this->statementFactory->execute();
+        return $statement->fetchAll(PDO::FETCH_KEY_PAIR);
     }
 }
