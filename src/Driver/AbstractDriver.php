@@ -5,15 +5,22 @@ declare(strict_types=1);
 namespace FastOrm\Driver;
 
 use FastOrm\Command\ParamsInterface;
+use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\SQL\Compiler;
 use FastOrm\SQL\CompilerInterface;
 use PDO;
+use Psr\Log\LoggerAwareTrait;
 
-class AbstractDriver implements DriverInterface
+abstract class AbstractDriver implements DriverInterface
 {
+    use LoggerAwareTrait, EventDispatcherAwareTrait;
+
     public function createCompiler(ParamsInterface $params): CompilerInterface
     {
-        return new Compiler($params);
+        $compiler = new Compiler($params);
+        $this->logger && $compiler->setLogger($this->logger);
+        $this->eventDispatcher && $compiler->setEventDispatcher($this->eventDispatcher);
+        return $compiler;
     }
 
     public function createPdoInstance(

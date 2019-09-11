@@ -6,6 +6,8 @@ namespace FastOrm\SQL;
 
 use FastOrm\Command\ParamsAwareInterface;
 use FastOrm\Command\ParamsInterface;
+use FastOrm\EventDispatcherAwareInterface;
+use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;
@@ -32,10 +34,14 @@ use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 use FastOrm\SQL\SearchCondition\SearchCondition;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use SplObjectStorage;
 
 class Compiler implements CompilerInterface
 {
+    use LoggerAwareTrait, EventDispatcherAwareTrait;
+
     private static $defaultClassMap = [
         SelectClause::class => SelectClauseBuilder::class,
         FromClause::class => FromClauseBuilder::class,
@@ -107,6 +113,12 @@ class Compiler implements CompilerInterface
         }
         if ($instance instanceof CompilerAwareInterface) {
             $instance->setCompiler($this);
+        }
+        if ($this->logger && $instance instanceof LoggerAwareInterface) {
+            $instance->setLogger($this->logger);
+        }
+        if ($this->eventDispatcher && $instance instanceof EventDispatcherAwareInterface) {
+            $instance->setEventDispatcher($this->eventDispatcher);
         }
         return $instance->build();
     }

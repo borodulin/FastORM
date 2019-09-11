@@ -6,11 +6,13 @@ namespace FastOrm\Command;
 
 use FastOrm\Command\Fetch\Fetch;
 use FastOrm\Command\Fetch\FetchInterface;
+use FastOrm\EventDispatcherAwareInterface;
 use PDO;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
-class Command implements CommandInterface, LoggerAwareInterface
+class Command implements CommandInterface, LoggerAwareInterface, EventDispatcherAwareInterface
 {
     /**
      * @var StatementFactory
@@ -52,5 +54,10 @@ class Command implements CommandInterface, LoggerAwareInterface
     {
         $this->statementFactory->getParams()->bindAll($params);
         return new Fetch($this->statementFactory);
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->statementFactory->setEventDispatcher($eventDispatcher);
     }
 }

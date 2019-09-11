@@ -8,6 +8,8 @@ use FastOrm\Command\Command;
 use FastOrm\Command\CommandInterface;
 use FastOrm\Command\Params;
 use FastOrm\ConnectionInterface;
+use FastOrm\EventDispatcherAwareInterface;
+use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\FromClauseInterface;
 use FastOrm\SQL\Clause\GroupByClause;
@@ -20,6 +22,8 @@ use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\UnionClause;
 use FastOrm\SQL\Clause\WhereClause;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
 /**
  * Class Query
@@ -28,9 +32,11 @@ use FastOrm\SQL\SearchCondition\ConditionInterface;
 class Query implements
     OffsetClauseInterface,
     ExpressionBuilderInterface,
-    CompilerAwareInterface
+    CompilerAwareInterface,
+    EventDispatcherAwareInterface,
+    LoggerAwareInterface
 {
-    use CompilerAwareTrait;
+    use CompilerAwareTrait, EventDispatcherAwareTrait, LoggerAwareTrait;
     /**
      * @var SelectClause
      */
@@ -139,6 +145,8 @@ class Query implements
         $compiler = $connection->getDriver()->createCompiler($params);
         $sql = $compiler->compile($this);
         $command = new Command($connection->getPDO(), $sql, $params);
+        $this->logger && $command->setLogger($this->logger);
+        $this->eventDispatcher && $command->setEventDispatcher($this->eventDispatcher);
         return $command;
     }
 

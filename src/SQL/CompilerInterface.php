@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-interface CompilerInterface
+use FastOrm\EventDispatcherAwareInterface;
+use Psr\Log\LoggerAwareInterface;
+
+interface CompilerInterface extends LoggerAwareInterface, EventDispatcherAwareInterface
 {
     public function compile(ExpressionInterface $expression): string;
 

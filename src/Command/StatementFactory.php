@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace FastOrm\Command;
 
+use FastOrm\EventDispatcherAwareInterface;
+use FastOrm\EventDispatcherAwareTrait;
 use PDO;
 use PDOException;
 use PDOStatement;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class StatementFactory implements LoggerAwareInterface
+class StatementFactory implements LoggerAwareInterface, EventDispatcherAwareInterface
 {
-    use LoggerAwareTrait;
+    use LoggerAwareTrait, EventDispatcherAwareTrait;
     /**
      * @var PDO
      */
