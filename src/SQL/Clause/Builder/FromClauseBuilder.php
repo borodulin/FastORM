@@ -39,21 +39,20 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
         /** @var AliasClause $alias */
         foreach ($aliases as $alias) {
             $from = $alias->getExpression();
-            $aliasName = $alias->getAlias() ?? 's' . ++$counter;
-            $aliasName = $this->compiler->quoteTableName($aliasName);
+            $aliasName = $alias->getAlias();
             if ($from instanceof ExpressionInterface) {
                 $sql = $this->compiler->compile($from);
-                $result[] = "($sql) " . $aliasName;
+                $aliasName = $aliasName ?? 's' . ++$counter;
+                $result[] = "($sql) " . $this->compiler->quoteTableName($aliasName);
             } elseif (is_string($from)) {
-                $from = $this->compiler->quoteTableName($from);
-                $result[] = "$from " . $aliasName;
-            } elseif (strpos($alias, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $from, $matches)) { // with alias
-                    $result[] = $this->compiler->quoteTableName($matches[1])
-                        . ' ' . $this->compiler->quoteTableName($matches[2]);
-                } else {
-                    $result[] = $this->compiler->quoteTableName($from);
+                if (strpos($from, '(') === false) {
+                    if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $from, $matches)) { // with alias
+                        $from = $this->compiler->quoteTableName($matches[1]);
+                        $aliasName = $this->compiler->quoteTableName($matches[2]);
+                    }
                 }
+                $aliasName = $aliasName ?? $this->compiler->quoteTableName('s' . ++$counter);
+                $result[] = "$from " . $aliasName;
             }
         }
         $from = 'FROM ' . implode(', ', $result);

@@ -82,22 +82,6 @@ class QueryBuilderTest extends TestCase
     /**
      * @throws NotSupportedException
      */
-    public function testJoin()
-    {
-        $connection = $this->createConnection();
-        $command = (new Query())
-            ->from('tracks')->alias('t')
-            ->innerJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
-            ->innerJoin('media_types')->alias('mt')->on('mt.MediaTypeId=t.MediaTypeId')
-            ->limit(10)
-            ->prepare($connection);
-        $all = $command->fetch()->all();
-        $this->assertCount(10, $all);
-    }
-
-    /**
-     * @throws NotSupportedException
-     */
     public function testSelect()
     {
         $connection = $this->createConnection();
@@ -140,5 +124,20 @@ class QueryBuilderTest extends TestCase
             ->prepare($connection);
         $row = $command->fetch()->one();
         $this->assertGreaterThan(100, $row['TrackId']);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testLimit()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('tracks')->alias('t')
+            ->limit(5)->offset(10)
+            ->orderBy(['TrackId' => SORT_ASC])
+            ->prepare($connection);
+        $row = $command->fetch()->one();
+        $this->assertEquals(11, $row['TrackId']);
     }
 }
