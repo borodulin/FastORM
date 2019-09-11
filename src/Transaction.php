@@ -115,7 +115,7 @@ class Transaction implements EventDispatcherAwareInterface
 
     /**
      * Commits a transaction.
-     * @throws Exception if the transaction is not active
+     * @throws DbException if the transaction is not active
      */
     public function commit(): Transaction
     {
