@@ -21,8 +21,6 @@ interface FetchInterface extends FetchIndexedInterface
      */
     public function scalar(int $columnNumber = 0);
 
-    public function cancel();
-
     /**
      * Fetch a two-column result into an array where the first column is a key and the second column is the value.
      * @return array

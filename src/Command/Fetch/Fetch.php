@@ -105,11 +105,6 @@ class Fetch implements FetchInterface
         return is_array($result) ? $result : [];
     }
 
-    public function cancel()
-    {
-        $this->statementFactory = null;
-    }
-
     public function cursor(): CursorInterface
     {
         return new Cursor($this->statementFactory);
