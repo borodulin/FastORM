@@ -99,21 +99,6 @@ class QueryBuilderTest extends TestCase
     /**
      * @throws NotSupportedException
      */
-    public function testOrderBy()
-    {
-        $connection = $this->createConnection();
-        $command = (new Query())
-            ->from('tracks')->alias('t')
-            ->limit(5)
-            ->orderBy(['TrackId' => SORT_DESC])
-            ->prepare($connection);
-        $row = $command->fetch()->one();
-        $this->assertGreaterThan(100, $row['TrackId']);
-    }
-
-    /**
-     * @throws NotSupportedException
-     */
     public function testLimit()
     {
         $connection = $this->createConnection();

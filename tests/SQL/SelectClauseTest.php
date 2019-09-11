@@ -59,7 +59,7 @@ class SelectClauseTest extends TestCase
     /**
      * @throws NotSupportedException
      */
-    public function testUnion()
+    public function testUnionAll()
     {
         $connection = $this->createConnection();
         $command = (new Query())
@@ -70,6 +70,25 @@ class SelectClauseTest extends TestCase
             ->from('tracks t')
             ->limit(10)
             ->unionAll((new Query())->select(['AlbumId', 'Title'])->from('albums'))
+            ->prepare($connection);
+        $rows = $command->fetch()->all();
+        $this->assertCount(10, $rows);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testUnion()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->select([
+                'TrackId as id',
+                'Name'
+            ])
+            ->from('tracks t')
+            ->limit(10)
+            ->union((new Query())->select(['AlbumId', 'Title'])->from('albums'))
             ->prepare($connection);
         $rows = $command->fetch()->all();
         $this->assertCount(10, $rows);
