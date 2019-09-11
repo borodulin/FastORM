@@ -48,7 +48,6 @@ class Compiler implements CompilerInterface
         Compound::class => CompoundBuilder::class,
         SearchCondition::class => SearchConditionBuilder::class,
         LikeOperator::class => LikeOperatorBuilder::class,
-        Query::class => QueryBuilder::class,
     ];
 
     /**

@@ -3,9 +3,33 @@ php:
   - '7.2'
   - '7.3'
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - vendor
+
 install:
   - composer install --no-interaction
+
+before_script:
+  - mkdir -p build/logs
 
 script:
   - vendor/bin/phpcs --standard=psr12 --extensions=php src
   - vendor/bin/phpunit
+
+jobs:
+  include:
+    - stage: Metrics and quality
+      env: COVERAGE
+      before_script:
+        - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
+        - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
+      script:
+        - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+      after_script:
+        - ./vendor/bin/php-coveralls --no-interaction
+    - stage: Metrics and quality
+      env: STATIC_ANALYSIS
+      script:
+        - ./vendor/bin/phpstan analyse ./src/

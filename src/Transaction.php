@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm;
 
-use FastOrm\Event\TransactionEvent;
 use FastOrm\Driver\SavepointInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use FastOrm\Event\TransactionEvent;
 use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
 
 class Transaction implements EventDispatcherAwareInterface
 {
@@ -44,18 +42,9 @@ class Transaction implements EventDispatcherAwareInterface
      * @var ConnectionInterface
      */
     private $connection;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
 
-    public function __construct(
-        ConnectionInterface $connection
-    ) {
+    public function __construct(ConnectionInterface $connection)
+    {
         $this->connection = $connection;
     }
 

@@ -26,8 +26,11 @@ use FastOrm\SQL\SearchCondition\ConditionInterface;
  * @package FastOrm\SQL
  */
 class Query implements
-    OffsetClauseInterface
+    OffsetClauseInterface,
+    ExpressionBuilderInterface,
+    CompilerAwareInterface
 {
+    use CompilerAwareTrait;
     /**
      * @var SelectClause
      */
@@ -143,5 +146,19 @@ class Query implements
         $sql = $compiler->compile($this);
         $command = new Command($connection->getPDO(), $sql, $params);
         return $command;
+    }
+
+    public function build(): string
+    {
+        return implode(' ', array_filter([
+            $this->compiler->compile($this->selectClause),
+            $this->compiler->compile($this->fromClause),
+            $this->compiler->compile($this->whereClause),
+            $this->compiler->compile($this->groupByClause),
+            $this->compiler->compile($this->havingClause),
+            $this->compiler->compile($this->unionClause),
+            $this->compiler->compile($this->orderByClause),
+            $this->compiler->compile($this->limitClause),
+        ]));
     }
 }
