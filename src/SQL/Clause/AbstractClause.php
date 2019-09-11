@@ -6,21 +6,14 @@ namespace FastOrm\SQL\Clause;
 
 use FastOrm\Command\CommandInterface;
 use FastOrm\ConnectionInterface;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\Query;
 use FastOrm\SQL\QueryInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 
 abstract class AbstractClause implements
     ClauseInterface,
-    QueryInterface,
-    ExpressionBuilderInterface,
-    CompilerAwareInterface
+    QueryInterface
 {
-    use CompilerAwareTrait;
-
     /**
      * @var Query
      */
@@ -84,10 +77,5 @@ abstract class AbstractClause implements
     public function prepare(ConnectionInterface $connection): CommandInterface
     {
         return $this->query->prepare($connection);
-    }
-
-    public function build(): string
-    {
-        return $this->compiler->compile($this->query);
     }
 }

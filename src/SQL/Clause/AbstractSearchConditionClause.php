@@ -6,14 +6,13 @@ namespace FastOrm\SQL\Clause;
 
 use FastOrm\SQL\Query;
 use FastOrm\SQL\SearchCondition\Compound;
-use FastOrm\SQL\SearchCondition\CompoundInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 
 /**
  * Class AbstractSearchConditionClause
  * @package FastOrm\SQL\Clause
  */
-class AbstractSearchConditionClause extends AbstractClause implements CompoundInterface
+class AbstractSearchConditionClause extends AbstractClause
 {
     private $compound;
 
@@ -21,17 +20,6 @@ class AbstractSearchConditionClause extends AbstractClause implements CompoundIn
     {
         parent::__construct($query);
         $this->compound = new Compound($query);
-    }
-
-
-    public function and(): ConditionInterface
-    {
-        return $this->compound->and();
-    }
-
-    public function or(): ConditionInterface
-    {
-        return $this->compound->or();
     }
 
     public function getCondition(): ConditionInterface
