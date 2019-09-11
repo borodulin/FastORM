@@ -8,7 +8,6 @@ use FastOrm\Command\ParamsAwareInterface;
 use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\Expression;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
@@ -47,9 +46,12 @@ class InOperator implements
             return '0=1';
         }
 
-        if ($values instanceof Expression) {
+        if ($values instanceof ExpressionInterface) {
             $sql = $this->compiler->compile($values);
-            return "$column IN ($sql)";
+            if (strpos($sql, '(') !== 0) {
+                $sql = "($sql)";
+            }
+            return "$column IN $sql";
         }
 
         $values = is_array($values) ? $values : (array)$values;

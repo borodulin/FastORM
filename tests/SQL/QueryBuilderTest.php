@@ -114,26 +114,6 @@ class QueryBuilderTest extends TestCase
     /**
      * @throws NotSupportedException
      */
-    public function testGroupBy()
-    {
-        $connection = $this->createConnection();
-        $count = (int)(new Query())
-            ->select('count(1)')
-            ->from('genres')
-            ->prepare($connection)
-            ->fetch()->scalar();
-        $command = (new Query())
-            ->select(['GenreId', 'count(1) as cnt'])
-            ->from('tracks')->alias('t')
-            ->groupBy(['GenreId'])
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
-        $this->assertCount($count, $rows);
-    }
-
-    /**
-     * @throws NotSupportedException
-     */
     public function testHaving()
     {
         $connection = $this->createConnection();

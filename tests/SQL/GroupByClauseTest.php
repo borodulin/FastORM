@@ -11,38 +11,28 @@ use FastOrm\SQL\Query;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
-class OrderByClauseTest extends TestCase
+class GroupByClauseTest extends TestCase
 {
     use TestConnectionTrait;
 
     /**
      * @throws NotSupportedException
      */
-    public function testOrderBy()
+    public function testGroupBy()
     {
         $connection = $this->createConnection();
+        $count = (int)(new Query())
+            ->select('count(1)')
+            ->from('genres')
+            ->prepare($connection)
+            ->fetch()->scalar();
         $command = (new Query())
+            ->select(['GenreId', 'count(1) as cnt'])
             ->from('tracks')->alias('t')
-            ->limit(5)
-            ->orderBy(['TrackId' => SORT_DESC])
+            ->groupBy(['GenreId'])
             ->prepare($connection);
-        $row = $command->fetch()->one();
-        $this->assertGreaterThan(100, $row['TrackId']);
-    }
-
-    /**
-     * @throws NotSupportedException
-     */
-    public function testArray()
-    {
-        $connection = $this->createConnection();
-        $command = (new Query())
-            ->from('tracks')->alias('t')
-            ->limit(5)
-            ->orderBy(['TrackId', 'Name' => SORT_DESC])
-            ->prepare($connection);
-        $row = $command->fetch()->one();
-        $this->assertEquals(1, $row['TrackId']);
+        $rows = $command->fetch()->all();
+        $this->assertCount($count, $rows);
     }
 
     /**
@@ -52,12 +42,12 @@ class OrderByClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $command = (new Query())
+            ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
             ->from('tracks')->alias('t')
-            ->limit(5)
-            ->orderBy('TrackId, Name desc')
+            ->groupBy('GenreId, MediaTypeId')
             ->prepare($connection);
-        $row = $command->fetch()->one();
-        $this->assertEquals(1, $row['TrackId']);
+        $rows = $command->fetch()->all();
+        $this->assertCount(38, $rows);
     }
 
     /**
@@ -67,11 +57,11 @@ class OrderByClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $command = (new Query())
+            ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
             ->from('tracks')->alias('t')
-            ->limit(5)
-            ->orderBy(new Expression('TrackId asc'))
+            ->groupBy(new Expression('GenreId, MediaTypeId'))
             ->prepare($connection);
-        $row = $command->fetch()->one();
-        $this->assertEquals(1, $row['TrackId']);
+        $rows = $command->fetch()->all();
+        $this->assertCount(38, $rows);
     }
 }
