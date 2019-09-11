@@ -15,6 +15,11 @@ class Params implements ParamsInterface
 
     private $paramsPattern = '/^[:@](.+)$/';
 
+    public function __construct(array $params = [])
+    {
+        $this->bindAll($params);
+    }
+
     public function bindAll(array $params): void
     {
         foreach ($params as $name => $value) {
