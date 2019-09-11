@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\QueryInterface;
+use FastOrm\SQL\Query;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\CompoundInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
@@ -17,7 +17,7 @@ class AbstractSearchConditionClause extends AbstractClause implements CompoundIn
 {
     private $compound;
 
-    public function __construct(QueryInterface $query)
+    public function __construct(Query $query)
     {
         parent::__construct($query);
         $this->compound = new Compound($query);

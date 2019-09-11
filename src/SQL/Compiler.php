@@ -16,6 +16,7 @@ use FastOrm\SQL\Clause\Builder\OrderByClauseBuilder;
 use FastOrm\SQL\Clause\Builder\SelectClauseBuilder;
 use FastOrm\SQL\Clause\Builder\UnionClauseBuilder;
 use FastOrm\SQL\Clause\Builder\WhereClauseBuilder;
+use FastOrm\SQL\Clause\ClauseInterface;
 use FastOrm\SQL\Clause\FromClause;
 use FastOrm\SQL\Clause\GroupByClause;
 use FastOrm\SQL\Clause\HavingClause;
@@ -31,6 +32,7 @@ use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 use FastOrm\SQL\SearchCondition\SearchCondition;
+use SplObjectStorage;
 
 class Compiler implements CompilerInterface
 {
@@ -59,14 +61,36 @@ class Compiler implements CompilerInterface
      */
     private $bindParams;
 
+    private $queries;
+
     public function __construct(ParamsInterface $bindParams, array $classMap = [])
     {
         $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
         $this->bindParams = $bindParams;
+        $this->queries = new SplObjectStorage();
     }
 
+    /**
+     * @param ExpressionInterface $expression
+     * @return string
+     * @throws InvalidSQLException
+     */
     public function compile(ExpressionInterface $expression): string
     {
+        if ($expression instanceof ClauseInterface) {
+            $query = $expression->getQuery();
+            if (!$this->queries->contains($query)) {
+                $this->queries->attach($expression);
+                return $this->compile($query);
+            }
+        } elseif ($expression instanceof QueryInterface) {
+            if (!$this->queries->contains($expression)) {
+                $this->queries->attach($expression);
+            } else {
+                throw new InvalidSQLException();
+            }
+        }
+
         $classBuilder = $this->classMap[get_class($expression)] ?? null;
         if ($classBuilder) {
             $instance = new $classBuilder($expression);

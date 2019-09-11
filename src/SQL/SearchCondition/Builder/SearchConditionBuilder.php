@@ -7,6 +7,7 @@ namespace FastOrm\SQL\SearchCondition\Builder;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\Query;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\Operator\ExpressionOperator;
 use FastOrm\SQL\SearchCondition\Operator\NotOperatorInterface;
@@ -40,7 +41,9 @@ class SearchConditionBuilder implements ExpressionBuilderInterface, CompilerAwar
         if ($operator instanceof ExpressionOperator) {
             $expression = $operator->getExpression();
             if (is_callable($expression)) {
-                $compound = new Compound($this->condition->getCompound()->getQuery());
+                /** @var Query $query */
+                $query = $this->condition->getCompound()->getQuery();
+                $compound = new Compound($query);
                 $expression = call_user_func($expression, $compound->getCondition());
                 $operator->setExpression($expression);
             }

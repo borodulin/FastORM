@@ -4,30 +4,28 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\QueryDecoratorTrait;
-use FastOrm\SQL\QueryInterface;
+use FastOrm\SQL\Query;
 use SplStack;
 
-class FromClause implements FromClauseInterface
+class FromClause extends AbstractClause implements FromClauseInterface
 {
-    use QueryDecoratorTrait;
-
     private $from;
     /**
      * @var JoinClause
      */
     private $joinClause;
 
-    public function __construct(QueryInterface $query)
+    public function __construct(Query $query)
     {
-        $this->query = $query;
+        parent::__construct($query);
         $this->from = new SplStack();
-        $this->joinClause = new JoinClause($this);
+        $this->joinClause = new JoinClause($query);
+        $this->joinClause->setFromClause($this);
     }
 
     public function addFrom($from): FromClause
     {
-        $alias = new AliasClause($this->getQuery());
+        $alias = new AliasClause($this->query);
         $alias->setExpression($from);
         $this->from->push($alias);
         return $this;

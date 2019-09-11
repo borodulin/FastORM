@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\SQL\QueryInterface;
-
-class JoinClause implements ClauseInterface
+class JoinClause extends AbstractClause implements ClauseInterface
 {
 
     private $joins = [];
@@ -14,11 +12,6 @@ class JoinClause implements ClauseInterface
      * @var FromClauseInterface
      */
     private $fromClause;
-
-    public function __construct(FromClauseInterface $fromClause)
-    {
-        $this->fromClause = $fromClause;
-    }
 
     public function addJoin($join, $joinType): JoinAliasClauseInterface
     {
@@ -35,8 +28,11 @@ class JoinClause implements ClauseInterface
         return $this->joins;
     }
 
-    public function getQuery(): QueryInterface
+    /**
+     * @param FromClauseInterface $fromClause
+     */
+    public function setFromClause(FromClauseInterface $fromClause): void
     {
-        return $this->fromClause;
+        $this->fromClause = $fromClause;
     }
 }

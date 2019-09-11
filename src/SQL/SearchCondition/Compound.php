@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition;
 
-use FastOrm\SQL\QueryDecoratorTrait;
-use FastOrm\SQL\QueryInterface;
+use FastOrm\SQL\Clause\AbstractClause;
+use FastOrm\SQL\Query;
 use SplStack;
 
-class Compound implements CompoundInterface
+class Compound extends AbstractClause implements CompoundInterface
 {
-    use QueryDecoratorTrait;
     /**
      * @var SplStack
      */
     private $compounds;
 
-    public function __construct(QueryInterface $query)
+    public function __construct(Query $query)
     {
+        parent::__construct($query);
         $this->compounds = new SplStack();
         $this->compounds->add(0, new CompoundItem(new SearchCondition($this), ''));
-        $this->query = $query;
     }
 
     public function and(): ConditionInterface
