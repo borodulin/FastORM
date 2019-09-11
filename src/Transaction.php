@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm;
 
+use FastOrm\Command\DbException;
 use FastOrm\Driver\SavepointInterface;
 use FastOrm\Event\TransactionEvent;
 use Psr\Log\LoggerAwareTrait;
@@ -119,7 +120,7 @@ class Transaction implements EventDispatcherAwareInterface
     public function commit(): Transaction
     {
         if (!$this->getIsActive()) {
-            throw new Exception('Failed to commit transaction: transaction was inactive.');
+            throw new DbException('Failed to commit transaction: transaction was inactive.');
         }
         $pdo = $this->connection->getPdo();
         $this->level--;
@@ -192,7 +193,7 @@ class Transaction implements EventDispatcherAwareInterface
     public function setIsolationLevel(string $level): Transaction
     {
         if (!$this->getIsActive()) {
-            throw new Exception('Failed to set isolation level: transaction was inactive.');
+            throw new DbException('Failed to set isolation level: transaction was inactive.');
         }
         $this->logger && $this->logger
             ->debug('Setting transaction isolation level to ' . $level);
