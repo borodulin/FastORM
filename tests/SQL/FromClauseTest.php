@@ -117,4 +117,19 @@ class FromClauseTest extends TestCase
         $this->expectException(DbException::class);
         $command->fetch()->all();
     }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testCustomJoin()
+    {
+        $connection = $this->createConnection();
+        $command = (new Query())
+            ->from('tracks')->alias('t')
+            ->join('genres g', 'left outer join')->on('g.GenreID=t.GenreId')
+            ->limit(10)
+            ->prepare($connection);
+        $all = $command->fetch()->all();
+        $this->assertCount(10, $all);
+    }
 }
