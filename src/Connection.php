@@ -114,11 +114,4 @@ class Connection implements ConnectionInterface
     {
         return $this->pdo !== null;
     }
-
-    public function close(): void
-    {
-        $this->pdo = null;
-        $this->eventDispatcher && $this->eventDispatcher
-            ->dispatch(new ConnectionEvent($this, ConnectionEvent::EVENT_AFTER_CLOSE));
-    }
 }

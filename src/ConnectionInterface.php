@@ -34,6 +34,4 @@ interface ConnectionInterface extends LoggerAwareInterface, EventDispatcherAware
     public function getPdo(): PDO;
 
     public function getIsActive(): bool;
-
-    public function close(): void;
 }
