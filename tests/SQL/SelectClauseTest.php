@@ -44,7 +44,7 @@ class SelectClauseTest extends TestCase
     public function testSelectQuery()
     {
         $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $query = (new SelectQuery($connection))
             ->select([
                 'GenreName' => (new SelectQuery($connection))
                     ->select('Name')
@@ -52,8 +52,8 @@ class SelectClauseTest extends TestCase
                     ->where()->expression('g.GenreId=t.GenreId'),
             ])->select('*')
             ->from('tracks t')
-            ->limit(10)
-            ->fetch();
+            ->limit(10);
+        $fetch = $query->fetch();
         $row = $fetch->one();
         $this->assertArrayHasKey('GenreName', $row);
         $this->assertArrayHasKey('TrackId', $row);

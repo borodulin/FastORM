@@ -4,29 +4,25 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\AliasClause;
 use FastOrm\SQL\Clause\Select\FromClause;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class FromClauseBuilder implements ExpressionInterface, CompilerAwareInterface
+class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
-    /**
-     * @var FromClause
-     */
-    private $clause;
-
-    public function __construct(FromClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
+        if (!$expression instanceof FromClause) {
+            throw new InvalidArgumentException();
+        }
 
-    public function __toString()
-    {
-        $aliases = $this->clause->getFrom();
+        $aliases = $expression->getFrom();
         if ($aliases->count() === 0) {
             return '';
         }
@@ -54,7 +50,7 @@ class FromClauseBuilder implements ExpressionInterface, CompilerAwareInterface
             }
         }
         $from = 'FROM ' . implode(', ', $result);
-        if ($join = $this->compiler->compile($this->clause->getJoinClause())) {
+        if ($join = $this->compiler->compile($expression->getJoinClause())) {
             $from .= ' ' . $join;
         }
         return $from;

@@ -31,7 +31,7 @@ class Fetch implements FetchInterface
      * @param array $params
      * @return array
      */
-    public function one(array $params = []): array
+    public function one(iterable $params = []): array
     {
         $pdoStatement =  $this->statement->execute($params);
         $result = $pdoStatement->fetch($this->fetchStyle);
@@ -44,7 +44,7 @@ class Fetch implements FetchInterface
      * @param array $params
      * @return array
      */
-    public function column(int $columnNumber = 0, array $params = []): array
+    public function column(int $columnNumber = 0, iterable $params = []): array
     {
         $pdoStatement =  $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_COLUMN, $columnNumber);
@@ -59,7 +59,7 @@ class Fetch implements FetchInterface
      * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      */
-    public function scalar(int $columnNumber = 0, array $params = [])
+    public function scalar(int $columnNumber = 0, iterable $params = [])
     {
         $pdoStatement =  $this->statement->execute($params);
         $result = $pdoStatement->fetchColumn($columnNumber);
@@ -74,7 +74,7 @@ class Fetch implements FetchInterface
      * @param array $params
      * @return bool
      */
-    public function exists(array $params = []): bool
+    public function exists(iterable $params = []): bool
     {
         return (bool) $this->scalar(0, $params);
     }
@@ -90,7 +90,7 @@ class Fetch implements FetchInterface
      * @param array $params
      * @return array
      */
-    public function all(array $params = []): array
+    public function all(iterable $params = []): array
     {
         $pdoStatement =  $this->statement->execute($params);
         if ($this->indexBy) {
@@ -110,7 +110,7 @@ class Fetch implements FetchInterface
      * @param array $params
      * @return array
      */
-    public function map(array $params = []): array
+    public function map(iterable $params = []): array
     {
         $pdoStatement =  $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_KEY_PAIR);
@@ -123,7 +123,7 @@ class Fetch implements FetchInterface
      * @return array
      * @see PDO::FETCH_UNIQUE
      */
-    public function indexed(array $params = []): array
+    public function indexed(iterable $params = []): array
     {
         $pdoStatement =  $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_UNIQUE);
@@ -136,7 +136,7 @@ class Fetch implements FetchInterface
      * @return array
      * @see PDO::FETCH_GROUP
      */
-    public function grouped(array $params = []): array
+    public function grouped(iterable $params = []): array
     {
         $pdoStatement =  $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_GROUP);
@@ -147,7 +147,7 @@ class Fetch implements FetchInterface
      * @param array $params
      * @return CursorInterface
      */
-    public function cursor(array $params = []): CursorInterface
+    public function cursor(iterable $params = []): CursorInterface
     {
         $pdoStatement =  $this->statement->execute($params);
         return new Cursor($pdoStatement, $this->fetchStyle);
@@ -157,7 +157,7 @@ class Fetch implements FetchInterface
      * @param array $params
      * @return BatchCursorInterface
      */
-    public function batchCursor(array $params = []): BatchCursorInterface
+    public function batchCursor(iterable $params = []): BatchCursorInterface
     {
         $pdoStatement =  $this->statement->execute($params);
         return new BatchCursor($pdoStatement, $this->fetchStyle);

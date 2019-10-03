@@ -4,28 +4,24 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\HavingClause;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class HavingClauseBuilder implements ExpressionInterface, CompilerAwareInterface
+class HavingClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
-    /**
-     * @var HavingClause
-     */
-    private $clause;
-
-    public function __construct(HavingClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
+        if (!$expression instanceof HavingClause) {
+            throw new InvalidArgumentException();
+        }
 
-    public function __toString(): string
-    {
-        $having = $this->compiler->compile($this->clause->getCompound());
+        $having = $this->compiler->compile($expression->getCompound());
 
         return $having === '' ? '' : 'HAVING ' . $having;
     }

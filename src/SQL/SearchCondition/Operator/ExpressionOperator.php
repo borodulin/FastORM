@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ContextInterface;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
-use FastOrm\SQL\ParamsAwareInterface;
-use FastOrm\SQL\ParamsAwareTrait;
 
-class ExpressionOperator implements
-    OperatorInterface,
+class ExpressionOperator extends AbstractOperator implements
     CompilerAwareInterface,
-    ParamsAwareInterface
+    ExpressionBuilderInterface
 {
-    use CompilerAwareTrait, ParamsAwareTrait;
+    use CompilerAwareTrait;
 
     private $expression;
     /**
@@ -23,19 +23,11 @@ class ExpressionOperator implements
      */
     private $bindParams;
 
-    public function __construct($expression, array $params = [])
+    public function __construct($expression, array $params, ContextInterface $context)
     {
         $this->expression = $expression;
         $this->bindParams = $params;
-    }
-
-    public function __toString(): string
-    {
-        $this->params->bindAll($this->bindParams);
-        if ($this->expression instanceof ExpressionInterface) {
-            $this->expression = $this->compiler->compile($this->expression);
-        }
-        return $this->expression;
+        parent::__construct($context);
     }
 
     /**
@@ -52,5 +44,17 @@ class ExpressionOperator implements
     public function setExpression($expression): void
     {
         $this->expression = $expression;
+    }
+
+    public function build(ExpressionInterface $expression): string
+    {
+        if (!$expression instanceof ExpressionOperator) {
+            throw new InvalidArgumentException();
+        }
+        $this->compiler->getContext()->getParams()->bindAll($this->bindParams);
+        if ($expression->expression instanceof ExpressionInterface) {
+            $expression->expression = $this->compiler->compile($expression->expression);
+        }
+        return $expression->expression;
     }
 }

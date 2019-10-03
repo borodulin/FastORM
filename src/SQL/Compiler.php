@@ -6,6 +6,7 @@ namespace FastOrm\SQL;
 
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
+use FastOrm\SQL\Clause\ClauseContextInterface;
 use FastOrm\SQL\Clause\Select\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Select\Builder\GroupByClauseBuilder;
 use FastOrm\SQL\Clause\Select\Builder\HavingClauseBuilder;
@@ -52,6 +53,8 @@ class Compiler implements CompilerInterface
         Compound::class => CompoundBuilder::class,
         SearchCondition::class => SearchConditionBuilder::class,
         LikeOperator::class => LikeOperatorBuilder::class,
+
+        Expression::class => ExpressionBuilder::class,
     ];
 
     /**
@@ -59,17 +62,20 @@ class Compiler implements CompilerInterface
      */
     private $classMap;
     /**
-     * @var ParamsInterface
+     * @var ContextInterface
      */
-    private $params;
+    private $context;
 
-    private $queries;
+    /**
+     * @var SplObjectStorage
+     */
+    private $compiledContexts;
 
-    public function __construct(ParamsInterface $params, array $classMap = [])
+    public function __construct(ContextInterface $context, array $classMap = [])
     {
         $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
-        $this->params = $params;
-        $this->queries = new SplObjectStorage();
+        $this->context = $context;
+        $this->compiledContexts = new SplObjectStorage();
     }
 
     /**
@@ -78,17 +84,27 @@ class Compiler implements CompilerInterface
      */
     public function compile(ExpressionInterface $expression): string
     {
+        if ($expression instanceof ClauseContextInterface) {
+            if (!$this->compiledContexts->contains($expression)) {
+                $this->compiledContexts->attach($expression);
+            }
+        } elseif ($expression instanceof HasContextInterface) {
+            $context = $expression->getContext();
+            if (!$this->compiledContexts->contains($context)) {
+                $this->compiledContexts->attach($context);
+                return $this->compile($context);
+            }
+        }
         $classBuilder = $this->classMap[get_class($expression)] ?? null;
         if ($classBuilder) {
-            $instance = new $classBuilder($expression);
-            if (!$instance instanceof ExpressionInterface) {
+            $instance = new $classBuilder();
+            if (!$instance instanceof ExpressionBuilderInterface) {
                 throw new InvalidArgumentException();
             }
-        } else {
+        } elseif ($expression instanceof ExpressionBuilderInterface) {
             $instance = $expression;
-        }
-        if ($instance instanceof ParamsAwareInterface) {
-            $instance->setParams($this->params);
+        } else {
+            throw new InvalidArgumentException();
         }
         if ($instance instanceof CompilerAwareInterface) {
             $instance->setCompiler($this);
@@ -96,7 +112,7 @@ class Compiler implements CompilerInterface
         if ($this->logger && $instance instanceof LoggerAwareInterface) {
             $instance->setLogger($this->logger);
         }
-        return $instance->__toString();
+        return $instance->build($expression);
     }
 
     public function quoteColumnName(string $name): string
@@ -107,5 +123,10 @@ class Compiler implements CompilerInterface
     public function quoteTableName(string $name): string
     {
         return $name;
+    }
+
+    public function getContext(): ContextInterface
+    {
+        return $this->context;
     }
 }

@@ -6,7 +6,7 @@ namespace FastOrm\SQL;
 
 interface ParamsInterface
 {
-    public function bindAll(array $params): void;
+    public function bindAll(iterable $params): void;
     public function bindOne($name, $value): void;
 
     /**

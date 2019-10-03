@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ContextInterface;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
-use FastOrm\SQL\ParamsAwareInterface;
-use FastOrm\SQL\ParamsAwareTrait;
 
 /**
  * Class InOperator
  * @package FastOrm\SQL\Operator
  */
-class InOperator implements
-    OperatorInterface,
+class InOperator extends AbstractOperator implements
     CompilerAwareInterface,
-    ParamsAwareInterface
+    ExpressionBuilderInterface
 {
-    use CompilerAwareTrait, ParamsAwareTrait;
+    use CompilerAwareTrait;
 
     private $column;
     private $values;
@@ -28,17 +28,38 @@ class InOperator implements
      * InOperator constructor.
      * @param $column
      * @param $values
+     * @param ContextInterface $context
      */
-    public function __construct($column, $values)
+    public function __construct($column, $values, ContextInterface $context)
     {
         $this->column = $column;
         $this->values = $values;
+        parent::__construct($context);
     }
 
-    public function __toString(): string
+    private function buildValues(array $values)
     {
-        $values = $this->values;
-        $column = $this->compiler->quoteColumnName($this->column);
+        $result = [];
+        foreach ($values as $value) {
+            if ($value instanceof ExpressionInterface) {
+                $value = $this->compiler->compile($value);
+            }
+            $paramName = $this->compiler
+                ->getContext()
+                ->getParams()
+                ->bindValue($value);
+            $result[] = ":$paramName";
+        }
+        return $result;
+    }
+
+    public function build(ExpressionInterface $expression): string
+    {
+        if (!$expression instanceof InOperator) {
+            throw new InvalidArgumentException();
+        }
+        $values = $expression->values;
+        $column = $this->compiler->quoteColumnName($expression->column);
 
         if (empty($values)) {
             return '0=1';
@@ -62,18 +83,5 @@ class InOperator implements
         $values = implode(',', $sqlValues);
 
         return "$column IN ($values)";
-    }
-
-    private function buildValues(array $values)
-    {
-        $result = [];
-        foreach ($values as $value) {
-            if ($value instanceof ExpressionInterface) {
-                $value = $this->compiler->compile($value);
-            }
-            $paramName = $this->params->bindValue($value);
-            $result[] = ":$paramName";
-        }
-        return $result;
     }
 }

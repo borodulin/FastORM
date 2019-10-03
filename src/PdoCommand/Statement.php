@@ -43,7 +43,7 @@ class Statement implements StatementInterface, LoggerAwareInterface
      * @return PDOStatement
      * @throws DbException
      */
-    public function prepare(array $params = []): PDOStatement
+    public function prepare(iterable $params = []): PDOStatement
     {
         if ($this->statement) {
             return $this->statement;
@@ -67,7 +67,7 @@ class Statement implements StatementInterface, LoggerAwareInterface
      * @return PDOStatement
      * @throws DbException
      */
-    public function execute(array $params = []): PDOStatement
+    public function execute(iterable $params = []): PDOStatement
     {
         $statement = $this->prepare();
         try {

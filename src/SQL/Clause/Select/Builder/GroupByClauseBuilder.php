@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\GroupByClause;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class GroupByClauseBuilder implements ExpressionInterface, CompilerAwareInterface
+class GroupByClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
-    /**
-     * @var GroupByClause
-     */
-    private $clause;
-
-    public function __construct(GroupByClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
-
-    public function __toString(): string
-    {
-        $columns = $this->clause->getColumns();
+        if (!$expression instanceof GroupByClause) {
+            throw new InvalidArgumentException();
+        }
+        $columns = $expression->getColumns();
         if (empty($columns)) {
             return '';
         }

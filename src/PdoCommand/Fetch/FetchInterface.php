@@ -10,20 +10,20 @@ interface FetchInterface extends FetchIndexedInterface
      * @param array $params
      * @return array
      */
-    public function one(array $params = []): array;
+    public function one(iterable $params = []): array;
 
     /**
      * @param int $columnNumber
      * @param array $params
      * @return array
      */
-    public function column(int $columnNumber = 0, array $params = []): array;
+    public function column(int $columnNumber = 0, iterable $params = []): array;
 
     /**
      * @param array $params
      * @return bool
      */
-    public function exists(array $params = []): bool;
+    public function exists(iterable $params = []): bool;
 
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
@@ -33,14 +33,14 @@ interface FetchInterface extends FetchIndexedInterface
      * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      */
-    public function scalar(int $columnNumber = 0, array $params = []);
+    public function scalar(int $columnNumber = 0, iterable $params = []);
 
     /**
      * Fetch a two-column result into an array where the first column is a key and the second column is the value.
      * @param array $params
      * @return array
      */
-    public function map(array $params = []): array;
+    public function map(iterable $params = []): array;
 
     /**
      * Fetch rows indexed by first column
@@ -48,7 +48,7 @@ interface FetchInterface extends FetchIndexedInterface
      * @return array
      * @see PDO::FETCH_UNIQUE
      */
-    public function indexed(array $params = []): array;
+    public function indexed(iterable $params = []): array;
 
     /**
      * Fetch rows grouped by first column values
@@ -56,18 +56,18 @@ interface FetchInterface extends FetchIndexedInterface
      * @return array
      * @see PDO::FETCH_GROUP
      */
-    public function grouped(array $params = []): array;
+    public function grouped(iterable $params = []): array;
 
 
     /**
      * @param array $params
      * @return CursorInterface
      */
-    public function cursor(array $params = []): CursorInterface;
+    public function cursor(iterable $params = []): CursorInterface;
 
     /**
      * @param array $params
      * @return BatchCursorInterface
      */
-    public function batchCursor(array $params = []): BatchCursorInterface;
+    public function batchCursor(iterable $params = []): BatchCursorInterface;
 }

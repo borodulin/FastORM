@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FastOrm\SQL\SearchCondition;
 
 use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\ContextInterface;
+use FastOrm\SQL\HasContextInterface;
 use FastOrm\SQL\SearchCondition\Operator\BetweenColumnsOperator;
 use FastOrm\SQL\SearchCondition\Operator\BetweenOperator;
 use FastOrm\SQL\SearchCondition\Operator\CompareOperator;
@@ -18,9 +20,8 @@ use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 use FastOrm\SQL\SearchCondition\Operator\OperatorInterface;
 use FastOrm\SQL\SearchCondition\Operator\OperatorListInterface;
 
-class SearchCondition implements ConditionInterface
+class SearchCondition implements ConditionInterface, HasContextInterface
 {
-
     /**
      * @var bool
      */
@@ -47,52 +48,67 @@ class SearchCondition implements ConditionInterface
 
     public function between($column, $intervalStart, $intervalEnd): CompoundInterface
     {
-        return $this->setOperator(new BetweenOperator($column, $intervalStart, $intervalEnd));
+        return $this->setOperator(new BetweenOperator(
+            $column,
+            $intervalStart,
+            $intervalEnd,
+            $this->compound->getQuery()
+        ));
     }
 
     public function betweenColumns($value, $intervalStartColumn, $intervalEndColumn): CompoundInterface
     {
-        return $this->setOperator(new BetweenColumnsOperator($value, $intervalStartColumn, $intervalEndColumn));
+        return $this->setOperator(new BetweenColumnsOperator(
+            $value,
+            $intervalStartColumn,
+            $intervalEndColumn,
+            $this->compound->getQuery()
+        ));
     }
 
     public function exists(SelectInterface $query): CompoundInterface
     {
-        return $this->setOperator(new ExistsOperator($query));
+        return $this->setOperator(new ExistsOperator($query, $this->compound->getQuery()));
     }
 
     public function in($column, $values): CompoundInterface
     {
-        return $this->setOperator(new InOperator($column, $values));
+        return $this->setOperator(new InOperator($column, $values, $this->compound->getQuery()));
     }
 
     public function like($column, $values): CompoundInterface
     {
-        return $this->setOperator(new LikeOperator($column, $values));
+        return $this->setOperator(new LikeOperator($column, $values, $this->compound->getQuery()));
     }
 
     public function compare($column, $operator, $value): CompoundInterface
     {
-        return $this->setOperator(new CompareOperator($column, $operator, $value));
+        return $this->setOperator(new CompareOperator(
+            $column,
+            $operator,
+            $value,
+            $this->compound->getQuery()
+        ));
     }
 
     public function equal($column, $value): CompoundInterface
     {
-        return $this->setOperator(new EqualOperator($column, $value));
+        return $this->setOperator(new EqualOperator($column, $value, $this->compound->getQuery()));
     }
 
     public function expression($expression, array $params = []): CompoundInterface
     {
-        return $this->setOperator(new ExpressionOperator($expression, $params));
+        return $this->setOperator(new ExpressionOperator($expression, $params, $this->compound->getQuery()));
     }
 
     public function filterHashCondition(array $hash): CompoundInterface
     {
-        return $this->setOperator(new FilterHashConditionOperator($hash));
+        return $this->setOperator(new FilterHashConditionOperator($hash, $this->compound->getQuery()));
     }
 
     public function hashCondition(array $hash): CompoundInterface
     {
-        return $this->setOperator(new HashConditionOperator($hash));
+        return $this->setOperator(new HashConditionOperator($hash, $this->compound->getQuery()));
     }
 
     private function setOperator(OperatorInterface $operator): Compound
@@ -128,5 +144,10 @@ class SearchCondition implements ConditionInterface
     public function __toString()
     {
         return (string)$this->compound->getQuery();
+    }
+
+    public function getContext(): ContextInterface
+    {
+        return $this->compound->getContext();
     }
 }

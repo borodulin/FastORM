@@ -4,32 +4,28 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\SelectClause;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class SelectClauseBuilder implements ExpressionInterface, CompilerAwareInterface
+class SelectClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
-    /**
-     * @var SelectClause
-     */
-    private $clause;
-
-    public function __construct(SelectClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
+        if (!$expression instanceof SelectClause) {
+            throw new InvalidArgumentException();
+        }
 
-    public function __toString(): string
-    {
-        $select = $this->clause->isDistinct() ? 'SELECT DISTINCT' : 'SELECT';
-        if ($selectOption = $this->clause->getOption() !== null) {
+        $select = $expression->isDistinct() ? 'SELECT DISTINCT' : 'SELECT';
+        if ($selectOption = $expression->getOption() !== null) {
             $select .= ' ' . $selectOption;
         }
-        $columns = $this->clause->getColumns();
+        $columns = $expression->getColumns();
         if (empty($columns)) {
             return $select . ' *';
         }

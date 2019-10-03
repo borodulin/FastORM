@@ -7,7 +7,7 @@ namespace FastOrm\Driver;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\SQL\Compiler;
 use FastOrm\SQL\CompilerInterface;
-use FastOrm\SQL\ParamsInterface;
+use FastOrm\SQL\ContextInterface;
 use PDO;
 use Psr\Log\LoggerAwareTrait;
 
@@ -15,9 +15,9 @@ abstract class AbstractDriver implements DriverInterface
 {
     use LoggerAwareTrait, EventDispatcherAwareTrait;
 
-    public function createCompiler(ParamsInterface $params): CompilerInterface
+    public function createCompiler(ContextInterface $context): CompilerInterface
     {
-        $compiler = new Compiler($params);
+        $compiler = new Compiler($context);
         $this->logger && $compiler->setLogger($this->logger);
         $this->eventDispatcher && $compiler->setEventDispatcher($this->eventDispatcher);
         return $compiler;

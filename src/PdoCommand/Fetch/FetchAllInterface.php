@@ -10,5 +10,5 @@ interface FetchAllInterface
      * @param array $params
      * @return array
      */
-    public function all(array $params = []): array;
+    public function all(iterable $params = []): array;
 }

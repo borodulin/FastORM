@@ -4,29 +4,25 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\LimitClause;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class LimitClauseBuilder implements ExpressionInterface
+class LimitClauseBuilder implements ExpressionBuilderInterface
 {
 
-    /**
-     * @var LimitClause
-     */
-    private $clause;
-
-    public function __construct(LimitClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
+        if (!$expression instanceof LimitClause) {
+            throw new InvalidArgumentException();
+        }
 
-    public function __toString(): string
-    {
         $sql = '';
-        if ($limit = $this->clause->getLimit()) {
+        if ($limit = $expression->getLimit()) {
             $sql = 'LIMIT ' . $limit;
         }
-        if ($offset = $this->clause->getOffset()) {
+        if ($offset = $expression->getOffset()) {
             $sql .= ' OFFSET ' . $offset;
         }
         return $sql;

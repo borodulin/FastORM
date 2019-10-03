@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ContextInterface;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 
-class FilterHashConditionOperator implements OperatorInterface, CompilerAwareInterface
+class FilterHashConditionOperator extends AbstractOperator implements
+    CompilerAwareInterface,
+    ExpressionBuilderInterface
 {
     use CompilerAwareTrait;
     /**
@@ -17,16 +23,21 @@ class FilterHashConditionOperator implements OperatorInterface, CompilerAwareInt
 
     /**
      * FilterHashOperator constructor.
-     * @param $hash
+     * @param array $hash
+     * @param ContextInterface $context
      */
-    public function __construct(array $hash)
+    public function __construct(array $hash, ContextInterface $context)
     {
         $this->hash = $hash;
+        parent::__construct($context);
     }
 
-    public function __toString(): string
+    public function build(ExpressionInterface $expression): string
     {
-        $hash = array_filter($this->hash);
-        return $this->compiler->compile(new HashConditionOperator($hash));
+        if (!$expression instanceof FilterHashConditionOperator) {
+            throw new InvalidArgumentException();
+        }
+        $hash = array_filter($expression->hash);
+        return $this->compiler->compile(new HashConditionOperator($hash, $expression->context));
     }
 }

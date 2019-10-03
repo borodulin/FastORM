@@ -4,29 +4,24 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\OrderByClause;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
 
-class OrderByClauseBuilder implements ExpressionInterface, CompilerAwareInterface
+class OrderByClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
-    /**
-     * @var OrderByClause
-     */
-    private $clause;
-
-    public function __construct(OrderByClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
-
-    public function __toString(): string
-    {
-        $columns = $this->clause->getColumns();
+        if (!$expression instanceof OrderByClause) {
+            throw new InvalidArgumentException();
+        }
+        $columns = $expression->getColumns();
         if (empty($columns)) {
             return '';
         }

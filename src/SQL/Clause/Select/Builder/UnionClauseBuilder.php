@@ -4,29 +4,25 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\UnionClause;
 use FastOrm\SQL\Clause\Select\UnionItem;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class UnionClauseBuilder implements ExpressionInterface, CompilerAwareInterface
+class UnionClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
-    /**
-     * @var UnionClause
-     */
-    private $clause;
-
-    public function __construct(UnionClause $clause)
+    public function build(ExpressionInterface $expression): string
     {
-        $this->clause = $clause;
-    }
+        if (!$expression instanceof UnionClause) {
+            throw new InvalidArgumentException();
+        }
 
-    public function __toString(): string
-    {
-        $unions = $this->clause->getUnions();
+        $unions = $expression->getUnions();
         if (empty($unions)) {
             return '';
         }

@@ -4,34 +4,31 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select\Builder;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\JoinClause;
 use FastOrm\SQL\Clause\Select\JoinItem;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\InvalidSQLException;
 
-class JoinClauseBuilder implements ExpressionInterface, CompilerAwareInterface
+class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
     /**
-     * @var JoinClause
-     */
-    private $clause;
-
-    public function __construct(JoinClause $clause)
-    {
-        $this->clause = $clause;
-    }
-
-    /**
+     * @param ExpressionInterface $expression
      * @return string
      * @throws InvalidSQLException
      */
-    public function __toString(): string
+    public function build(ExpressionInterface $expression): string
     {
-        $joins = $this->clause->getJoins();
+        if (!$expression instanceof JoinClause) {
+            throw new InvalidArgumentException();
+        }
+
+        $joins = $expression->getJoins();
         if (empty($joins)) {
             return '';
         }

@@ -7,6 +7,7 @@ namespace FastOrm\SQL\Clause;
 use FastOrm\ConnectionInterface;
 use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\EventDispatcherAwareTrait;
+use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\Fetch;
@@ -26,10 +27,11 @@ use FastOrm\SQL\Clause\Select\UnionClause;
 use FastOrm\SQL\Clause\Select\WhereClause;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\CompilerInterface;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\Params;
+use FastOrm\SQL\ParamsInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
-use IteratorAggregate;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Traversable;
@@ -40,10 +42,11 @@ use Traversable;
  */
 class SelectQuery implements
     OffsetClauseInterface,
-    CompilerAwareInterface,
     EventDispatcherAwareInterface,
     LoggerAwareInterface,
-    IteratorAggregate
+    ClauseContextInterface,
+    ExpressionBuilderInterface,
+    CompilerAwareInterface
 {
     use CompilerAwareTrait, EventDispatcherAwareTrait, LoggerAwareTrait;
     /**
@@ -85,7 +88,18 @@ class SelectQuery implements
 
     private $iterator;
 
+    /**
+     * @var Params
+     */
+    private $params;
+
     public function __construct(ConnectionInterface $connection)
+    {
+        $this->connection = $connection;
+        $this->init();
+    }
+
+    protected function init()
     {
         $this->selectClause = new SelectClause($this);
         $this->fromClause = new FromClause($this);
@@ -95,7 +109,7 @@ class SelectQuery implements
         $this->orderByClause = new OrderByClause($this);
         $this->unionClause = new UnionClause($this);
         $this->limitClause = new LimitClause($this);
-        $this->connection = $connection;
+        $this->params = new Params();
     }
 
     public function select($columns): SelectClauseInterface
@@ -157,22 +171,8 @@ class SelectQuery implements
 
     public function __toString()
     {
-        $compiler = $this->connection->getDriver()->createCompiler(new Params());
-        return $this->compileQuery($compiler);
-    }
-
-    private function compileQuery(CompilerInterface $compiler): string
-    {
-        return implode(' ', array_filter([
-            $compiler->compile($this->selectClause),
-            $compiler->compile($this->fromClause),
-            $compiler->compile($this->whereClause),
-            $compiler->compile($this->groupByClause),
-            $compiler->compile($this->havingClause),
-            $compiler->compile($this->unionClause),
-            $compiler->compile($this->orderByClause),
-            $compiler->compile($this->limitClause),
-        ]));
+        $compiler = $this->connection->getDriver()->createCompiler($this);
+        return $compiler->compile($this);
     }
 
     /**
@@ -215,11 +215,52 @@ class SelectQuery implements
      */
     public function statement(array $options = []): StatementInterface
     {
-        $params = new Params();
-        $compiler = $this->connection->getDriver()->createCompiler($params);
-        $sql = $this->compileQuery($compiler);
+        $compiler = $this->connection->getDriver()->createCompiler($this);
+        $sql = $compiler->compile($this);
         $statement = new Statement($this->connection->getPdo(), $sql, $options);
-        $statement->prepare($params->getParams());
+        $statement->prepare($this->params);
         return $statement;
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @throws DbException
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        return count($this->fetch()->column());
+    }
+
+    public function getParams(): ParamsInterface
+    {
+        return $this->params;
+    }
+
+    public function getConnection(): ConnectionInterface
+    {
+        return $this->connection;
+    }
+
+    public function build(ExpressionInterface $expression): string
+    {
+        if (!$expression instanceof SelectQuery) {
+            throw new InvalidArgumentException();
+        }
+        return implode(' ', array_filter([
+            $this->compiler->compile($expression->selectClause),
+            $this->compiler->compile($expression->fromClause),
+            $this->compiler->compile($expression->whereClause),
+            $this->compiler->compile($expression->groupByClause),
+            $this->compiler->compile($expression->havingClause),
+            $this->compiler->compile($expression->unionClause),
+            $this->compiler->compile($expression->orderByClause),
+            $this->compiler->compile($expression->limitClause),
+        ]));
     }
 }

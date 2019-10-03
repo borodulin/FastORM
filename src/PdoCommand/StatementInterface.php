@@ -8,7 +8,7 @@ use PDOStatement;
 
 interface StatementInterface
 {
-    public function prepare(array $params = []): PDOStatement;
+    public function prepare(iterable $params = []): PDOStatement;
 
-    public function execute(array $params = []): PDOStatement;
+    public function execute(iterable $params = []): PDOStatement;
 }

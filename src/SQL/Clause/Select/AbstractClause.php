@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
+use FastOrm\ConnectionInterface;
 use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\SelectInterface;
 use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\SQL\ContextInterface;
+use FastOrm\SQL\HasContextInterface;
+use FastOrm\SQL\ParamsInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 use Traversable;
 
-abstract class AbstractClause implements ClauseInterface, SelectInterface
+abstract class AbstractClause implements
+    ContextInterface,
+    SelectInterface,
+    HasContextInterface
 {
     /**
      * @var SelectQuery
@@ -25,7 +32,7 @@ abstract class AbstractClause implements ClauseInterface, SelectInterface
         $this->query = $query;
     }
 
-    public function getQuery(): SelectInterface
+    public function getQuery(): SelectQuery
     {
         return $this->query;
     }
@@ -116,5 +123,35 @@ abstract class AbstractClause implements ClauseInterface, SelectInterface
     public function __toString()
     {
         return (string)$this->query;
+    }
+
+    public function getParams(): ParamsInterface
+    {
+        return $this->query->getParams();
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @throws DbException
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        return $this->query->count();
+    }
+
+    public function getConnection(): ConnectionInterface
+    {
+        return $this->query->getConnection();
+    }
+
+    public function getContext(): ContextInterface
+    {
+        return $this->query;
     }
 }

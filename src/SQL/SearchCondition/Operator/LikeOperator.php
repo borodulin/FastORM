@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-class LikeOperator implements OperatorInterface
+use FastOrm\SQL\ContextInterface;
+
+class LikeOperator extends AbstractOperator
 {
     private $column;
     private $value;
 
-    public function __construct($column, $value)
+    public function __construct($column, $value, ContextInterface $context)
     {
         $this->column = $column;
         $this->value = $value;
+        parent::__construct($context);
     }
 
     /**
@@ -29,11 +32,5 @@ class LikeOperator implements OperatorInterface
     public function getColumn()
     {
         return $this->column;
-    }
-
-    public function __toString()
-    {
-        //TODO
-        return '';
     }
 }

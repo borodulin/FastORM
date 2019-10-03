@@ -9,7 +9,7 @@ use PDOStatement;
 
 class BindParams
 {
-    public function __invoke(PDOStatement $statement, array $params)
+    public function __invoke(PDOStatement $statement, iterable $params)
     {
         foreach ($params as $name => $value) {
             if ($value instanceof PdoValue) {

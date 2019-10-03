@@ -21,9 +21,9 @@ class CursorTest extends TestCase
     public function testCursor()
     {
         $connection = $this->createConnection();
-        $query = (new SelectQuery($connection));
-        $query->from('albums')->alias('t1');
-        $count = (clone $query)->select('count(1)')->fetch()->scalar();
+        $query = (new SelectQuery($connection))
+            ->from('albums')->alias('t1');
+        $count = count($query);
         $rows = [];
         foreach ($query as $row) {
             $rows[] = $row;

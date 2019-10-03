@@ -52,29 +52,29 @@ class FromClause extends AbstractClause implements FromClauseInterface
         return $this;
     }
 
-    public function join($join, string $joinType = 'inner join'): JoinAliasClauseInterface
+    public function join($join, string $joinType = 'INNER JOIN'): JoinAliasClauseInterface
     {
         return $this->joinClause->addJoin($join, $joinType);
     }
 
     public function innerJoin($join): JoinAliasClauseInterface
     {
-        return $this->joinClause->addJoin($join, 'inner join');
+        return $this->joinClause->addJoin($join, 'INNER JOIN');
     }
 
     public function leftJoin($join): JoinAliasClauseInterface
     {
-        return $this->joinClause->addJoin($join, 'left join');
+        return $this->joinClause->addJoin($join, 'LEFT JOIN');
     }
 
     public function rightJoin($join): JoinAliasClauseInterface
     {
-        return $this->joinClause->addJoin($join, 'right join');
+        return $this->joinClause->addJoin($join, 'RIGHT JOIN');
     }
 
     public function fullJoin($join): JoinAliasClauseInterface
     {
-        return $this->joinClause->addJoin($join, 'full join');
+        return $this->joinClause->addJoin($join, 'FULL JOIN');
     }
 
     /**

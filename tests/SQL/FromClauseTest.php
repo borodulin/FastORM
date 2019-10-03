@@ -94,13 +94,12 @@ class FromClauseTest extends TestCase
     public function testRightJoin()
     {
         $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $this->expectException(DbException::class);
+        (new SelectQuery($connection))
             ->from('tracks')->alias('t')
             ->rightJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
-        $this->expectException(DbException::class);
-        $fetch->all();
     }
 
     /**

@@ -4,34 +4,40 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ParamsAwareInterface;
-use FastOrm\SQL\ParamsAwareTrait;
+use FastOrm\SQL\ContextInterface;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 
-class BetweenOperator implements
-    OperatorInterface,
-    ParamsAwareInterface,
+class BetweenOperator extends AbstractOperator implements
+    ExpressionBuilderInterface,
     CompilerAwareInterface
 {
-    use ParamsAwareTrait, CompilerAwareTrait;
+    use CompilerAwareTrait;
 
     private $column;
     private $intervalStart;
     private $intervalEnd;
 
-    public function __construct($column, $intervalStart, $intervalEnd)
+    public function __construct($column, $intervalStart, $intervalEnd, ContextInterface $context)
     {
         $this->column = $column;
         $this->intervalStart = $intervalStart;
         $this->intervalEnd = $intervalEnd;
+        parent::__construct($context);
     }
 
-    public function __toString(): string
+    public function build(ExpressionInterface $expression): string
     {
-        $paramStart = $this->params->bindValue($this->intervalStart);
-        $paramEnd = $this->params->bindValue($this->intervalEnd);
-        $column = $this->compiler->quoteColumnName($this->column);
+        if (!$expression instanceof BetweenOperator) {
+            throw new InvalidArgumentException();
+        }
+        $params = $this->compiler->getContext()->getParams();
+        $paramStart = $params->bindValue($expression->intervalStart);
+        $paramEnd = $params->bindValue($expression->intervalEnd);
+        $column = $this->compiler->quoteColumnName($expression->column);
         return "$column BETWEEN :$paramStart AND :$paramEnd";
     }
 }
