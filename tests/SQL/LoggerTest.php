@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\Command\DbException;
+use FastOrm\PdoCommand\DbException;
 use FastOrm\NotSupportedException;
-use FastOrm\SQL\Query;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\DummyLogger;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
@@ -27,9 +27,9 @@ class LoggerTest extends TestCase
         $tran = $connection->beginTransaction();
         $tran->commit();
         $this->assertCount(1, $logger->getLogs());
-        $query = new Query();
+        $query = new SelectQuery($connection);
         $query->setLogger($logger);
-        $query->select('1')->prepare($connection)->fetch()->scalar();
+        $query->select('1')->fetch()->scalar();
         $this->assertCount(1, $logger->getLogs());
     }
 }

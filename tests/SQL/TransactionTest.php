@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\Command\Command;
-use FastOrm\Command\DbException;
+use FastOrm\PdoCommand\DbException;
 use FastOrm\Exception;
 use FastOrm\NotSupportedException;
-use FastOrm\SQL\Query;
+use FastOrm\PdoCommand\Statement;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -23,20 +23,20 @@ class TransactionTest extends TestCase
     public function testRollback()
     {
         $connection = $this->createConnection();
-        $nameCommand = (new Query())
+        $nameFetch = (new SelectQuery($connection))
             ->select('Title')
             ->from('albums')
             ->where()->equal('AlbumId', 1)
-            ->prepare($connection);
-        $oldName = $nameCommand->fetch()->scalar();
+            ->fetch();
+        $oldName = $nameFetch->scalar();
         $tran = $connection->beginTransaction();
-        $command = new Command($connection->getPdo(), 'update albums set Title = :t where AlbumId=:id');
-        $cnt = $command->execute(['t' => 'test', 'id' => 1]);
+        $statement = new Statement($connection->getPdo(), 'update albums set Title = :t where AlbumId=:id');
+        $cnt = $statement->execute(['t' => 'test', 'id' => 1])->rowCount();
         $this->assertEquals($cnt, 1);
-        $newName = $nameCommand->fetch()->scalar();
+        $newName = $nameFetch->scalar();
         $this->assertEquals('test', $newName);
         $tran->rollBack();
-        $newName = $nameCommand->fetch()->scalar();
+        $newName = $nameFetch->scalar();
         $this->assertEquals($oldName, $newName);
     }
 
@@ -48,21 +48,21 @@ class TransactionTest extends TestCase
     public function testCommit()
     {
         $connection = $this->createConnection();
-        $nameCommand = (new Query())
+        $nameFetch = (new SelectQuery($connection))
             ->select('Title')
             ->from('albums')
             ->where()->equal('AlbumId', 1)
-            ->prepare($connection);
-        $oldName = $nameCommand->fetch()->scalar();
+            ->fetch();
+        $oldName = $nameFetch->scalar();
         $tran = $connection->beginTransaction();
-        $command = new Command($connection->getPdo(), 'update albums set Title = :t where AlbumId=:id');
-        $cnt = $command->execute(['t' => 'test', 'id' => 1]);
+        $command = new Statement($connection->getPdo(), 'update albums set Title = :t where AlbumId=:id');
+        $cnt = $command->execute(['t' => 'test', 'id' => 1])->rowCount();
         $this->assertEquals($cnt, 1);
         $tran->commit();
-        $newName = $nameCommand->fetch()->scalar();
+        $newName = $nameFetch->scalar();
         $this->assertEquals('test', $newName);
         $command->execute(['t' => $oldName, 'id' => 1]);
-        $newName = $nameCommand->fetch()->scalar();
+        $newName = $nameFetch->scalar();
         $this->assertEquals($oldName, $newName);
     }
 

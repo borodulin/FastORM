@@ -30,4 +30,10 @@ class LikeOperator implements OperatorInterface
     {
         return $this->column;
     }
+
+    public function __toString()
+    {
+        //TODO
+        return '';
+    }
 }

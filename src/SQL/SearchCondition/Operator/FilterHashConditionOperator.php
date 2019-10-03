@@ -6,9 +6,8 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
 
-class FilterHashConditionOperator implements OperatorInterface, ExpressionBuilderInterface, CompilerAwareInterface
+class FilterHashConditionOperator implements OperatorInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
     /**
@@ -25,7 +24,7 @@ class FilterHashConditionOperator implements OperatorInterface, ExpressionBuilde
         $this->hash = $hash;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         $hash = array_filter($this->hash);
         return $this->compiler->compile(new HashConditionOperator($hash));

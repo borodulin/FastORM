@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\Command\DbException;
+use FastOrm\PdoCommand\DbException;
 use FastOrm\NotSupportedException;
-use FastOrm\SQL\Query;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -20,10 +20,10 @@ class FromClauseTest extends TestCase
     public function testEmptyFrom()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->select('1')
-            ->prepare($connection);
-        $one = $command->fetch()->scalar();
+            ->fetch();
+        $one = $fetch->scalar();
         $this->assertEquals(1, $one);
     }
 
@@ -33,13 +33,13 @@ class FromClauseTest extends TestCase
     public function testJoins()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $command = (new SelectQuery($connection))
             ->from('tracks')->alias('t')
             ->innerJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->innerJoin('media_types')->alias('mt')->on('mt.MediaTypeId=t.MediaTypeId')
             ->limit(10)
-            ->prepare($connection);
-        $all = $command->fetch()->all();
+            ->fetch();
+        $all = $command->all();
         $this->assertCount(10, $all);
     }
 
@@ -49,13 +49,13 @@ class FromClauseTest extends TestCase
     public function testSubQuery()
     {
         $connection = $this->createConnection();
-        $query = (new Query())
+        $query = (new SelectQuery($connection))
             ->from('tracks')->alias('t')
             ->limit(10);
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from($query)->alias('s')
-            ->prepare($connection);
-        $all = $command->fetch()->all();
+            ->fetch();
+        $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 
@@ -65,11 +65,11 @@ class FromClauseTest extends TestCase
     public function testFromAlias()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('tracks t')
             ->limit(10)
-            ->prepare($connection);
-        $all = $command->fetch()->all();
+            ->fetch();
+        $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 
@@ -79,12 +79,12 @@ class FromClauseTest extends TestCase
     public function testLeftJoin()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('tracks')->alias('t')
             ->leftJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
-            ->prepare($connection);
-        $all = $command->fetch()->all();
+            ->fetch();
+        $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 
@@ -94,13 +94,13 @@ class FromClauseTest extends TestCase
     public function testRightJoin()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('tracks')->alias('t')
             ->rightJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
-            ->prepare($connection);
+            ->fetch();
         $this->expectException(DbException::class);
-        $command->fetch()->all();
+        $fetch->all();
     }
 
     /**
@@ -109,13 +109,12 @@ class FromClauseTest extends TestCase
     public function testFullJoin()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $this->expectException(DbException::class);
+        (new SelectQuery($connection))
             ->from('tracks')->alias('t')
             ->fullJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
-            ->prepare($connection);
-        $this->expectException(DbException::class);
-        $command->fetch()->all();
+            ->fetch();
     }
 
     /**
@@ -124,12 +123,12 @@ class FromClauseTest extends TestCase
     public function testCustomJoin()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('tracks')->alias('t')
             ->join('genres g', 'left outer join')->on('g.GenreID=t.GenreId')
             ->limit(10)
-            ->prepare($connection);
-        $all = $command->fetch()->all();
+            ->fetch();
+        $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 }

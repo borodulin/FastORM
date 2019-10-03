@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
-use FastOrm\SQL\Query;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -15,20 +15,17 @@ class CursorTest extends TestCase
     use TestConnectionTrait;
 
     /**
-     * @covers \FastOrm\Command\Fetch\Cursor
+     * @covers \FastOrm\PdoCommand\Fetch\Cursor
      * @throws NotSupportedException
      */
     public function testCursor()
     {
         $connection = $this->createConnection();
-        $query = (new Query())
-            ->from('albums')->alias('t1');
-        $commandCursor = $query->prepare($connection);
-        $commandCount = $query->select('count(1)')->prepare($connection);
-        $count = $commandCount->fetch()->scalar();
-        $cursor = $commandCursor->fetch()->cursor();
+        $query = (new SelectQuery($connection));
+        $query->from('albums')->alias('t1');
+        $count = (clone $query)->select('count(1)')->fetch()->scalar();
         $rows = [];
-        foreach ($cursor as $row) {
+        foreach ($query as $row) {
             $rows[] = $row;
         }
         $this->assertEquals($count, count($rows));

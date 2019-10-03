@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\ParamsAwareInterface;
+use FastOrm\SQL\ParamsAwareTrait;
 
 class HashConditionOperator implements
     OperatorInterface,
-    ExpressionBuilderInterface,
     CompilerAwareInterface,
     ParamsAwareInterface
 {
@@ -32,7 +30,7 @@ class HashConditionOperator implements
         $this->hash = $hash;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         $hash = $this->hash;
         if (empty($hash)) {

@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\ParamsAwareInterface;
+use FastOrm\SQL\ParamsAwareTrait;
 
 class CompareOperator implements
     OperatorInterface,
     ParamsAwareInterface,
-    ExpressionBuilderInterface,
     CompilerAwareInterface
 {
     use ParamsAwareTrait, CompilerAwareTrait;
@@ -30,7 +28,7 @@ class CompareOperator implements
         $this->value = $value;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         if ($this->value instanceof ExpressionInterface) {
             $this->value = $this->compiler->compile($this->value);

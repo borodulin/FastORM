@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\ParamsAwareInterface;
+use FastOrm\SQL\ParamsAwareTrait;
 
 /**
  * Class InOperator
@@ -17,7 +16,6 @@ use FastOrm\SQL\ExpressionInterface;
  */
 class InOperator implements
     OperatorInterface,
-    ExpressionBuilderInterface,
     CompilerAwareInterface,
     ParamsAwareInterface
 {
@@ -37,7 +35,7 @@ class InOperator implements
         $this->values = $values;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         $values = $this->values;
         $column = $this->compiler->quoteColumnName($this->column);

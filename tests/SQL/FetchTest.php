@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
-use FastOrm\SQL\Query;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -19,14 +19,14 @@ class FetchTest extends TestCase
     public function testColumn()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->select([
                 'id' => 'TrackId',
             ])
             ->from('tracks t')
             ->limit(10)
-            ->prepare($connection);
-        $rows = $command->fetch()->column();
+            ->fetch();
+        $rows = $fetch->column();
         $this->assertCount(10, $rows);
     }
 
@@ -36,7 +36,7 @@ class FetchTest extends TestCase
     public function testMap()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->select([
                 'id' => 'TrackId',
                 'TrackId'
@@ -44,8 +44,8 @@ class FetchTest extends TestCase
             ->from('tracks t')
             ->orderBy('TrackId desc')
             ->limit(10)
-            ->prepare($connection);
-        $rows = $command->fetch()->map();
+            ->fetch();
+        $rows = $fetch->map();
         $flip = array_flip($rows);
         $this->assertTrue($rows == $flip);
     }
@@ -56,15 +56,15 @@ class FetchTest extends TestCase
     public function testExists()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->select('1')
-            ->prepare($connection);
-        $exists = $command->fetch()->exists();
+            ->fetch();
+        $exists = $fetch->exists();
         $this->assertEquals($exists, true);
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->select('0')
-            ->prepare($connection);
-        $exists = $command->fetch()->exists();
+            ->fetch();
+        $exists = $fetch->exists();
         $this->assertEquals($exists, false);
     }
 }

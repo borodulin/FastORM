@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsAwareTrait;
 
 class Expression implements
     ExpressionInterface,
-    ExpressionBuilderInterface,
     ParamsAwareInterface
 {
     use ParamsAwareTrait;
@@ -28,7 +25,7 @@ class Expression implements
         $this->bindParams = $params;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         $this->params->bindAll($this->bindParams);
         return $this->expression;

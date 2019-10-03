@@ -6,8 +6,8 @@ namespace FastOrm\Tests\SQL;
 
 
 use FastOrm\NotSupportedException;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
-use FastOrm\SQL\Query;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -21,17 +21,17 @@ class GroupByClauseTest extends TestCase
     public function testGroupBy()
     {
         $connection = $this->createConnection();
-        $count = (int)(new Query())
+        $count = (int)(new SelectQuery($connection))
             ->select('count(1)')
             ->from('genres')
-            ->prepare($connection)
-            ->fetch()->scalar();
-        $command = (new Query())
+            ->fetch()
+            ->scalar();
+        $fetch = (new SelectQuery($connection))
             ->select(['GenreId', 'count(1) as cnt'])
             ->from('tracks')->alias('t')
             ->groupBy(['GenreId'])
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount($count, $rows);
     }
 
@@ -41,12 +41,12 @@ class GroupByClauseTest extends TestCase
     public function testString()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
             ->from('tracks')->alias('t')
             ->groupBy('GenreId, MediaTypeId')
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(38, $rows);
     }
 
@@ -56,12 +56,12 @@ class GroupByClauseTest extends TestCase
     public function testExpression()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
             ->from('tracks')->alias('t')
             ->groupBy(new Expression('GenreId, MediaTypeId'))
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(38, $rows);
     }
 }

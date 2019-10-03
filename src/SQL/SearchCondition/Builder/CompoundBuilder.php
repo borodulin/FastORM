@@ -6,11 +6,11 @@ namespace FastOrm\SQL\SearchCondition\Builder;
 
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\CompoundItem;
 
-class CompoundBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
+class CompoundBuilder implements ExpressionInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
@@ -24,7 +24,7 @@ class CompoundBuilder implements ExpressionBuilderInterface, CompilerAwareInterf
         $this->compound = $compound;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         $conditions = [];
         /** @var CompoundItem $compoundItem */

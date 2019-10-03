@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Builder;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\ParamsAwareInterface;
+use FastOrm\SQL\ParamsAwareTrait;
 use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 
-class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareInterface, ParamsAwareInterface
+class LikeOperatorBuilder implements ExpressionInterface, CompilerAwareInterface, ParamsAwareInterface
 {
     use CompilerAwareTrait, ParamsAwareTrait;
 
@@ -26,7 +25,7 @@ class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareIn
         $this->likeOperator = $likeOperator;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         $value = $this->likeOperator->getValue();
         if ($value instanceof ExpressionInterface) {

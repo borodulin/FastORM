@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition;
 
-use FastOrm\SQL\Clause\AbstractClause;
-use FastOrm\SQL\Query;
+use FastOrm\SQL\Clause\Select\AbstractClause;
+use FastOrm\SQL\Clause\SelectQuery;
 use SplStack;
 
 class Compound extends AbstractClause implements CompoundInterface
@@ -15,7 +15,7 @@ class Compound extends AbstractClause implements CompoundInterface
      */
     private $compounds;
 
-    public function __construct(Query $query)
+    public function __construct(SelectQuery $query)
     {
         parent::__construct($query);
         $this->compounds = new SplStack();

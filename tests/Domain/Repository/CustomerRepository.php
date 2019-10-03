@@ -3,18 +3,12 @@
 
 namespace FastOrm\Tests\Domain\Repository;
 
-use FastOrm\SQL\Query;
-use FastOrm\SQL\QueryInterface;
+use FastOrm\SQL\Clause\SelectQuery;
 
-class CustomerRepository
+class CustomerRepository extends SelectQuery
 {
-    public function query(): QueryInterface
-    {
-        return (new Query())->from('customers');
-    }
-
     public function getInvoices()
     {
-
+        return (clone $this)->where()->equal('', '');
     }
 }

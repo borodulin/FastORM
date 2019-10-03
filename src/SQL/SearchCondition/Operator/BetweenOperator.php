@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ParamsAwareInterface;
+use FastOrm\SQL\ParamsAwareTrait;
 
 class BetweenOperator implements
     OperatorInterface,
-    ExpressionBuilderInterface,
     ParamsAwareInterface,
     CompilerAwareInterface
 {
@@ -29,7 +27,7 @@ class BetweenOperator implements
         $this->intervalEnd = $intervalEnd;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         $paramStart = $this->params->bindValue($this->intervalStart);
         $paramEnd = $this->params->bindValue($this->intervalEnd);

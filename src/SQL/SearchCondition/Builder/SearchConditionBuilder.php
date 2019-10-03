@@ -6,14 +6,14 @@ namespace FastOrm\SQL\SearchCondition\Builder;
 
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\Query;
+use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\Compound;
 use FastOrm\SQL\SearchCondition\Operator\ExpressionOperator;
 use FastOrm\SQL\SearchCondition\Operator\NotOperatorInterface;
 use FastOrm\SQL\SearchCondition\SearchCondition;
 
-class SearchConditionBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
+class SearchConditionBuilder implements ExpressionInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;
 
@@ -27,7 +27,7 @@ class SearchConditionBuilder implements ExpressionBuilderInterface, CompilerAwar
         $this->condition = $condition;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         if (!$operator = $this->condition->getOperator()) {
             return '';
@@ -41,7 +41,7 @@ class SearchConditionBuilder implements ExpressionBuilderInterface, CompilerAwar
         if ($operator instanceof ExpressionOperator) {
             $expression = $operator->getExpression();
             if (is_callable($expression)) {
-                /** @var Query $query */
+                /** @var SelectQuery $query */
                 $query = $this->condition->getCompound()->getQuery();
                 $compound = new Compound($query);
                 $expression = call_user_func($expression, $compound->getCondition());

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
-use FastOrm\SQL\Query;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -20,11 +20,11 @@ class InOperatorTest extends TestCase
     public function testEmpty()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('employees e')
             ->where()->in('EmployeeId', [])
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(0, $rows);
     }
 
@@ -34,11 +34,11 @@ class InOperatorTest extends TestCase
     public function testArray()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('employees e')
             ->where()->in('EmployeeId', [1,2])
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(2, $rows);
     }
 
@@ -48,11 +48,11 @@ class InOperatorTest extends TestCase
     public function testExpression()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('employees e')
             ->where()->in('EmployeeId', new Expression('(:p1,:p2)', ['p1' => 1, 'p2' => 2]))
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(2, $rows);
     }
 
@@ -62,11 +62,11 @@ class InOperatorTest extends TestCase
     public function testQuery()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('employees e')
-            ->where()->in('EmployeeId', (new Query())->select('1'))
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->where()->in('EmployeeId', (new SelectQuery($connection))->select('1'))
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(1, $rows);
     }
 
@@ -76,11 +76,11 @@ class InOperatorTest extends TestCase
     public function testValue()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('employees e')
             ->where()->in('EmployeeId', 1)
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(1, $rows);
     }
 
@@ -90,11 +90,11 @@ class InOperatorTest extends TestCase
     public function testObject()
     {
         $connection = $this->createConnection();
-        $command = (new Query())
+        $fetch = (new SelectQuery($connection))
             ->from('employees e')
             ->where()->in('EmployeeId', (object)[])
-            ->prepare($connection);
-        $rows = $command->fetch()->all();
+            ->fetch();
+        $rows = $fetch->all();
         $this->assertCount(0, $rows);
     }
 }

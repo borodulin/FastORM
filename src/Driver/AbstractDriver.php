@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\Driver;
 
-use FastOrm\Command\ParamsInterface;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\SQL\Compiler;
 use FastOrm\SQL\CompilerInterface;
+use FastOrm\SQL\ParamsInterface;
 use PDO;
 use Psr\Log\LoggerAwareTrait;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition;
 
-use FastOrm\SQL\QueryInterface;
+use FastOrm\SQL\Clause\SelectInterface;
 use FastOrm\SQL\SearchCondition\Operator\BetweenColumnsOperator;
 use FastOrm\SQL\SearchCondition\Operator\BetweenOperator;
 use FastOrm\SQL\SearchCondition\Operator\CompareOperator;
@@ -55,7 +55,7 @@ class SearchCondition implements ConditionInterface
         return $this->setOperator(new BetweenColumnsOperator($value, $intervalStartColumn, $intervalEndColumn));
     }
 
-    public function exists(QueryInterface $query): CompoundInterface
+    public function exists(SelectInterface $query): CompoundInterface
     {
         return $this->setOperator(new ExistsOperator($query));
     }
@@ -123,5 +123,10 @@ class SearchCondition implements ConditionInterface
     public function getCompound(): Compound
     {
         return $this->compound;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->compound->getQuery();
     }
 }

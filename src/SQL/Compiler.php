@@ -4,30 +4,26 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsInterface;
-use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Builder\FromClauseBuilder;
-use FastOrm\SQL\Clause\Builder\GroupByClauseBuilder;
-use FastOrm\SQL\Clause\Builder\HavingClauseBuilder;
-use FastOrm\SQL\Clause\Builder\JoinClauseBuilder;
-use FastOrm\SQL\Clause\Builder\LimitClauseBuilder;
-use FastOrm\SQL\Clause\Builder\OrderByClauseBuilder;
-use FastOrm\SQL\Clause\Builder\SelectClauseBuilder;
-use FastOrm\SQL\Clause\Builder\UnionClauseBuilder;
-use FastOrm\SQL\Clause\Builder\WhereClauseBuilder;
-use FastOrm\SQL\Clause\ClauseInterface;
-use FastOrm\SQL\Clause\FromClause;
-use FastOrm\SQL\Clause\GroupByClause;
-use FastOrm\SQL\Clause\HavingClause;
-use FastOrm\SQL\Clause\JoinClause;
-use FastOrm\SQL\Clause\LimitClause;
-use FastOrm\SQL\Clause\OrderByClause;
-use FastOrm\SQL\Clause\SelectClause;
-use FastOrm\SQL\Clause\UnionClause;
-use FastOrm\SQL\Clause\WhereClause;
+use FastOrm\SQL\Clause\Select\Builder\FromClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\GroupByClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\HavingClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\JoinClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\LimitClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\OrderByClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\SelectClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\UnionClauseBuilder;
+use FastOrm\SQL\Clause\Select\Builder\WhereClauseBuilder;
+use FastOrm\SQL\Clause\Select\FromClause;
+use FastOrm\SQL\Clause\Select\GroupByClause;
+use FastOrm\SQL\Clause\Select\HavingClause;
+use FastOrm\SQL\Clause\Select\JoinClause;
+use FastOrm\SQL\Clause\Select\LimitClause;
+use FastOrm\SQL\Clause\Select\OrderByClause;
+use FastOrm\SQL\Clause\Select\SelectClause;
+use FastOrm\SQL\Clause\Select\UnionClause;
+use FastOrm\SQL\Clause\Select\WhereClause;
 use FastOrm\SQL\SearchCondition\Builder\CompoundBuilder;
 use FastOrm\SQL\SearchCondition\Builder\LikeOperatorBuilder;
 use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
@@ -65,51 +61,34 @@ class Compiler implements CompilerInterface
     /**
      * @var ParamsInterface
      */
-    private $bindParams;
+    private $params;
 
     private $queries;
 
-    public function __construct(ParamsInterface $bindParams, array $classMap = [])
+    public function __construct(ParamsInterface $params, array $classMap = [])
     {
         $this->classMap = $classMap ? array_replace(static::$defaultClassMap, $classMap) : static::$defaultClassMap;
-        $this->bindParams = $bindParams;
+        $this->params = $params;
         $this->queries = new SplObjectStorage();
     }
 
     /**
      * @param ExpressionInterface $expression
      * @return string
-     * @throws InvalidSQLException
      */
     public function compile(ExpressionInterface $expression): string
     {
-        if ($expression instanceof ClauseInterface) {
-            $query = $expression->getQuery();
-            if (!$this->queries->contains($query)) {
-                $this->queries->attach($expression);
-                return $this->compile($query);
-            }
-        } elseif ($expression instanceof QueryInterface) {
-            if (!$this->queries->contains($expression)) {
-                $this->queries->attach($expression);
-            } else {
-                throw new InvalidSQLException();
-            }
-        }
-
         $classBuilder = $this->classMap[get_class($expression)] ?? null;
         if ($classBuilder) {
             $instance = new $classBuilder($expression);
-            if (!$instance instanceof ExpressionBuilderInterface) {
+            if (!$instance instanceof ExpressionInterface) {
                 throw new InvalidArgumentException();
             }
-        } elseif ($expression instanceof ExpressionBuilderInterface) {
-            $instance = $expression;
         } else {
-            throw new InvalidArgumentException();
+            $instance = $expression;
         }
         if ($instance instanceof ParamsAwareInterface) {
-            $instance->setParams($this->bindParams);
+            $instance->setParams($this->params);
         }
         if ($instance instanceof CompilerAwareInterface) {
             $instance->setCompiler($this);
@@ -117,10 +96,7 @@ class Compiler implements CompilerInterface
         if ($this->logger && $instance instanceof LoggerAwareInterface) {
             $instance->setLogger($this->logger);
         }
-        if ($this->eventDispatcher && $instance instanceof EventDispatcherAwareInterface) {
-            $instance->setEventDispatcher($this->eventDispatcher);
-        }
-        return $instance->build();
+        return $instance->__toString();
     }
 
     public function quoteColumnName(string $name): string

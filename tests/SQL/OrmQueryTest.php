@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
-use FastOrm\SQL\Query;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
@@ -20,14 +20,14 @@ class OrmQueryTest extends TestCase
     public function testSelect()
     {
         $connection = $this->createConnection();
-        $query = new Query();
+        $query = new SelectQuery($connection);
         /** @var ConditionInterface  $expression */
-        $command = $query
+        $fetch = $query
             ->select(['AlbumId', 'Title'])->distinct()
             ->from('albums')->alias('t1')
             ->where()->hashCondition(['AlbumId' => [1,2]])
-            ->prepare($connection);
-        $all = $command->fetch()->indexBy('AlbumId')->all();
+            ->fetch();
+        $all = $fetch->indexBy('AlbumId')->all();
         $this->assertIsArray($all);
     }
 }

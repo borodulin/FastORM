@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\Command\ParamsAwareInterface;
-use FastOrm\Command\ParamsAwareTrait;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\ParamsAwareInterface;
+use FastOrm\SQL\ParamsAwareTrait;
 
 class EqualOperator implements
     OperatorInterface,
-    ExpressionBuilderInterface,
     CompilerAwareInterface,
     ParamsAwareInterface
 {
@@ -28,7 +26,7 @@ class EqualOperator implements
         $this->value = $value;
     }
 
-    public function build(): string
+    public function __toString(): string
     {
         if ($this->value instanceof ExpressionInterface || is_array($this->value)) {
             return $this->compiler->compile(new InOperator($this->column, $this->value));

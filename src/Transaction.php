@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm;
 
-use FastOrm\Command\DbException;
+use FastOrm\PdoCommand\DbException;
 use FastOrm\Driver\SavepointInterface;
 use FastOrm\Event\TransactionEvent;
 use Psr\Log\LoggerAwareTrait;
