@@ -33,7 +33,7 @@ use FastOrm\SQL\SearchCondition\Operator\InOperator;
 use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 use FastOrm\SQL\SearchCondition\Operator\OperatorListInterface;
 
-class ClauseSelectQueryContainer implements
+class ClauseContainer implements
     SelectInterface,
     SelectClauseInterface,
     FromClauseInterface,
@@ -380,7 +380,7 @@ class ClauseSelectQueryContainer implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof ClauseSelectQueryContainer) {
+        if (!$expression instanceof ClauseContainer) {
             throw new InvalidArgumentException();
         }
         return implode(' ', array_filter([
@@ -394,14 +394,6 @@ class ClauseSelectQueryContainer implements
             $this->compiler->compile($expression->orderByClause),
             $this->compiler->compile($expression->limitClause),
         ]));
-    }
-
-    /**
-     * @return Compound
-     */
-    public function getActiveCompound(): Compound
-    {
-        return $this->activeCompound;
     }
 
     /**

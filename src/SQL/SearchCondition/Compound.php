@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\SQL\SearchCondition;
 
 use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Select\ClauseSelectQueryContainer;
+use FastOrm\SQL\Clause\Select\ClauseContainer;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -23,11 +23,11 @@ class Compound implements
      */
     private $compounds;
     /**
-     * @var ClauseSelectQueryContainer
+     * @var ClauseContainer
      */
     private $container;
 
-    public function __construct(ClauseSelectQueryContainer $container)
+    public function __construct(ClauseContainer $container)
     {
         $this->compounds = new SplStack();
         $this->compounds->add(0, new CompoundItem(new SearchCondition($this), ''));
@@ -62,9 +62,9 @@ class Compound implements
     }
 
     /**
-     * @return ClauseSelectQueryContainer
+     * @return ClauseContainer
      */
-    public function getContainer(): ClauseSelectQueryContainer
+    public function getContainer(): ClauseContainer
     {
         return $this->container;
     }

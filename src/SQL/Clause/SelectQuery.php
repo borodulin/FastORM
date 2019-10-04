@@ -12,7 +12,7 @@ use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\PdoCommand\StatementInterface;
-use FastOrm\SQL\Clause\Select\ClauseSelectQueryContainer;
+use FastOrm\SQL\Clause\Select\ClauseContainer;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
 use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
 use FastOrm\SQL\Clause\Select\SelectClauseInterface;
@@ -45,14 +45,14 @@ class SelectQuery implements
      */
     private $connection;
     /**
-     * @var ClauseSelectQueryContainer
+     * @var ClauseContainer
      */
     private $container;
 
     public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
-        $this->container = new ClauseSelectQueryContainer($connection);
+        $this->container = new ClauseContainer($connection);
     }
 
     public function select($columns): SelectClauseInterface

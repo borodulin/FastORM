@@ -14,11 +14,11 @@ class FromClause implements ExpressionInterface
      */
     private $from;
     /**
-     * @var ClauseSelectQueryContainer
+     * @var ClauseContainer
      */
     private $container;
 
-    public function __construct(ClauseSelectQueryContainer $container)
+    public function __construct(ClauseContainer $container)
     {
         $this->from = new SplStack();
         $this->container = $container;
