@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\PdoCommand;
 
+use FastOrm\NotSupportedException;
 use FastOrm\PdoCommand\Fetch\Cursor;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +14,7 @@ class CursorTest extends TestCase
     use TestConnectionTrait;
 
     /**
-     * @throws \FastOrm\NotSupportedException
+     * @throws NotSupportedException
      */
     public function testCursor()
     {
@@ -26,5 +27,20 @@ class CursorTest extends TestCase
         $array = iterator_to_array($cursor);
         $this->assertIsArray($array);
         $this->assertCount((int)$count, $array);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testRewind()
+    {
+        $db = $this->createConnection();
+        $statement = $db->getPdo()->query('select * from albums');
+        $cursor = new Cursor($statement);
+        foreach ($cursor as $row) {
+            break;
+        }
+        $this->expectException(NotSupportedException::class);
+        $cursor->rewind();
     }
 }
