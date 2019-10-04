@@ -21,12 +21,12 @@ class ExpressionOperator implements
     /**
      * @var array
      */
-    private $bindParams;
+    private $params;
 
-    public function __construct($expression, array $params)
+    public function __construct($expression, array $params = [])
     {
         $this->expression = $expression;
-        $this->bindParams = $params;
+        $this->params = $params;
     }
 
     /**
@@ -50,7 +50,7 @@ class ExpressionOperator implements
         if (!$expression instanceof ExpressionOperator) {
             throw new InvalidArgumentException();
         }
-        $this->compiler->getParams()->bindAll($this->bindParams);
+        $this->compiler->getParams()->bindAll($this->params);
         if ($expression->expression instanceof ExpressionInterface) {
             $expression->expression = $this->compiler->compile($expression->expression);
         }

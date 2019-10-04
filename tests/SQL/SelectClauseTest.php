@@ -17,6 +17,16 @@ class SelectClauseTest extends TestCase
     /**
      * @throws NotSupportedException
      */
+    public function testString()
+    {
+        $connection = $this->createConnection();
+        $query = (new SelectQuery($connection))->select('1');
+        $this->assertEquals('SELECT 1', (string)$query);
+    }
+
+    /**
+     * @throws NotSupportedException
+     */
     public function testSelect()
     {
         $connection = $this->createConnection();

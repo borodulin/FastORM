@@ -10,6 +10,7 @@ use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\Fetch;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
+use FastOrm\PdoCommand\Fetch\IteratorFactoryInterface;
 use FastOrm\PdoCommand\Statement;
 use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\SelectInterface;
@@ -87,13 +88,13 @@ class ClauseContainer implements
      */
     private $connection;
     /**
-     * @var CursorInterface
-     */
-    private $iterator;
-    /**
      * @var Compound
      */
     private $activeCompound;
+    /**
+     * @var IteratorFactoryInterface
+     */
+    private $iteratorFactory;
 
     public function __construct(ConnectionInterface $connection)
     {
@@ -319,19 +320,17 @@ class ClauseContainer implements
         return new Fetch($statement);
     }
 
-    public function setIterator(CursorInterface $cursor): SelectInterface
-    {
-        $this->iterator = $cursor;
-        return $this;
-    }
-
     /**
      * @return CursorInterface
      * @throws DbException
      */
     public function getIterator()
     {
-        return $this->iterator ?: (new Fetch($this->statement()))->cursor();
+        if ($this->iteratorFactory) {
+            return $this->iteratorFactory->create($this->statement());
+        } else {
+            return (new Fetch($this->statement()))->cursor();
+        }
     }
 
     public function getConnection(): ConnectionInterface
@@ -415,5 +414,11 @@ class ClauseContainer implements
         $this->orderByClause = clone $this->orderByClause;
         $this->unionClause = clone $this->unionClause;
         $this->limitClause = clone $this->limitClause;
+    }
+
+    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectInterface
+    {
+        $this->iteratorFactory = $factory;
+        return $this;
     }
 }

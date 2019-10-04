@@ -6,6 +6,7 @@ namespace FastOrm\Tests\SQL;
 
 use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\SQL\QueryBuilder;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +25,7 @@ class QueryBuilderTest extends TestCase
     public function testParamBinding()
     {
         $connection = $this->createConnection();
-        $query = new SelectQuery($connection);
+        $query = (new QueryBuilder($connection))->select();
         /** @var ConditionInterface  $expression */
         $fetch = $query
             ->from('albums')->as('t1')

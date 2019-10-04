@@ -9,8 +9,8 @@ use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
-use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
+use FastOrm\PdoCommand\Fetch\IteratorFactoryInterface;
 use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\ClauseContainer;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
@@ -134,15 +134,6 @@ class SelectQuery implements
     }
 
     /**
-     * @param CursorInterface $iterator
-     * @return SelectInterface
-     */
-    public function setIterator(CursorInterface $iterator): SelectInterface
-    {
-        return $this->container->setIterator($iterator);
-    }
-
-    /**
      * @param array $options
      * @return StatementInterface
      * @throws DbException
@@ -177,5 +168,10 @@ class SelectQuery implements
             throw new InvalidArgumentException();
         }
         return $this->compiler->compile($this->container);
+    }
+
+    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectInterface
+    {
+        return $this->container->setIteratorFactory($factory);
     }
 }

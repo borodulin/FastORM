@@ -54,6 +54,19 @@ class InOperatorTest extends TestCase
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(2, $rows);
+
+        $fetch = (new SelectQuery($connection))
+            ->from('employees e')
+            ->where()->in(
+                'EmployeeId',
+                [
+                    new Expression(':p1', ['p1' => 1]),
+                    new Expression(':p2', ['p2' => 2]),
+                ]
+            )
+            ->fetch();
+        $rows = $fetch->all();
+        $this->assertCount(2, $rows);
     }
 
     /**

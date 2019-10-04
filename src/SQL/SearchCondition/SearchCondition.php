@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition;
 
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionInterface;
-use FastOrm\SQL\HasContextInterface;
 use FastOrm\SQL\SearchCondition\Operator\OperatorInterface;
 
-class SearchCondition implements ExpressionInterface, HasContextInterface
+class SearchCondition implements ExpressionInterface
 {
     /**
      * @var bool
@@ -61,10 +59,5 @@ class SearchCondition implements ExpressionInterface, HasContextInterface
     public function getCompound(): Compound
     {
         return $this->compound;
-    }
-
-    public function getContext(): ContextInterface
-    {
-        return $this->compound->getContainer();
     }
 }

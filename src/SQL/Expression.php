@@ -20,9 +20,4 @@ class Expression implements ExpressionInterface
         $this->expression = $expression;
         $this->params = $params;
     }
-
-    public function __toString(): string
-    {
-        return $this->expression;
-    }
 }
