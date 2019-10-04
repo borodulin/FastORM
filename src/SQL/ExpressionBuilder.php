@@ -20,7 +20,7 @@ class ExpressionBuilder extends Expression implements ExpressionBuilderInterface
         if (!$expression instanceof Expression) {
             throw new InvalidArgumentException();
         }
-        $this->compiler->getContext()->getParams()->bindAll($expression->params);
+        $this->compiler->getParams()->bindAll($expression->params);
         return $expression->expression;
     }
 }

@@ -7,11 +7,11 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class CompareOperator extends AbstractOperator implements
+class CompareOperator implements
+    OperatorInterface,
     CompilerAwareInterface,
     ExpressionBuilderInterface
 {
@@ -21,12 +21,11 @@ class CompareOperator extends AbstractOperator implements
     private $operator;
     private $value;
 
-    public function __construct($column, $operator, $value, ContextInterface $context)
+    public function __construct($column, $operator, $value)
     {
         $this->column = $column;
         $this->operator = $operator;
         $this->value = $value;
-        parent::__construct($context);
     }
 
     public function build(ExpressionInterface $expression): string
@@ -37,7 +36,7 @@ class CompareOperator extends AbstractOperator implements
         if ($expression->value instanceof ExpressionInterface) {
             $expression->value = $this->compiler->compile($expression->value);
         }
-        $paramName = $this->compiler->getContext()->getParams()->bindValue($expression->value);
+        $paramName = $this->compiler->getParams()->bindValue($expression->value);
         $column = $this->compiler->quoteColumnName($expression->column);
         return "$column $expression->operator :$paramName";
     }

@@ -31,7 +31,7 @@ class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareIn
             $like = $this->compiler->compile($value);
         } else {
             $value = "%$value%";
-            $like = ':' . $this->compiler->getContext()->getParams()->bindValue($value);
+            $like = ':' . $this->compiler->getParams()->bindValue($value);
         }
         $operator = $this->getOperator();
         $column = $expression->getColumn();

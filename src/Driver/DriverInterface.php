@@ -6,13 +6,12 @@ namespace FastOrm\Driver;
 
 use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\SQL\CompilerInterface;
-use FastOrm\SQL\ContextInterface;
 use PDO;
 use Psr\Log\LoggerAwareInterface;
 
 interface DriverInterface extends LoggerAwareInterface, EventDispatcherAwareInterface
 {
-    public function createCompiler(ContextInterface $context): CompilerInterface;
+    public function createCompiler(): CompilerInterface;
 
     public function createPdoInstance(
         string $dsn,

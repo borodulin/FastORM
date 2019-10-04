@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace FastOrm\SQL\Clause\Select;
 
 use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\ExpressionInterface;
 
-class UnionClause extends AbstractClause
+class UnionClause implements ExpressionInterface
 {
     /**
      * @var UnionItem[]

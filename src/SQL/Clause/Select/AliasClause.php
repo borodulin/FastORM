@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-class AliasClause extends AbstractClause
+use FastOrm\SQL\ExpressionInterface;
+
+class AliasClause implements ExpressionInterface
 {
     private $expression;
 

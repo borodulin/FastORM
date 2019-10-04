@@ -7,11 +7,11 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class ExpressionOperator extends AbstractOperator implements
+class ExpressionOperator implements
+    OperatorInterface,
     CompilerAwareInterface,
     ExpressionBuilderInterface
 {
@@ -23,11 +23,10 @@ class ExpressionOperator extends AbstractOperator implements
      */
     private $bindParams;
 
-    public function __construct($expression, array $params, ContextInterface $context)
+    public function __construct($expression, array $params)
     {
         $this->expression = $expression;
         $this->bindParams = $params;
-        parent::__construct($context);
     }
 
     /**
@@ -51,7 +50,7 @@ class ExpressionOperator extends AbstractOperator implements
         if (!$expression instanceof ExpressionOperator) {
             throw new InvalidArgumentException();
         }
-        $this->compiler->getContext()->getParams()->bindAll($this->bindParams);
+        $this->compiler->getParams()->bindAll($this->bindParams);
         if ($expression->expression instanceof ExpressionInterface) {
             $expression->expression = $this->compiler->compile($expression->expression);
         }

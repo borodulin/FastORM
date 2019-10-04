@@ -34,7 +34,7 @@ class FromClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $command = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->innerJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->innerJoin('media_types')->alias('mt')->on('mt.MediaTypeId=t.MediaTypeId')
             ->limit(10)
@@ -50,10 +50,10 @@ class FromClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->limit(10);
         $fetch = (new SelectQuery($connection))
-            ->from($query)->alias('s')
+            ->from($query)->as('s')
             ->fetch();
         $all = $fetch->all();
         $this->assertCount(10, $all);
@@ -80,7 +80,7 @@ class FromClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->leftJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
@@ -96,7 +96,7 @@ class FromClauseTest extends TestCase
         $connection = $this->createConnection();
         $this->expectException(DbException::class);
         (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->rightJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
@@ -110,7 +110,7 @@ class FromClauseTest extends TestCase
         $connection = $this->createConnection();
         $this->expectException(DbException::class);
         (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->fullJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
@@ -123,7 +123,7 @@ class FromClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->join('genres g', 'left outer join')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();

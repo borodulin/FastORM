@@ -7,7 +7,6 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
@@ -15,7 +14,8 @@ use FastOrm\SQL\ExpressionInterface;
  * Class BetweenColumnsOperator
  * @package FastOrm\SQL\SearchCondition\Operator
  */
-class BetweenColumnsOperator extends AbstractOperator implements
+class BetweenColumnsOperator implements
+    OperatorInterface,
     NotOperatorInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface
@@ -30,12 +30,11 @@ class BetweenColumnsOperator extends AbstractOperator implements
      */
     private $not;
 
-    public function __construct($value, $intervalStartColumn, $intervalEndColumn, ContextInterface $context)
+    public function __construct($value, $intervalStartColumn, $intervalEndColumn)
     {
         $this->value = $value;
         $this->intervalStartColumn = $intervalStartColumn;
         $this->intervalEndColumn = $intervalEndColumn;
-        parent::__construct($context);
     }
 
     public function setNot(bool $value): void
@@ -48,7 +47,7 @@ class BetweenColumnsOperator extends AbstractOperator implements
         if (!$expression instanceof BetweenColumnsOperator) {
             throw new InvalidArgumentException();
         }
-        $paramName = $this->compiler->getContext()->getParams()->bindValue($expression->value);
+        $paramName = $this->compiler->getParams()->bindValue($expression->value);
         $intervalStartColumn = $this->compiler->quoteColumnName($expression->intervalStartColumn);
         $intervalEndColumn = $this->compiler->quoteColumnName($expression->intervalEndColumn);
         return ":$paramName BETWEEN $intervalStartColumn AND $intervalEndColumn";

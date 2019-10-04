@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace FastOrm\SQL\SearchCondition\Builder;
 
 use FastOrm\InvalidArgumentException;
+use FastOrm\SQL\Clause\Select\ClauseSelectQueryContainer;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\Compound;
@@ -37,11 +37,12 @@ class SearchConditionBuilder implements ExpressionBuilderInterface, CompilerAwar
         if ($operator instanceof ExpressionOperator) {
             $expressionOperator = $operator->getExpression();
             if (is_callable($expressionOperator)) {
-                /** @var SelectQuery $query */
-                $query = $expression->getCompound()->getQuery();
-                $compound = new Compound($query);
-                $expressionOperator = call_user_func($expressionOperator, $compound->getCondition());
-                $operator->setExpression($expressionOperator);
+                $connection = $expression->getCompound()->getContainer()->getConnection();
+                $container = new ClauseSelectQueryContainer($connection) ;
+                $compound = new Compound($container);
+                $container->setActiveCompound($compound);
+                call_user_func($expressionOperator, $container);
+                $operator->setExpression($compound);
             }
         }
         return $text .  $this->compiler->compile($operator);

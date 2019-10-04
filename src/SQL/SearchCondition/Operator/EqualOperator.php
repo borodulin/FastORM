@@ -7,12 +7,11 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-
-class EqualOperator extends AbstractOperator implements
+class EqualOperator implements
+    OperatorInterface,
     CompilerAwareInterface,
     ExpressionBuilderInterface
 {
@@ -21,11 +20,10 @@ class EqualOperator extends AbstractOperator implements
     private $column;
     private $value;
 
-    public function __construct($column, $value, ContextInterface $context)
+    public function __construct($column, $value)
     {
         $this->column = $column;
         $this->value = $value;
-        parent::__construct($context);
     }
 
     public function build(ExpressionInterface $expression): string
@@ -34,9 +32,12 @@ class EqualOperator extends AbstractOperator implements
             throw new InvalidArgumentException();
         }
         if ($expression->value instanceof ExpressionInterface || is_array($expression->value)) {
-            return $this->compiler->compile(new InOperator($expression->column, $expression->value, $expression->context));
+            return $this->compiler->compile(new InOperator(
+                $expression->column,
+                $expression->value
+            ));
         }
-        $paramName = $this->compiler->getContext()->getParams()->bindValue($expression->value);
+        $paramName = $this->compiler->getParams()->bindValue($expression->value);
         $column = $this->compiler->quoteColumnName($expression->column);
         return "$column = :$paramName";
     }

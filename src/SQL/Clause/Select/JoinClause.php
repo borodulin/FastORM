@@ -4,36 +4,36 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
+use FastOrm\SQL\ExpressionInterface;
+use SplStack;
 
-class JoinClause extends AbstractClause
+class JoinClause implements ExpressionInterface
 {
-
-    private $joins = [];
     /**
-     * @var FromClauseInterface
+     * @var SplStack
      */
-    private $fromClause;
+    private $joins;
 
-    public function addJoin($join, $joinType): JoinAliasClauseInterface
+    public function __construct()
     {
-        $onClause = new JoinItem($this->fromClause, $join, $joinType);
-        $this->joins[] = $onClause;
-        return $onClause;
+        $this->joins = new SplStack();
+    }
+
+    public function addJoin($join, $joinType): void
+    {
+        $this->joins->add(0, new JoinItem($join, $joinType));
     }
 
     /**
-     * @return array
+     * @return SplStack
      */
-    public function getJoins(): array
+    public function getJoins(): SplStack
     {
         return $this->joins;
     }
 
-    /**
-     * @param FromClauseInterface $fromClause
-     */
-    public function setFromClause(FromClauseInterface $fromClause): void
+    public function getJoin(): JoinItem
     {
-        $this->fromClause = $fromClause;
+        return $this->joins->bottom();
     }
 }

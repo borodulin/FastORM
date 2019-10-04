@@ -4,28 +4,24 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-class JoinItem implements JoinAliasClauseInterface
+use FastOrm\SQL\ExpressionInterface;
+
+class JoinItem implements ExpressionInterface
 {
     private $join;
     private $joinType;
     private $on;
     private $alias;
-    /**
-     * @var FromClauseInterface
-     */
-    private $fromClause;
 
-    public function __construct(FromClauseInterface $fromClause, $join, $joinType)
+    public function __construct($join, $joinType)
     {
         $this->join = $join;
         $this->joinType = $joinType;
-        $this->fromClause = $fromClause;
     }
 
-    public function on(string $condition): FromClauseInterface
+    public function setOn(string $condition): void
     {
         $this->on = $condition;
-        return $this->fromClause;
     }
 
     /**
@@ -52,10 +48,12 @@ class JoinItem implements JoinAliasClauseInterface
         return $this->on;
     }
 
-    public function alias($alias): OnClauseInterface
+    /**
+     * @param $alias
+     */
+    public function setAlias($alias): void
     {
         $this->alias = $alias;
-        return $this;
     }
 
     /**

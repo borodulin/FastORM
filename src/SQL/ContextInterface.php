@@ -10,7 +10,5 @@ use IteratorAggregate;
 
 interface ContextInterface extends IteratorAggregate, Countable, ExpressionInterface
 {
-    public function getParams(): ParamsInterface;
-
     public function getConnection(): ConnectionInterface;
 }

@@ -6,7 +6,7 @@ namespace FastOrm\SQL\Clause\Select;
 
 use FastOrm\SQL\ExpressionInterface;
 
-class OrderByClause extends AbstractClause
+class OrderByClause implements ExpressionInterface
 {
     private $columns;
 

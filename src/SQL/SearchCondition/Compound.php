@@ -4,42 +4,52 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition;
 
-use FastOrm\SQL\Clause\Select\AbstractClause;
-use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\InvalidArgumentException;
+use FastOrm\SQL\Clause\Select\ClauseSelectQueryContainer;
+use FastOrm\SQL\CompilerAwareInterface;
+use FastOrm\SQL\CompilerAwareTrait;
+use FastOrm\SQL\ExpressionBuilderInterface;
+use FastOrm\SQL\ExpressionInterface;
 use SplStack;
 
-class Compound extends AbstractClause implements CompoundInterface
+class Compound implements
+    ExpressionInterface,
+    ExpressionBuilderInterface,
+    CompilerAwareInterface
 {
+    use CompilerAwareTrait;
     /**
      * @var SplStack
      */
     private $compounds;
+    /**
+     * @var ClauseSelectQueryContainer
+     */
+    private $container;
 
-    public function __construct(SelectQuery $query)
+    public function __construct(ClauseSelectQueryContainer $container)
     {
-        parent::__construct($query);
         $this->compounds = new SplStack();
         $this->compounds->add(0, new CompoundItem(new SearchCondition($this), ''));
+        $this->container = $container;
     }
 
-    public function and(): ConditionInterface
+    public function and(): void
     {
         $searchCondition = new SearchCondition($this);
         $this->compounds->add(0, new CompoundItem($searchCondition, 'AND'));
-        return $searchCondition;
     }
 
-    public function or(): ConditionInterface
+    public function or(): void
     {
         $searchCondition = new SearchCondition($this);
         $this->compounds->add(0, new CompoundItem($searchCondition, 'OR'));
-        return $searchCondition;
     }
 
-    public function getCondition(): ConditionInterface
+    public function getCondition(): SearchCondition
     {
         /** @var CompoundItem $compoundItem */
-        $compoundItem = $this->compounds->top();
+        $compoundItem = $this->compounds->bottom();
         return $compoundItem->getCondition();
     }
 
@@ -49,5 +59,34 @@ class Compound extends AbstractClause implements CompoundInterface
     public function getCompounds(): SplStack
     {
         return $this->compounds;
+    }
+
+    /**
+     * @return ClauseSelectQueryContainer
+     */
+    public function getContainer(): ClauseSelectQueryContainer
+    {
+        return $this->container;
+    }
+
+    public function build(ExpressionInterface $expression): string
+    {
+        if (!$expression instanceof Compound) {
+            throw new InvalidArgumentException();
+        }
+        $conditions = [];
+        $compounds = $expression->getCompounds();
+        $compounds->rewind();
+        /** @var CompoundItem $compoundItem */
+        foreach ($compounds as $compoundItem) {
+            $searchCondition = $compoundItem->getCondition();
+            if ($text = $this->compiler->compile($searchCondition)) {
+                if ($compound = $compoundItem->getCompound()) {
+                    $conditions[] = $compound;
+                }
+                $conditions[] = $text;
+            }
+        }
+        return $conditions ? ' (' . implode(' ', $conditions) . ') ' : '';
     }
 }

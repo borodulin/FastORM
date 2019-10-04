@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-class WhereClause extends AbstractSearchConditionClause
+use FastOrm\SQL\ExpressionInterface;
+use FastOrm\SQL\SearchCondition\Compound;
+
+class WhereClause extends Compound
 {
+    public function build(ExpressionInterface $expression): string
+    {
+        $where = parent::build($expression);
+
+        return $where === '' ? '' : 'WHERE ' . $where;
+    }
 }

@@ -27,7 +27,7 @@ class QueryBuilderTest extends TestCase
         $query = new SelectQuery($connection);
         /** @var ConditionInterface  $expression */
         $fetch = $query
-            ->from('albums')->alias('t1')
+            ->from('albums')->as('t1')
             ->where()
             ->expression('1=:p1', [':p1' => 1])
             ->and()->between('AlbumId', ':p1', ':p2')
@@ -46,7 +46,7 @@ class QueryBuilderTest extends TestCase
         $query = new SelectQuery($connection);
         /** @var ConditionInterface  $expression */
         $fetch = $query
-            ->from('albums')->alias('t1')
+            ->from('albums')->as('t1')
             ->where()->equal('AlbumId', 1)
             ->or()->in('AlbumId', [2,3])
             ->and()->expression(function (ConditionInterface $condition) {
@@ -65,7 +65,7 @@ class QueryBuilderTest extends TestCase
         $query = new SelectQuery($connection);
         /** @var ConditionInterface  $expression */
         $fetch = $query
-            ->from('albums')->alias('t1')
+            ->from('albums')->as('t1')
             ->where()->hashCondition(['AlbumId' => [1,':tt']])
             ->fetch();
         $this->assertCount(1, $fetch->all());
@@ -79,7 +79,7 @@ class QueryBuilderTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->where()->like('Name', 'rock')
             ->limit(5);
         foreach ($query as $row) {
@@ -94,7 +94,7 @@ class QueryBuilderTest extends TestCase
     {
         $connection = $this->createConnection();
         $command = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->limit(5)->offset(10)
             ->orderBy(['TrackId' => SORT_ASC])
             ->fetch();
@@ -115,7 +115,7 @@ class QueryBuilderTest extends TestCase
             ->fetch()->scalar();
         $fetch = (new SelectQuery($connection))
             ->select(['t.GenreId', 'count(1) as cnt'])
-            ->from('tracks t')->alias('t')
+            ->from('tracks t')->as('t')
             ->innerJoin('genres g')->on('g.GenreId=t.GenreId')
             ->groupBy(['t.GenreId', 'g.Name'])
             ->having()->like('g.Name', 'Rock')

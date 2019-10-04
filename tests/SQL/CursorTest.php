@@ -22,7 +22,7 @@ class CursorTest extends TestCase
     {
         $connection = $this->createConnection();
         $query = (new SelectQuery($connection))
-            ->from('albums')->alias('t1');
+            ->from('albums')->as('t1');
         $count = count($query);
         $rows = [];
         foreach ($query as $row) {

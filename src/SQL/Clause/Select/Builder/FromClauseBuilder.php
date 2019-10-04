@@ -23,7 +23,7 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
         }
 
         $aliases = $expression->getFrom();
-        if ($aliases->count() === 0) {
+        if (count($aliases) === 0) {
             return '';
         }
 
@@ -50,9 +50,6 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
             }
         }
         $from = 'FROM ' . implode(', ', $result);
-        if ($join = $this->compiler->compile($expression->getJoinClause())) {
-            $from .= ' ' . $join;
-        }
         return $from;
     }
 }

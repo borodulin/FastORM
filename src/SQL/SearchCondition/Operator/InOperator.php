@@ -7,7 +7,6 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
@@ -15,7 +14,8 @@ use FastOrm\SQL\ExpressionInterface;
  * Class InOperator
  * @package FastOrm\SQL\Operator
  */
-class InOperator extends AbstractOperator implements
+class InOperator implements
+    OperatorInterface,
     CompilerAwareInterface,
     ExpressionBuilderInterface
 {
@@ -28,13 +28,11 @@ class InOperator extends AbstractOperator implements
      * InOperator constructor.
      * @param $column
      * @param $values
-     * @param ContextInterface $context
      */
-    public function __construct($column, $values, ContextInterface $context)
+    public function __construct($column, $values)
     {
         $this->column = $column;
         $this->values = $values;
-        parent::__construct($context);
     }
 
     private function buildValues(array $values)
@@ -45,7 +43,6 @@ class InOperator extends AbstractOperator implements
                 $value = $this->compiler->compile($value);
             }
             $paramName = $this->compiler
-                ->getContext()
                 ->getParams()
                 ->bindValue($value);
             $result[] = ":$paramName";

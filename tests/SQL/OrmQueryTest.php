@@ -24,7 +24,7 @@ class OrmQueryTest extends TestCase
         /** @var ConditionInterface  $expression */
         $fetch = $query
             ->select(['AlbumId', 'Title'])->distinct()
-            ->from('albums')->alias('t1')
+            ->from('albums')->as('t1')
             ->where()->hashCondition(['AlbumId' => [1,2]])
             ->fetch();
         $all = $fetch->indexBy('AlbumId')->all();

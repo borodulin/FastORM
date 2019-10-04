@@ -7,11 +7,10 @@ namespace FastOrm\SQL\SearchCondition\Operator;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class HashConditionOperator extends AbstractOperator implements
+class HashConditionOperator implements
     OperatorInterface,
     CompilerAwareInterface,
     ExpressionBuilderInterface
@@ -24,12 +23,11 @@ class HashConditionOperator extends AbstractOperator implements
 
     /**
      * HashConditionOperator constructor.
-     * @param $hash
+     * @param array $hash
      */
-    public function __construct(array $hash, ContextInterface $context)
+    public function __construct(array $hash)
     {
         $this->hash = $hash;
-        parent::__construct($context);
     }
 
     public function build(ExpressionInterface $expression): string
@@ -45,20 +43,20 @@ class HashConditionOperator extends AbstractOperator implements
         foreach ($hash as $column => $value) {
             if (is_int($column)) {
                 if ($value instanceof ExpressionInterface) {
-                    $parts[] = $this->compiler->compile(new ExpressionOperator($value, [], $expression->context));
+                    $parts[] = $this->compiler->compile(new ExpressionOperator($value, []));
                 }
 //                elseif (is_array($value)) {
 //
 //                }
             } elseif ($value instanceof ExpressionInterface || is_array($value)) {
-                $parts[] = $this->compiler->compile(new InOperator($column, $value, $expression->context));
+                $parts[] = $this->compiler->compile(new InOperator($column, $value));
             } else {
                 $column = $this->compiler->quoteColumnName($column);
 
                 if ($value === null) {
                     $parts[] = "$column IS NULL";
                 } else {
-                    $paramName = $this->compiler->getContext()->getParams()->bindValue($value);
+                    $paramName = $this->compiler->getParams()->bindValue($value);
                     $parts[] = "$column=:$paramName";
                 }
             }

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-use FastOrm\SQL\Clause\SelectInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class SelectClause extends AbstractClause implements SelectClauseInterface
+class SelectClause implements ExpressionInterface
 {
     /**
      * @var bool
@@ -19,7 +18,7 @@ class SelectClause extends AbstractClause implements SelectClauseInterface
      */
     private $option;
 
-    public function addColumns($columns): void
+    public function addColumns($columns): self
     {
         if ($columns instanceof ExpressionInterface) {
             $this->columns[] = $columns;
@@ -50,6 +49,7 @@ class SelectClause extends AbstractClause implements SelectClauseInterface
             // Either a string calling a function, DB expression, or sub-query
             $this->columns[] = $columnDefinition;
         }
+        return $this;
     }
 
     /**
@@ -90,11 +90,5 @@ class SelectClause extends AbstractClause implements SelectClauseInterface
     public function getColumns(): array
     {
         return $this->columns;
-    }
-
-    public function distinct(): SelectInterface
-    {
-        $this->distinct = true;
-        return $this->query;
     }
 }

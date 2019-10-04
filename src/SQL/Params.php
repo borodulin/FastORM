@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use ArrayAccess;
-use Countable;
-use Iterator;
-
-class Params implements ParamsInterface, ArrayAccess, Iterator, Countable
+class Params implements ParamsInterface
 {
     const PARAM_PREFIX = 'p';
 

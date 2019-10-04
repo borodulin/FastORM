@@ -6,5 +6,4 @@ namespace FastOrm\SQL;
 
 interface ExpressionInterface
 {
-    public function __toString();
 }

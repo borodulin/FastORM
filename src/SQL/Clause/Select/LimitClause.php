@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-class LimitClause extends AbstractClause
+use FastOrm\SQL\ExpressionInterface;
+
+class LimitClause implements ExpressionInterface
 {
     /**
      * @var int

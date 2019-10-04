@@ -21,7 +21,7 @@ class OrderByClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->limit(5)
             ->orderBy(['TrackId' => SORT_DESC])
             ->fetch();
@@ -36,7 +36,7 @@ class OrderByClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->limit(5)
             ->orderBy(['TrackId', 'Name' => SORT_DESC])
             ->fetch();
@@ -51,7 +51,7 @@ class OrderByClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->limit(5)
             ->orderBy('TrackId, Name desc')
             ->fetch();
@@ -66,7 +66,7 @@ class OrderByClauseTest extends TestCase
     {
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->limit(5)
             ->orderBy(new Expression('TrackId asc'))
             ->fetch();

@@ -4,37 +4,37 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\SQL\ExpressionInterface;
 use SplStack;
 
-class FromClause extends AbstractClause implements FromClauseInterface
+class FromClause implements ExpressionInterface
 {
+    /**
+     * @var SplStack
+     */
     private $from;
     /**
-     * @var JoinClause
+     * @var ClauseSelectQueryContainer
      */
-    private $joinClause;
+    private $container;
 
-    public function __construct(SelectQuery $query)
+    public function __construct(ClauseSelectQueryContainer $container)
     {
-        parent::__construct($query);
         $this->from = new SplStack();
-        $this->joinClause = new JoinClause($query);
-        $this->joinClause->setFromClause($this);
+        $this->container = $container;
     }
 
-    public function addFrom($from): FromClause
+    public function addFrom($from): void
     {
-        $alias = new AliasClause($this->query);
+        $alias = new AliasClause();
         $alias->setExpression($from);
-        $this->from->push($alias);
-        return $this;
+        $this->from->add(0, $alias);
     }
 
     public function setAlias($alias): void
     {
         /** @var AliasClause $alias */
-        $aliasClause = $this->from->top();
+        $aliasClause = $this->from->bottom();
         $aliasClause->setAlias($alias);
     }
 
@@ -44,44 +44,5 @@ class FromClause extends AbstractClause implements FromClauseInterface
     public function getFrom(): SplStack
     {
         return $this->from;
-    }
-
-    public function alias($alias): FromClauseInterface
-    {
-        $this->setAlias($alias);
-        return $this;
-    }
-
-    public function join($join, string $joinType = 'INNER JOIN'): JoinAliasClauseInterface
-    {
-        return $this->joinClause->addJoin($join, $joinType);
-    }
-
-    public function innerJoin($join): JoinAliasClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'INNER JOIN');
-    }
-
-    public function leftJoin($join): JoinAliasClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'LEFT JOIN');
-    }
-
-    public function rightJoin($join): JoinAliasClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'RIGHT JOIN');
-    }
-
-    public function fullJoin($join): JoinAliasClauseInterface
-    {
-        return $this->joinClause->addJoin($join, 'FULL JOIN');
-    }
-
-    /**
-     * @return JoinClause
-     */
-    public function getJoinClause(): JoinClause
-    {
-        return $this->joinClause;
     }
 }

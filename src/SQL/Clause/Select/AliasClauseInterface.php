@@ -6,5 +6,5 @@ namespace FastOrm\SQL\Clause\Select;
 
 interface AliasClauseInterface
 {
-    public function alias($alias): FromClauseInterface;
+    public function as($alias): FromClauseInterface;
 }

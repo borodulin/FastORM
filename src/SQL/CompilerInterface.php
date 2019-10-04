@@ -11,7 +11,7 @@ interface CompilerInterface extends LoggerAwareInterface, EventDispatcherAwareIn
 {
     public function compile(ExpressionInterface $expression): string;
 
-    public function getContext(): ContextInterface;
+    public function getParams(): ParamsInterface;
 
     public function quoteColumnName(string $name): string;
     public function quoteTableName(string $name): string;

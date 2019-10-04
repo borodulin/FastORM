@@ -8,11 +8,13 @@ use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\SelectInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-class ExistsOperator extends AbstractOperator implements CompilerAwareInterface, ExpressionBuilderInterface
+class ExistsOperator implements
+    OperatorInterface,
+    CompilerAwareInterface,
+    ExpressionBuilderInterface
 {
     use CompilerAwareTrait;
 
@@ -21,10 +23,9 @@ class ExistsOperator extends AbstractOperator implements CompilerAwareInterface,
      */
     private $query;
 
-    public function __construct(SelectInterface $query, ContextInterface $context)
+    public function __construct(SelectInterface $query)
     {
         $this->query = $query;
-        parent::__construct($context);
     }
 
     public function build(ExpressionInterface $expression): string

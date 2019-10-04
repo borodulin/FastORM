@@ -27,7 +27,7 @@ class SelectClauseTest extends TestCase
                 'Name as name2',
                 new Expression('5')
             ])->select('*')
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->limit(10)
             ->fetch();
         $row = $fetch->one();

@@ -28,7 +28,7 @@ class GroupByClauseTest extends TestCase
             ->scalar();
         $fetch = (new SelectQuery($connection))
             ->select(['GenreId', 'count(1) as cnt'])
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->groupBy(['GenreId'])
             ->fetch();
         $rows = $fetch->all();
@@ -43,7 +43,7 @@ class GroupByClauseTest extends TestCase
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
             ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->groupBy('GenreId, MediaTypeId')
             ->fetch();
         $rows = $fetch->all();
@@ -58,7 +58,7 @@ class GroupByClauseTest extends TestCase
         $connection = $this->createConnection();
         $fetch = (new SelectQuery($connection))
             ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
-            ->from('tracks')->alias('t')
+            ->from('tracks')->as('t')
             ->groupBy(new Expression('GenreId, MediaTypeId'))
             ->fetch();
         $rows = $fetch->all();

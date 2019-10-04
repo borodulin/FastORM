@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-class GroupByClause extends AbstractClause
+use FastOrm\SQL\ExpressionInterface;
+
+class GroupByClause implements ExpressionInterface
 {
     private $columns;
 
