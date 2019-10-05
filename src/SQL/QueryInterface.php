@@ -6,12 +6,12 @@ namespace FastOrm\SQL;
 
 use FastOrm\SQL\Clause\Delete\DeleteClauseInterface;
 use FastOrm\SQL\Clause\Insert\InsertClauseInterface;
-use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\Update\UpdateClauseInterface;
 
 interface QueryInterface
 {
-    public function select(): SelectInterface;
+    public function select(): SelectClauseInterface;
 
     public function update(): UpdateClauseInterface;
 

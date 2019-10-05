@@ -9,27 +9,27 @@ use FastOrm\PdoCommand\Fetch\IteratorFactoryInterface;
 use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
 use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
-use FastOrm\SQL\Clause\Select\SelectClauseInterface;
+use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 
-interface SelectInterface extends ExpressionInterface
+interface SelectClauseInterface extends ExpressionInterface
 {
-    public function select($columns): SelectClauseInterface;
+    public function select($columns): SelectDistinctInterface;
 
     public function from($from): FromClauseInterface;
 
-    public function groupBy($columns): SelectInterface;
+    public function groupBy($columns): SelectClauseInterface;
 
     public function having(): ConditionInterface;
 
     public function limit(int $limit): OffsetClauseInterface;
 
-    public function orderBy($columns): SelectInterface;
+    public function orderBy($columns): SelectClauseInterface;
 
-    public function union(SelectInterface $query): SelectInterface;
+    public function union(SelectClauseInterface $query): SelectClauseInterface;
 
-    public function unionAll(SelectInterface $query): SelectInterface;
+    public function unionAll(SelectClauseInterface $query): SelectClauseInterface;
 
     public function where(): ConditionInterface;
 
@@ -37,5 +37,5 @@ interface SelectInterface extends ExpressionInterface
 
     public function fetch(array $params = []): FetchInterface;
 
-    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectInterface;
+    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectClauseInterface;
 }

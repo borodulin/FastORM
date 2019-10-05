@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\SQL\SearchCondition\Operator;
 
 use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -19,11 +19,11 @@ class ExistsOperator implements
     use CompilerAwareTrait;
 
     /**
-     * @var SelectInterface
+     * @var SelectClauseInterface
      */
     private $query;
 
-    public function __construct(SelectInterface $query)
+    public function __construct(SelectClauseInterface $query)
     {
         $this->query = $query;
     }

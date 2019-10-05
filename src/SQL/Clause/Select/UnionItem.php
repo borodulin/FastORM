@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 
 class UnionItem
 {
     /**
-     * @var SelectInterface
+     * @var SelectDistinctInterface
      */
     private $query;
     /**
@@ -17,16 +17,16 @@ class UnionItem
      */
     private $all;
 
-    public function __construct(SelectInterface $query, bool $all)
+    public function __construct(SelectClauseInterface $query, bool $all)
     {
         $this->query = $query;
         $this->all = $all;
     }
 
     /**
-     * @return SelectInterface
+     * @return SelectDistinctInterface
      */
-    public function getQuery(): SelectInterface
+    public function getQuery(): SelectClauseInterface
     {
         return $this->query;
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\SearchCondition\Operator;
 
-use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\SearchCondition\CompoundInterface;
 
 interface OperatorListInterface
@@ -13,7 +13,7 @@ interface OperatorListInterface
 
     public function betweenColumns($value, $intervalStartColumn, $intervalEndColumn): CompoundInterface;
 
-    public function exists(SelectInterface $query): CompoundInterface;
+    public function exists(SelectClauseInterface $query): CompoundInterface;
 
     public function in($column, $values): CompoundInterface;
 

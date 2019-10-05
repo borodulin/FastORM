@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 
-interface FromClauseInterface extends SelectInterface, AliasClauseInterface
+interface FromClauseInterface extends SelectClauseInterface, AliasClauseInterface
 {
     public function join($join, string $joinType = 'inner join'): JoinAliasClauseInterface;
 

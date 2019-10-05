@@ -15,7 +15,6 @@ class CursorTest extends TestCase
     use TestConnectionTrait;
 
     /**
-     * @covers \FastOrm\PdoCommand\Fetch\Cursor
      * @throws NotSupportedException
      */
     public function testCursor()

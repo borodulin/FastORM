@@ -13,7 +13,7 @@ use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\PdoCommand\Fetch\IteratorFactoryInterface;
 use FastOrm\PdoCommand\Statement;
 use FastOrm\PdoCommand\StatementInterface;
-use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ContextInterface;
@@ -35,8 +35,8 @@ use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
 use FastOrm\SQL\SearchCondition\Operator\OperatorListInterface;
 
 class ClauseContainer implements
-    SelectInterface,
     SelectClauseInterface,
+    SelectDistinctInterface,
     FromClauseInterface,
     ConditionInterface,
     OffsetClauseInterface,
@@ -172,7 +172,7 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function offset(int $offset): SelectInterface
+    public function offset(int $offset): SelectClauseInterface
     {
         $this->limitClause->setOffset($offset);
         return $this;
@@ -192,7 +192,7 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function exists(SelectInterface $query): CompoundInterface
+    public function exists(SelectClauseInterface $query): CompoundInterface
     {
         $this->activeCompound->getCondition()
             ->setOperator(new ExistsOperator($query));
@@ -248,13 +248,13 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function distinct(): SelectInterface
+    public function distinct(): SelectClauseInterface
     {
         $this->selectClause->setDistinct(true);
         return $this;
     }
 
-    public function select($columns): SelectClauseInterface
+    public function select($columns): SelectDistinctInterface
     {
         $this->selectClause->addColumns($columns);
         return $this;
@@ -266,7 +266,7 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function groupBy($columns): SelectInterface
+    public function groupBy($columns): SelectClauseInterface
     {
         $this->groupByClause->addGroupBy($columns);
         return $this;
@@ -284,19 +284,19 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function orderBy($columns): SelectInterface
+    public function orderBy($columns): SelectClauseInterface
     {
         $this->orderByClause->addOrderBy($columns);
         return $this;
     }
 
-    public function union(SelectInterface $query): SelectInterface
+    public function union(SelectClauseInterface $query): SelectClauseInterface
     {
         $this->unionClause->addUnion($query);
         return $this;
     }
 
-    public function unionAll(SelectInterface $query): SelectInterface
+    public function unionAll(SelectClauseInterface $query): SelectClauseInterface
     {
         $this->unionClause->addUnionAll($query);
         return $this;
@@ -416,7 +416,7 @@ class ClauseContainer implements
         $this->limitClause = clone $this->limitClause;
     }
 
-    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectInterface
+    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectClauseInterface
     {
         $this->iteratorFactory = $factory;
         return $this;

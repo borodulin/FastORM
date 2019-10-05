@@ -7,7 +7,7 @@ namespace FastOrm\SQL;
 use FastOrm\ConnectionInterface;
 use FastOrm\SQL\Clause\Delete\DeleteClauseInterface;
 use FastOrm\SQL\Clause\Insert\InsertClauseInterface;
-use FastOrm\SQL\Clause\SelectInterface;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Clause\Update\UpdateClauseInterface;
 
@@ -23,7 +23,7 @@ class QueryBuilder implements QueryInterface
         $this->connection = $connection;
     }
 
-    public function select(): SelectInterface
+    public function select(): SelectClauseInterface
     {
         return new SelectQuery($this->connection);
     }

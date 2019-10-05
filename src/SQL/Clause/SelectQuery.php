@@ -15,7 +15,7 @@ use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\ClauseContainer;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
 use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
-use FastOrm\SQL\Clause\Select\SelectClauseInterface;
+use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ContextInterface;
@@ -55,7 +55,7 @@ class SelectQuery implements
         $this->container = new ClauseContainer($connection);
     }
 
-    public function select($columns): SelectClauseInterface
+    public function select($columns): SelectDistinctInterface
     {
         return $this->container->select($columns);
     }
@@ -65,7 +65,7 @@ class SelectQuery implements
         return $this->container->from($from);
     }
 
-    public function groupBy($columns): SelectInterface
+    public function groupBy($columns): SelectClauseInterface
     {
         return $this->container->groupBy($columns);
     }
@@ -75,7 +75,7 @@ class SelectQuery implements
         return $this->container->having();
     }
 
-    public function orderBy($columns): SelectInterface
+    public function orderBy($columns): SelectClauseInterface
     {
         return $this->container->orderBy($columns);
     }
@@ -85,17 +85,17 @@ class SelectQuery implements
         return $this->container->limit($limit);
     }
 
-    public function offset(int $offset): SelectInterface
+    public function offset(int $offset): SelectClauseInterface
     {
         return $this->container->offset($offset);
     }
 
-    public function union(SelectInterface $query): SelectInterface
+    public function union(SelectClauseInterface $query): SelectClauseInterface
     {
         return $this->container->union($query);
     }
 
-    public function unionAll(SelectInterface $query): SelectInterface
+    public function unionAll(SelectClauseInterface $query): SelectClauseInterface
     {
         return $this->container->unionAll($query);
     }
@@ -170,7 +170,7 @@ class SelectQuery implements
         return $this->compiler->compile($this->container);
     }
 
-    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectInterface
+    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectClauseInterface
     {
         return $this->container->setIteratorFactory($factory);
     }
