@@ -40,4 +40,18 @@ class ParamsTest extends TestCase
         $params2 = new Params($params);
         $this->assertEquals($params, $params2);
     }
+
+    public function testUnset()
+    {
+        $params = new Params(['p1' => 1, 'p2' => 2]);
+        unset($params['p1']);
+        $this->assertCount(1, $params);
+    }
+
+    public function testGet()
+    {
+        $params = new Params(['p1' => 11, 'p2' => 2]);
+        $this->assertTrue(isset($params['p1']));
+        $this->assertEquals(11, $params['p1']);
+    }
 }
