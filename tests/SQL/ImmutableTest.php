@@ -14,7 +14,7 @@ class ImmutableTest extends TestCase
         $query1 = (new SelectQuery($this->connection))
             ->from('Album')->select('AlbumId');
         $query2 = clone $query1;
-        $countAll1 = count($query1);
+        $countAll1 = count($query1->fetch()->column());
         $countAll2 = (int)$query2->select('count(1)')->fetch()->scalar();
         $this->assertEquals($countAll1, $countAll2);
         $count = count($query1->limit(100));
