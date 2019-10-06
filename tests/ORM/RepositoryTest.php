@@ -4,39 +4,32 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\ORM;
 
-use FastOrm\NotSupportedException;
 use FastOrm\ORM\Repository;
 use FastOrm\Tests\Domain\Entity\Album;
 use FastOrm\Tests\Domain\Entity\PlaylistTrack;
 use FastOrm\Tests\Domain\Repository\AlbumRepository;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 use ReflectionException;
 
 class RepositoryTest extends TestCase
 {
-    use TestConnectionTrait;
-
     /**
-     * @throws NotSupportedException
      * @throws ReflectionException
      */
     public function testIsset()
     {
-        $repository = new Repository(Album::class, 'albums', $this->createConnection());
+        $repository = new Repository(Album::class, 'Album', $this->connection);
         $this->assertTrue(isset($repository[1]));
-        $repository = new Repository(PlaylistTrack::class, 'playlist_track', $this->createConnection());
+        $repository = new Repository(PlaylistTrack::class, 'PlaylistTrack', $this->connection);
         $this->assertTrue(isset($repository['1,1']));
     }
 
     /**
-     * @throws NotSupportedException
      * @throws ReflectionException
      */
     public function testRepoFilter()
     {
-        $connection = $this->createConnection();
-        $albumsRepository = new AlbumRepository($connection);
+        $albumsRepository = new AlbumRepository($this->connection);
         $this->assertTrue(isset($albumsRepository[1]));
         $acdc = $albumsRepository->byArtist(1);
         $this->assertTrue(isset($acdc[1]));
@@ -44,13 +37,11 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      * @throws ReflectionException
      */
     public function testRowHandler()
     {
-        $connection = $this->createConnection();
-        $albumsRepository = new AlbumRepository($connection);
+        $albumsRepository = new AlbumRepository($this->connection);
         $album = $albumsRepository[1];
         $this->assertInstanceOf(Album::class, $album);
     }

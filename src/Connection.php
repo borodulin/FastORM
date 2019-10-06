@@ -70,7 +70,7 @@ class Connection implements ConnectionInterface
      */
     public function setTransactionIsolationLevel(string $isolationLevel)
     {
-        $this->getPdo()->exec("SET TRANSACTION ISOLATION LEVEL $isolationLevel");
+        $this->driver->setTransactionIsolationLevel($this->pdo, $isolationLevel);
     }
 
     /**

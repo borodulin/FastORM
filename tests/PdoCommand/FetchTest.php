@@ -4,23 +4,15 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\PdoCommand;
 
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\QueryBuilder;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class FetchTest extends TestCase
 {
-    use TestConnectionTrait;
-
-    /**
-     * @throws NotSupportedException
-     */
     public function testIndexed()
     {
-        $db = $this->createConnection();
-        $all = (new QueryBuilder($db))->select()
-            ->from('albums')
+        $all = (new QueryBuilder($this->connection))->select()
+            ->from('Album')
             ->limit(10)
             ->fetch()
             ->indexed();
@@ -28,14 +20,11 @@ class FetchTest extends TestCase
         $this->assertArrayNotHasKey('AlbumId', $all[1]);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testGrouped()
     {
-        $db = $this->createConnection();
-        $all = (new QueryBuilder($db))->select()
-            ->from('albums')
+        $all = (new QueryBuilder($this->connection))
+            ->select()
+            ->from('Album')
             ->limit(10)
             ->fetch()
             ->grouped();
@@ -43,14 +32,11 @@ class FetchTest extends TestCase
         $this->assertArrayNotHasKey('AlbumId', $all[1]);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testBatchCursor()
     {
-        $db = $this->createConnection();
-        $cursor = (new QueryBuilder($db))->select()
-            ->from('albums')
+        $cursor = (new QueryBuilder($this->connection))
+            ->select()
+            ->from('Album')
             ->fetch()
             ->batchCursor()
             ->setLimit(10);

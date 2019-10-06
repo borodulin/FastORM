@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\PdoCommand\DbException;
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestConnectionTrait;
 use PHPUnit\Framework\TestCase;
@@ -14,117 +13,85 @@ class FromClauseTest extends TestCase
 {
     use TestConnectionTrait;
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testEmptyFrom()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select('1')
             ->fetch();
         $one = $fetch->scalar();
         $this->assertEquals(1, $one);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testJoins()
     {
-        $connection = $this->createConnection();
-        $command = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
-            ->innerJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
-            ->innerJoin('media_types')->alias('mt')->on('mt.MediaTypeId=t.MediaTypeId')
+        $command = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
+            ->innerJoin('Genre')->alias('g')->on('g.GenreID=t.GenreId')
+            ->innerJoin('MediaType')->alias('mt')->on('mt.MediaTypeId=t.MediaTypeId')
             ->limit(10)
             ->fetch();
         $all = $command->all();
         $this->assertCount(10, $all);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testSubQuery()
     {
-        $connection = $this->createConnection();
-        $query = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        $query = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->limit(10);
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->from($query)->as('s')
             ->fetch();
         $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testFromAlias()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('tracks t')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Track t')
             ->limit(10)
             ->fetch();
         $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testLeftJoin()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
-            ->leftJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
+            ->leftJoin('Genre')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
         $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testRightJoin()
     {
-        $connection = $this->createConnection();
         $this->expectException(DbException::class);
-        (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->rightJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testFullJoin()
     {
-        $connection = $this->createConnection();
         $this->expectException(DbException::class);
-        (new SelectQuery($connection))
-            ->from('tracks')->as('t')
-            ->fullJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
+        (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
+            ->fullJoin('Genre')->alias('g')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testCustomJoin()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
-            ->join('genres g', 'left outer join')->on('g.GenreID=t.GenreId')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
+            ->join('Genre g', 'left outer join')->on('g.GenreID=t.GenreId')
             ->limit(10)
             ->fetch();
         $all = $fetch->all();

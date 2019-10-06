@@ -4,27 +4,21 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class ConditionTest extends TestCase
 {
-    use TestConnectionTrait;
-
     /**
-     * @throws NotSupportedException
      */
     public function testExists()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('albums a')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Album a')
             ->where()->exists(
-                (new SelectQuery($connection))
-                ->from('artists t')
+                (new SelectQuery($this->connection))
+                ->from('Artist t')
                 ->where()->expression('t.ArtistId=a.ArtistId')
                 ->and()->like('Name', 'Kiss')
             )
@@ -34,13 +28,11 @@ class ConditionTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testCompare()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('albums a')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Album a')
             ->where()->compare('AlbumId', '>', 10)
             ->and()->not()->compare('AlbumId', '>', new Expression(':p12', ['p12' => 11]))
             ->fetch();
@@ -49,13 +41,11 @@ class ConditionTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testBetweenColumns()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('employees e')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Employee e')
             ->where()->betweenColumns('2000-01-01', 'BirthDate', 'HireDate')
             ->fetch();
         $rows = $fetch->all();
@@ -63,13 +53,11 @@ class ConditionTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testFilterHashCondition()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('employees e')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Employee e')
             ->where()->filterHashCondition([
                 'State' => null,
             ])
@@ -79,13 +67,11 @@ class ConditionTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testEqual()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('albums a')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Album a')
             ->where()->equal('AlbumId', new Expression('(:p12)', ['p12' => 1]))
             ->fetch();
         $rows = $fetch->all();
@@ -93,13 +79,11 @@ class ConditionTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testLike()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('albums a')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Album a')
             ->where()->like('Title', new Expression(':p12', ['p12' => '%rock%']))
             ->and()->like('Title', 'rock')
             ->fetch();

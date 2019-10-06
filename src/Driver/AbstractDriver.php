@@ -30,4 +30,13 @@ abstract class AbstractDriver implements DriverInterface
     ): PDO {
         return new PDO($dsn, $username, $passwd, $options);
     }
+
+    /**
+     * @param PDO $pdo
+     * @param string $isolationLevel
+     */
+    public function setTransactionIsolationLevel(PDO $pdo, string $isolationLevel)
+    {
+        $pdo->exec("SET TRANSACTION ISOLATION LEVEL $isolationLevel");
+    }
 }

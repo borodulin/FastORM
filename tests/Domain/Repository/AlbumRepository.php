@@ -12,7 +12,7 @@ class AlbumRepository extends Repository
 {
     public function __construct(ConnectionInterface $connection)
     {
-        parent::__construct(Album::class, 'albums', $connection);
+        parent::__construct(Album::class, 'Album', $connection);
     }
 
     public function byArtist($artistId): self

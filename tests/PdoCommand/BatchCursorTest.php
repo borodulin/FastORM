@@ -4,26 +4,20 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\PdoCommand;
 
-use FastOrm\NotSupportedException;
 use FastOrm\PdoCommand\Fetch\BatchCursor;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class BatchCursorTest extends TestCase
 {
-    use TestConnectionTrait;
     /**
      * @var int
      */
     private $count;
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testLimit()
     {
-        $db = $this->createConnection();
-        $selectStatement = $db->getPdo()->query('select * from albums');
+        $selectStatement = $this->connection->getPdo()
+            ->query('select * from Album');
         $cursor = new BatchCursor($selectStatement);
         $cursor->setLimit(10);
         $array = iterator_to_array($cursor);
@@ -31,17 +25,14 @@ class BatchCursorTest extends TestCase
         $this->assertCount(10, $array);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testBatch()
     {
-        $db = $this->createConnection();
-        $countStatement = $db->getPdo()->query('select count(*) from albums');
+        $countStatement = $this->connection->getPdo()
+            ->query('select count(*) from Album');
         $count = (int)$countStatement->fetchColumn();
         $countStatement->closeCursor();
 
-        $selectStatement = $db->getPdo()->query('select * from albums');
+        $selectStatement = $this->connection->getPdo()->query('select * from Album');
         $cursor = new BatchCursor($selectStatement);
         $this->count = 0;
         $cursor->setBatchSize(10)->setBatchHandler([$this, 'handleBatch']);
@@ -56,17 +47,15 @@ class BatchCursorTest extends TestCase
         $this->count += count($rows);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testRowHandler()
     {
-        $db = $this->createConnection();
-        $countStatement = $db->getPdo()->query('select count(*) from albums');
+        $countStatement = $this->connection->getPdo()
+            ->query('select count(*) from Album');
         $count = (int)$countStatement->fetchColumn();
         $countStatement->closeCursor();
 
-        $selectStatement = $db->getPdo()->query('select * from albums');
+        $selectStatement = $this->connection->getPdo()
+            ->query('select * from Album');
         $cursor = new BatchCursor($selectStatement);
         $this->count = 0;
         $cursor->setBatchSize(10)->setRowHandler([$this, 'handleRow']);

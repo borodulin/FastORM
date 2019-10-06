@@ -4,33 +4,29 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\PdoCommand\DbException;
 use FastOrm\Exception;
 use FastOrm\NotSupportedException;
+use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Statement;
 use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class TransactionTest extends TestCase
 {
-    use TestConnectionTrait;
-
     /**
-     * @throws NotSupportedException
      * @throws DbException
+     * @throws NotSupportedException
      */
     public function testRollback()
     {
-        $connection = $this->createConnection();
-        $nameFetch = (new SelectQuery($connection))
+        $nameFetch = (new SelectQuery($this->connection))
             ->select('Title')
-            ->from('albums')
+            ->from('Album')
             ->where()->equal('AlbumId', 1)
             ->fetch();
         $oldName = $nameFetch->scalar();
-        $tran = $connection->beginTransaction();
-        $statement = new Statement($connection->getPdo(), 'update albums set Title = :t where AlbumId=:id');
+        $tran = $this->connection->beginTransaction();
+        $statement = new Statement($this->connection->getPdo(), 'update Album set Title = :t where AlbumId=:id');
         $cnt = $statement->execute(['t' => 'test', 'id' => 1])->rowCount();
         $this->assertEquals($cnt, 1);
         $newName = $nameFetch->scalar();
@@ -47,15 +43,14 @@ class TransactionTest extends TestCase
      */
     public function testCommit()
     {
-        $connection = $this->createConnection();
-        $nameFetch = (new SelectQuery($connection))
+        $nameFetch = (new SelectQuery($this->connection))
             ->select('Title')
-            ->from('albums')
+            ->from('Album')
             ->where()->equal('AlbumId', 1)
             ->fetch();
         $oldName = $nameFetch->scalar();
-        $tran = $connection->beginTransaction();
-        $command = new Statement($connection->getPdo(), 'update albums set Title = :t where AlbumId=:id');
+        $tran = $this->connection->beginTransaction();
+        $command = new Statement($this->connection->getPdo(), 'update Album set Title = :t where AlbumId=:id');
         $cnt = $command->execute(['t' => 'test', 'id' => 1])->rowCount();
         $this->assertEquals($cnt, 1);
         $tran->commit();
@@ -72,8 +67,7 @@ class TransactionTest extends TestCase
      */
     public function testError()
     {
-        $connection = $this->createConnection();
-        $tran = $connection->beginTransaction();
+        $tran = $this->connection->beginTransaction();
         $tran->rollBack();
         $this->expectException(DbException::class);
         $tran->commit();

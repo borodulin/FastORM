@@ -4,3 +4,4 @@
 /.phpunit.result.cache
 /build
 /docker-compose.yml
+/tests/db/chinook.db

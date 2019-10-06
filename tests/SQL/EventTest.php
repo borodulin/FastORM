@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-
-use FastOrm\Exception;
 use FastOrm\NotSupportedException;
+use FastOrm\PdoCommand\DbException;
 use FastOrm\Tests\DummyEventDispatcher;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
+
 
 class EventTest extends TestCase
 {
-    use TestConnectionTrait;
-
     /**
      * @throws NotSupportedException
-     * @throws Exception
+     * @throws DbException
      */
     public function testDispatcher()
     {
         $dispatcher = new DummyEventDispatcher();
-        $connection = $this->createConnection();
+        $connection = $this->connection;
         $connection->setEventDispatcher($dispatcher);
         $tran = $connection->beginTransaction();
         $tran->commit();
-        $this->assertCount(3, $dispatcher->getDispatched());
+        $this->assertCount(2, $dispatcher->getDispatched());
     }
 }

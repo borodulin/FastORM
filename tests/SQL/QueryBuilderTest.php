@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\QueryBuilder;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 /**
  * Class QueryBuilderTest
@@ -17,18 +15,12 @@ use PHPUnit\Framework\TestCase;
  */
 class QueryBuilderTest extends TestCase
 {
-    use TestConnectionTrait;
-
-    /**
-     * @throws NotSupportedException
-     */
     public function testParamBinding()
     {
-        $connection = $this->createConnection();
-        $query = (new QueryBuilder($connection))->select();
+        $query = (new QueryBuilder($this->connection))->select();
         /** @var ConditionInterface  $expression */
         $fetch = $query
-            ->from('albums')->as('t1')
+            ->from('Album')->as('t1')
             ->where()
             ->expression('1=:p1', [':p1' => 1])
             ->and()->between('AlbumId', ':p1', ':p2')
@@ -38,16 +30,12 @@ class QueryBuilderTest extends TestCase
         $this->assertCount(0, $fetch->all(['p1' => 2]));
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testOr()
     {
-        $connection = $this->createConnection();
-        $query = new SelectQuery($connection);
+        $query = new SelectQuery($this->connection);
         /** @var ConditionInterface  $expression */
         $fetch = $query
-            ->from('albums')->as('t1')
+            ->from('Album')->as('t1')
             ->where()->equal('AlbumId', 1)
             ->or()->in('AlbumId', [2,3])
             ->and()->expression(function (ConditionInterface $condition) {
@@ -57,30 +45,22 @@ class QueryBuilderTest extends TestCase
         $this->assertCount(3, $fetch->all());
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testHashCondition()
     {
-        $connection = $this->createConnection();
-        $query = new SelectQuery($connection);
+        $query = new SelectQuery($this->connection);
         /** @var ConditionInterface  $expression */
         $fetch = $query
-            ->from('albums')->as('t1')
+            ->from('Album')->as('t1')
             ->where()->hashCondition(['AlbumId' => [1,':tt']])
             ->fetch();
         $this->assertCount(1, $fetch->all());
         $this->assertCount(2, $fetch->all(['tt' => 2]));
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testLike()
     {
-        $connection = $this->createConnection();
-        $query = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        $query = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->where()->like('Name', 'rock')
             ->limit(5);
         foreach ($query as $row) {
@@ -88,14 +68,10 @@ class QueryBuilderTest extends TestCase
         }
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testLimit()
     {
-        $connection = $this->createConnection();
-        $command = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        $command = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->limit(5)->offset(10)
             ->orderBy(['TrackId' => SORT_ASC])
             ->fetch();
@@ -103,21 +79,17 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals(11, $row['TrackId']);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testHaving()
     {
-        $connection = $this->createConnection();
-        $count = (int)(new SelectQuery($connection))
+        $count = (int)(new SelectQuery($this->connection))
             ->select('count(1)')
-            ->from('genres')
+            ->from('Genre')
             ->where()->like('Name', 'Rock')
             ->fetch()->scalar();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select(['t.GenreId', 'count(1) as cnt'])
-            ->from('tracks t')->as('t')
-            ->innerJoin('genres g')->on('g.GenreId=t.GenreId')
+            ->from('Track t')->as('t')
+            ->innerJoin('Genre g')->on('g.GenreId=t.GenreId')
             ->groupBy(['t.GenreId', 'g.Name'])
             ->having()->like('g.Name', 'Rock')
             ->fetch();

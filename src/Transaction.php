@@ -82,10 +82,11 @@ class Transaction implements EventDispatcherAwareInterface
     public function begin(string $isolationLevel = null): Transaction
     {
         $pdo = $this->connection->getPdo();
+        $driver = $this->connection->getDriver();
 
         if ($this->level === 0) {
             if ($isolationLevel !== null) {
-                $this->connection->setTransactionIsolationLevel($isolationLevel);
+                $driver->setTransactionIsolationLevel($pdo, $isolationLevel);
             }
 
             $this->logger && $this->logger->debug(
@@ -99,7 +100,6 @@ class Transaction implements EventDispatcherAwareInterface
             return $this;
         }
 
-        $driver = $this->connection->getDriver();
         if ($driver instanceof SavepointInterface) {
             $this->logger && $this->logger
                 ->debug('Set savepoint ' . $this->level);

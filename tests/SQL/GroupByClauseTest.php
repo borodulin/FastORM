@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestConnectionTrait;
@@ -15,50 +13,38 @@ class GroupByClauseTest extends TestCase
 {
     use TestConnectionTrait;
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testGroupBy()
     {
-        $connection = $this->createConnection();
-        $count = (int)(new SelectQuery($connection))
+        $count = (int)(new SelectQuery($this->connection))
             ->select('count(1)')
-            ->from('genres')
+            ->from('Genre')
             ->fetch()
             ->scalar();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select(['GenreId', 'count(1) as cnt'])
-            ->from('tracks')->as('t')
+            ->from('Track')->as('t')
             ->groupBy(['GenreId'])
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount($count, $rows);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testString()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
-            ->from('tracks')->as('t')
+            ->from('Track')->as('t')
             ->groupBy('GenreId, MediaTypeId')
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(38, $rows);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testExpression()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
-            ->from('tracks')->as('t')
+            ->from('Track')->as('t')
             ->groupBy(new Expression('GenreId, MediaTypeId'))
             ->fetch();
         $rows = $fetch->all();

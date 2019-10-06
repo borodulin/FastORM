@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestConnectionTrait;
@@ -14,14 +13,10 @@ class OrderByClauseTest extends TestCase
 {
     use TestConnectionTrait;
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testOrderBy()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->limit(5)
             ->orderBy(['TrackId' => SORT_DESC])
             ->fetch();
@@ -29,14 +24,10 @@ class OrderByClauseTest extends TestCase
         $this->assertGreaterThan(100, $row['TrackId']);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testArray()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->limit(5)
             ->orderBy(['TrackId', 'Name' => SORT_DESC])
             ->fetch();
@@ -44,14 +35,10 @@ class OrderByClauseTest extends TestCase
         $this->assertEquals(1, $row['TrackId']);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testString()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->limit(5)
             ->orderBy('TrackId, Name desc')
             ->fetch();
@@ -59,14 +46,10 @@ class OrderByClauseTest extends TestCase
         $this->assertEquals(1, $row['TrackId']);
     }
 
-    /**
-     * @throws NotSupportedException
-     */
     public function testExpression()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
-            ->from('tracks')->as('t')
+        $fetch = (new SelectQuery($this->connection))
+            ->from('Track')->as('t')
             ->limit(5)
             ->orderBy(new Expression('TrackId asc'))
             ->fetch();

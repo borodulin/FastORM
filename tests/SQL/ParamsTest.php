@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\SQL\Params;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class ParamsTest extends TestCase
 {

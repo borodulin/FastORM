@@ -4,26 +4,21 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL;
 
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class FetchTest extends TestCase
 {
-    use TestConnectionTrait;
 
     /**
-     * @throws NotSupportedException
      */
     public function testColumn()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select([
                 'id' => 'TrackId',
             ])
-            ->from('tracks t')
+            ->from('Track t')
             ->limit(10)
             ->fetch();
         $rows = $fetch->column();
@@ -31,17 +26,15 @@ class FetchTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testMap()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select([
                 'id' => 'TrackId',
                 'TrackId'
             ])
-            ->from('tracks t')
+            ->from('Track t')
             ->orderBy('TrackId desc')
             ->limit(10)
             ->fetch();
@@ -51,17 +44,15 @@ class FetchTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testExists()
     {
-        $connection = $this->createConnection();
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select('1')
             ->fetch();
         $exists = $fetch->exists();
         $this->assertEquals($exists, true);
-        $fetch = (new SelectQuery($connection))
+        $fetch = (new SelectQuery($this->connection))
             ->select('0')
             ->fetch();
         $exists = $fetch->exists();

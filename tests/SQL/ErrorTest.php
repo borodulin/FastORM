@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL;
 
 use FastOrm\InvalidArgumentException;
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\Select\AliasClause;
 use FastOrm\SQL\Clause\Select\ClauseContainer;
 use FastOrm\SQL\Clause\SelectQuery;
@@ -23,21 +22,16 @@ use FastOrm\SQL\SearchCondition\Operator\ExpressionOperator;
 use FastOrm\SQL\SearchCondition\Operator\FilterHashConditionOperator;
 use FastOrm\SQL\SearchCondition\Operator\HashConditionOperator;
 use FastOrm\SQL\SearchCondition\Operator\InOperator;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class ErrorTest extends TestCase
 {
-    use TestConnectionTrait;
-
     /**
-     * @throws NotSupportedException
      */
     public function testContainer()
     {
-        $db = $this->createConnection();
         $this->expectException(InvalidArgumentException::class);
-        (new ClauseContainer($db))->build(new SelectQuery($db));
+        (new ClauseContainer($this->connection))->build(new SelectQuery($this->connection));
     }
 
     public function testExpressionBuilder()
@@ -53,17 +47,15 @@ class ErrorTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testCompound()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new Compound((new ClauseContainer($this->createConnection()))))
+        (new Compound((new ClauseContainer($this->connection))))
             ->build(new AliasClause());
     }
 
     /**
-     * @throws NotSupportedException
      */
     public function testOperators()
     {
@@ -80,7 +72,7 @@ class ErrorTest extends TestCase
         (new EqualOperator('', ''))->build(new AliasClause());
 
         $this->expectException(InvalidArgumentException::class);
-        (new ExistsOperator(new SelectQuery($this->createConnection())))->build(new AliasClause());
+        (new ExistsOperator(new SelectQuery($this->connection)))->build(new AliasClause());
 
         $this->expectException(InvalidArgumentException::class);
         (new ExpressionOperator(''))->build(new AliasClause());
