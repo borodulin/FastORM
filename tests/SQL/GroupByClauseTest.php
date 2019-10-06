@@ -6,13 +6,10 @@ namespace FastOrm\Tests\SQL;
 
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class GroupByClauseTest extends TestCase
 {
-    use TestConnectionTrait;
-
     public function testGroupBy()
     {
         $count = (int)(new SelectQuery($this->connection))

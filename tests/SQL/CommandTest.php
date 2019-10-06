@@ -8,12 +8,10 @@ use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Fetch\Fetch;
 use FastOrm\PdoCommand\Statement;
 use FastOrm\Tests\TestCase;
-use FastOrm\Tests\TestConnectionTrait;
 use PDO;
 
 class CommandTest extends TestCase
 {
-    use TestConnectionTrait;
 
     /**
      * @throws DbException

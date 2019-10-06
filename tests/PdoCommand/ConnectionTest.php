@@ -10,23 +10,36 @@ use FastOrm\Transaction;
 
 class ConnectionTest extends TestCase
 {
-    public function testIsolationLevel()
+    public function testError()
     {
         $this->expectException(NotSupportedException::class);
         $this->connection->setTransactionIsolationLevel(Transaction::REPEATABLE_READ);
-//        $db1 = $this->createConnection();
-//        $db2 = $this->createConnection();
-//        $db1->setTransactionIsolationLevel(Transaction::READ_COMMITTED);
-//        $db2->setTransactionIsolationLevel(Transaction::READ_COMMITTED);
+    }
+
+//    /**
+//     * @throws DbException
+//     * @throws NotSupportedException
+//     */
+//    public function testIsolationLevel()
+//    {
+//        $dsn = 'sqlite:' . __DIR__ . '/../db/chinook.db';
+//        $db1 = $this->createConnection($dsn);
+//        $db2 = new Connection($dsn);
+//        $db2->getPdo()->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//        $db1->setTransactionIsolationLevel(Transaction::READ_UNCOMMITTED);
+//        $db2->setTransactionIsolationLevel(Transaction::READ_UNCOMMITTED);
 //        $tran = $db2->beginTransaction();
-//        $count = (new Statement($db2->getPdo(), 'update albums set Title = :p1 where AlbumId = :p2'))
+//        $count = (new Statement($db2->getPdo(), 'update Album set Title = :p1 where AlbumId = :p2'))
 //            ->execute(['p1' => 'test','p2' => 1])
 //            ->rowCount();
 //        $this->assertEquals($count, 1);
 //        $title = (new SelectQuery($db1))
-//            ->select('Title')->from('albums')->where()->equal('AlbumId', 1)
-//            ->fetch()->scalar();
-//        $this->assertNotEquals('test', $title);
+//            ->select('Title')
+//            ->from('Album')
+//            ->where()->equal('AlbumId', 1)
+//            ->fetch()
+//            ->scalar();
+//        $this->assertEquals('test', $title);
 //        $tran->rollBack();
-    }
+//    }
 }

@@ -6,13 +6,10 @@ namespace FastOrm\Tests\SQL;
 
 use FastOrm\PdoCommand\DbException;
 use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\Tests\TestConnectionTrait;
-use PHPUnit\Framework\TestCase;
+use FastOrm\Tests\TestCase;
 
 class FromClauseTest extends TestCase
 {
-    use TestConnectionTrait;
-
     public function testEmptyFrom()
     {
         $fetch = (new SelectQuery($this->connection))

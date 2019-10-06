@@ -1,3 +1,42 @@
+
+/*******************************************************************************
+   Chinook Database - Version 1.4
+   Script: Chinook_Sqlite_AutoIncrementPKs.sql
+   Description: Creates and populates the Chinook database.
+   DB Server: Sqlite
+   Author: Luis Rocha
+   License: http://www.codeplex.com/ChinookDatabase/license
+********************************************************************************/
+
+/*******************************************************************************
+   Drop Foreign Keys Constraints
+********************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*******************************************************************************
+   Drop Tables
+********************************************************************************/
 DROP TABLE IF EXISTS [Album];
 
 DROP TABLE IF EXISTS [Artist];
@@ -20,6 +59,10 @@ DROP TABLE IF EXISTS [PlaylistTrack];
 
 DROP TABLE IF EXISTS [Track];
 
+
+/*******************************************************************************
+   Create Tables
+********************************************************************************/
 CREATE TABLE [Album]
 (
     [AlbumId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -152,6 +195,38 @@ CREATE TABLE [Track]
 );
 
 
+
+/*******************************************************************************
+   Create Primary Key Unique Indexes
+********************************************************************************/
+
+/*******************************************************************************
+   Create Foreign Keys
+********************************************************************************/
+CREATE INDEX [IFK_AlbumArtistId] ON [Album] ([ArtistId]);
+
+CREATE INDEX [IFK_CustomerSupportRepId] ON [Customer] ([SupportRepId]);
+
+CREATE INDEX [IFK_EmployeeReportsTo] ON [Employee] ([ReportsTo]);
+
+CREATE INDEX [IFK_InvoiceCustomerId] ON [Invoice] ([CustomerId]);
+
+CREATE INDEX [IFK_InvoiceLineInvoiceId] ON [InvoiceLine] ([InvoiceId]);
+
+CREATE INDEX [IFK_InvoiceLineTrackId] ON [InvoiceLine] ([TrackId]);
+
+CREATE INDEX [IFK_PlaylistTrackTrackId] ON [PlaylistTrack] ([TrackId]);
+
+CREATE INDEX [IFK_TrackAlbumId] ON [Track] ([AlbumId]);
+
+CREATE INDEX [IFK_TrackGenreId] ON [Track] ([GenreId]);
+
+CREATE INDEX [IFK_TrackMediaTypeId] ON [Track] ([MediaTypeId]);
+
+
+/*******************************************************************************
+   Populate Tables
+********************************************************************************/
 INSERT INTO [Genre] ([Name]) VALUES ('Rock');
 INSERT INTO [Genre] ([Name]) VALUES ('Jazz');
 INSERT INTO [Genre] ([Name]) VALUES ('Metal');
