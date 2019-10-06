@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\ORM;
+namespace FastOrm\ORM\CursorHandler;
 
 class ClassRowHandler
 {

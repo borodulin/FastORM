@@ -28,4 +28,20 @@ class ImmutableTest extends TestCase
         $count = count($query1->limit(100));
         $this->assertEquals(100, $count);
     }
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function testWhere()
+    {
+        $db = $this->createConnection();
+        $query1 = (new SelectQuery($db))
+            ->from('albums')
+            ->select('AlbumId')
+            ->where()->equal('AlbumId', 1);
+        $query2 = clone $query1;
+        $query2->where()->equal('AlbumId', 2);
+        $this->assertCount(0, $query2);
+        $this->assertCount(1, $query1);
+    }
 }

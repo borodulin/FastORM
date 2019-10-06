@@ -10,10 +10,11 @@ use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
 use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
 use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
+use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 
-interface SelectClauseInterface extends ExpressionInterface
+interface SelectClauseInterface extends ExpressionInterface, ContextInterface
 {
     public function select($columns): SelectDistinctInterface;
 

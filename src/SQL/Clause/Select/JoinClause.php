@@ -36,4 +36,9 @@ class JoinClause implements ExpressionInterface
     {
         return $this->joins->bottom();
     }
+
+    public function __clone()
+    {
+        $this->joins = clone $this->joins;
+    }
 }

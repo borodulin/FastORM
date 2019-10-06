@@ -45,4 +45,9 @@ class FromClause implements ExpressionInterface
     {
         return $this->from;
     }
+
+    public function __clone()
+    {
+        $this->from = clone $this->from;
+    }
 }

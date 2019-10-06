@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace FastOrm\Tests\Domain\Entity;
 
 
-class PlaylistTrack
+use FastOrm\ORM\EntityInterface;
+
+class PlaylistTrack implements EntityInterface
 {
     private $playlistId;
     private $trackId;
@@ -17,4 +19,9 @@ class PlaylistTrack
      * @var Track
      */
     private $track;
+
+    public static function getPrimaryKey()
+    {
+        return ['playlistId', 'trackId'];
+    }
 }

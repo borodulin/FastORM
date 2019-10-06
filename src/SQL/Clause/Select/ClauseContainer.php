@@ -16,7 +16,6 @@ use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\Compound;
@@ -42,7 +41,6 @@ class ClauseContainer implements
     OffsetClauseInterface,
     JoinAliasClauseInterface,
     CompoundInterface,
-    ContextInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface
 {
@@ -274,6 +272,9 @@ class ClauseContainer implements
 
     public function having(): ConditionInterface
     {
+        if ($this->havingClause->getCompounds()->count()) {
+            $this->havingClause->and();
+        }
         $this->activeCompound = $this->havingClause;
         return $this;
     }
@@ -304,6 +305,9 @@ class ClauseContainer implements
 
     public function where(): ConditionInterface
     {
+        if ($this->whereClause->getCompounds()->count()) {
+            $this->whereClause->and();
+        }
         $this->activeCompound = $this->whereClause;
         return $this;
     }
@@ -405,12 +409,22 @@ class ClauseContainer implements
 
     public function __clone()
     {
+        if ($this->activeCompound === $this->whereClause) {
+            $this->whereClause = clone $this->whereClause;
+            $this->activeCompound = $this->whereClause;
+        } else {
+            $this->whereClause = clone $this->whereClause;
+        }
+        if ($this->activeCompound === $this->havingClause) {
+            $this->havingClause = clone $this->havingClause;
+            $this->activeCompound = $this->havingClause;
+        } else {
+            $this->havingClause = clone $this->havingClause;
+        }
         $this->selectClause = clone $this->selectClause;
         $this->fromClause = clone $this->fromClause;
         $this->joinClause = clone $this->joinClause;
-        $this->whereClause = clone $this->whereClause;
         $this->groupByClause = clone $this->groupByClause;
-        $this->havingClause = clone $this->havingClause;
         $this->orderByClause = clone $this->orderByClause;
         $this->unionClause = clone $this->unionClause;
         $this->limitClause = clone $this->limitClause;

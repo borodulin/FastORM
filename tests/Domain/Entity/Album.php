@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace FastOrm\Tests\Domain\Entity;
 
 
-class Album
+use FastOrm\ORM\EntityInterface;
+
+class Album implements EntityInterface
 {
     /**
      * @var int
@@ -58,5 +60,10 @@ class Album
     public function setTracks(array $tracks): void
     {
         $this->tracks = $tracks;
+    }
+
+    public static function getPrimaryKey()
+    {
+        return 'AlbumId';
     }
 }

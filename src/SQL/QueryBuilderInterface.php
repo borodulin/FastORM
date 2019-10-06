@@ -9,7 +9,7 @@ use FastOrm\SQL\Clause\Insert\InsertClauseInterface;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\Update\UpdateClauseInterface;
 
-interface QueryInterface
+interface QueryBuilderInterface
 {
     public function select(): SelectClauseInterface;
 

@@ -30,7 +30,6 @@ class Compound implements
     public function __construct(ClauseContainer $container)
     {
         $this->compounds = new SplStack();
-        $this->compounds->add(0, new CompoundItem(new SearchCondition($this), ''));
         $this->container = $container;
     }
 
@@ -48,6 +47,9 @@ class Compound implements
 
     public function getCondition(): SearchCondition
     {
+        if ($this->compounds->count() === 0) {
+            $this->compounds->add(0, new CompoundItem(new SearchCondition($this), ''));
+        }
         /** @var CompoundItem $compoundItem */
         $compoundItem = $this->compounds->bottom();
         return $compoundItem->getCondition();
@@ -88,5 +90,10 @@ class Compound implements
             }
         }
         return $conditions ? ' (' . implode(' ', $conditions) . ') ' : '';
+    }
+
+    public function __clone()
+    {
+        $this->compounds = clone $this->compounds;
     }
 }

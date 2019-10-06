@@ -18,7 +18,6 @@ use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
 use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ContextInterface;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
@@ -33,7 +32,6 @@ use Traversable;
 class SelectQuery implements
     OffsetClauseInterface,
     EventDispatcherAwareInterface,
-    ContextInterface,
     LoggerAwareInterface,
     CompilerAwareInterface,
     ExpressionBuilderInterface
@@ -173,5 +171,10 @@ class SelectQuery implements
     public function setIteratorFactory(IteratorFactoryInterface $factory): SelectClauseInterface
     {
         return $this->container->setIteratorFactory($factory);
+    }
+
+    public function __clone()
+    {
+        $this->container = clone $this->container;
     }
 }
