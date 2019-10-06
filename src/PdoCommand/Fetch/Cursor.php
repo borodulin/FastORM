@@ -13,6 +13,9 @@ class Cursor implements CursorInterface
     private $row;
     private $key = 0;
 
+    private $limit;
+    private $rowHandler;
+
     /**
      * @var PDOStatement
      */
@@ -48,6 +51,11 @@ class Cursor implements CursorInterface
     public function next()
     {
         $this->key++;
+        if ($this->limit && ($this->key() > $this->limit)) {
+            $this->closeCursor();
+            $this->setRow(false);
+            return;
+        }
         $this->setRow($this->statement->fetch($this->fetchStyle));
     }
 
@@ -93,12 +101,36 @@ class Cursor implements CursorInterface
 
     protected function setRow($row): void
     {
-        $this->row = $row;
+        if (($row !== false) && is_callable($this->rowHandler)) {
+            $this->row = call_user_func($this->rowHandler, $row);
+        } else {
+            $this->row = $row;
+        }
     }
 
     protected function closeCursor(): void
     {
         $this->statement->closeCursor();
         $this->row = false;
+    }
+
+    /**
+     * @param int $limit
+     * @return BatchCursorInterface
+     */
+    public function setLimit(int $limit): CursorInterface
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
+     * @param callable $rowHandler
+     * @return $this
+     */
+    public function setRowHandler(callable $rowHandler): CursorInterface
+    {
+        $this->rowHandler = $rowHandler;
+        return $this;
     }
 }

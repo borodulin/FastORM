@@ -70,4 +70,10 @@ interface FetchInterface extends FetchIndexedInterface
      * @return BatchCursorInterface
      */
     public function batchCursor(iterable $params = []): BatchCursorInterface;
+
+    /**
+     * @param CursorFactoryInterface $cursorFactory
+     * @return $this
+     */
+    public function setCursorFactory(?CursorFactoryInterface $cursorFactory): self;
 }

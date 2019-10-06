@@ -9,12 +9,16 @@ use PDO;
 
 class Fetch implements FetchInterface
 {
-
     private $fetchStyle = PDO::FETCH_ASSOC;
     /**
      * @var StatementInterface
      */
     private $statement;
+
+    /**
+     * @var CursorFactoryInterface
+     */
+    private $cursorFactory;
 
     /**
      * Fetch constructor.
@@ -79,7 +83,10 @@ class Fetch implements FetchInterface
         return (bool) $this->scalar(0, $params);
     }
 
-
+    /**
+     * @param $column
+     * @return FetchAllInterface
+     */
     public function indexBy($column): FetchAllInterface
     {
         $this->indexBy = $column;
@@ -103,7 +110,6 @@ class Fetch implements FetchInterface
         }
         return is_array($result) ? $result : [];
     }
-
 
     /**
      * Fetch a two-column result into an array where the first column is a key and the second column is the value.
@@ -150,7 +156,11 @@ class Fetch implements FetchInterface
     public function cursor(iterable $params = []): CursorInterface
     {
         $pdoStatement =  $this->statement->execute($params);
-        return new Cursor($pdoStatement, $this->fetchStyle);
+        if ($this->cursorFactory) {
+            return $this->cursorFactory->create($pdoStatement, $this->fetchStyle);
+        } else {
+            return new Cursor($pdoStatement, $this->fetchStyle);
+        }
     }
 
     /**
@@ -161,5 +171,15 @@ class Fetch implements FetchInterface
     {
         $pdoStatement =  $this->statement->execute($params);
         return new BatchCursor($pdoStatement, $this->fetchStyle);
+    }
+
+    /**
+     * @param CursorFactoryInterface $cursorFactory
+     * @return Fetch
+     */
+    public function setCursorFactory(?CursorFactoryInterface $cursorFactory): FetchInterface
+    {
+        $this->cursorFactory = $cursorFactory;
+        return $this;
     }
 }

@@ -6,14 +6,15 @@ namespace FastOrm\Tests\PdoCommand;
 
 use FastOrm\NotSupportedException;
 use FastOrm\PdoCommand\Fetch\BatchCursor;
+use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
-use FastOrm\PdoCommand\Fetch\IteratorFactoryInterface;
-use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestConnectionTrait;
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
-class IteratorTest extends TestCase implements IteratorFactoryInterface
+class CursorFactoryTest extends TestCase implements CursorFactoryInterface
 {
     use TestConnectionTrait;
 
@@ -24,12 +25,12 @@ class IteratorTest extends TestCase implements IteratorFactoryInterface
     {
         $db = $this->createConnection();
         $query = new SelectQuery($db);
-        $query->from('albums')->setIteratorFactory($this);
+        $query->from('albums')->setCursorFactory($this);
         $this->assertCount(100, iterator_to_array($query));
     }
 
-    public function create(StatementInterface $statement): CursorInterface
+    public function create(PDOStatement $statement, int $fetchStyle = PDO::FETCH_ASSOC): CursorInterface
     {
-        return (new BatchCursor($statement->execute()))->setLimit(100);
+        return (new BatchCursor($statement))->setLimit(100);
     }
 }

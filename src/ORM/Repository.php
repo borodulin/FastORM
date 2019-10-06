@@ -6,6 +6,7 @@ namespace FastOrm\ORM;
 
 use FastOrm\ConnectionInterface;
 use FastOrm\InvalidArgumentException;
+use FastOrm\PdoCommand\DbException;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\SelectQuery;
 use ReflectionClass;
@@ -44,6 +45,7 @@ class Repository implements RepositoryInterface
         $this->tableName = $tableName;
         $this->selectQuery = new SelectQuery($connection);
         $this->selectQuery->from($tableName);
+        $this->selectQuery->setCursorFactory($this->getCursorFactory());
     }
 
     /**
@@ -57,11 +59,12 @@ class Repository implements RepositoryInterface
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
+     * @throws DbException
      */
     public function offsetExists($offset)
     {
         return $this->findByPk((string)$offset)
-            ->getSelectQuery()->fetch()->exists();
+            ->selectQuery->fetch()->exists();
     }
 
     /**
@@ -72,11 +75,17 @@ class Repository implements RepositoryInterface
      * </p>
      * @return mixed Can return all value types.
      * @since 5.0.0
+     * @throws DbException
      */
     public function offsetGet($offset)
     {
-        return $this->findByPk((string)$offset)
-            ->getSelectQuery()->fetch()->one();
+        $cursor = $this->findByPk((string)$offset)
+            ->selectQuery->fetch()
+            ->setCursorFactory($this->getCursorFactory())
+            ->cursor()
+            ->setLimit(1);
+        $cursor->rewind();
+        return $cursor->current();
     }
 
     /**
@@ -138,5 +147,10 @@ class Repository implements RepositoryInterface
     protected function getSelectQuery(): SelectClauseInterface
     {
         return $this->selectQuery;
+    }
+
+    protected function getCursorFactory()
+    {
+        return new CursorFactory($this->entityClass);
     }
 }

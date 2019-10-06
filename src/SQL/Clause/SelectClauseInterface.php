@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FastOrm\SQL\Clause;
 
 use FastOrm\PdoCommand\Fetch\FetchInterface;
-use FastOrm\PdoCommand\Fetch\IteratorFactoryInterface;
+use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
 use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
@@ -38,5 +38,5 @@ interface SelectClauseInterface extends ExpressionInterface, ContextInterface
 
     public function fetch(array $params = []): FetchInterface;
 
-    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectClauseInterface;
+    public function setCursorFactory(CursorFactoryInterface $factory): SelectClauseInterface;
 }

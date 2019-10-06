@@ -10,7 +10,7 @@ use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
-use FastOrm\PdoCommand\Fetch\IteratorFactoryInterface;
+use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\ClauseContainer;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
@@ -168,9 +168,9 @@ class SelectQuery implements
         return $this->compiler->compile($this->container);
     }
 
-    public function setIteratorFactory(IteratorFactoryInterface $factory): SelectClauseInterface
+    public function setCursorFactory(CursorFactoryInterface $factory): SelectClauseInterface
     {
-        return $this->container->setIteratorFactory($factory);
+        return $this->container->setCursorFactory($factory);
     }
 
     public function __clone()

@@ -33,7 +33,7 @@ class RepositoryTest extends TestCase
      * @throws NotSupportedException
      * @throws ReflectionException
      */
-    public function testRepoAcdc()
+    public function testRepoFilter()
     {
         $connection = $this->createConnection();
         $albumsRepository = new AlbumRepository($connection);
@@ -41,5 +41,17 @@ class RepositoryTest extends TestCase
         $acdc = $albumsRepository->byArtist(1);
         $this->assertTrue(isset($acdc[1]));
         $this->assertFalse(isset($acdc[2]));
+    }
+
+    /**
+     * @throws NotSupportedException
+     * @throws ReflectionException
+     */
+    public function testRowHandler()
+    {
+        $connection = $this->createConnection();
+        $albumsRepository = new AlbumRepository($connection);
+        $album = $albumsRepository[1];
+        $this->assertInstanceOf(Album::class, $album);
     }
 }
