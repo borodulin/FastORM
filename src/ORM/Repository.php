@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\ORM;
 
+use ArrayIterator;
 use FastOrm\ConnectionInterface;
 use FastOrm\InvalidArgumentException;
-use FastOrm\PdoCommand\DbException;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\SelectQuery;
 use ReflectionClass;
@@ -27,6 +27,14 @@ class Repository implements RepositoryInterface
      * @var SelectClauseInterface
      */
     private $selectQuery;
+    /**
+     * @var ConnectionInterface
+     */
+    private $connection;
+    /**
+     * @var array|SelectClauseInterface
+     */
+    private $rows;
 
     /**
      * Repository constructor.
@@ -43,9 +51,15 @@ class Repository implements RepositoryInterface
         }
         $this->entityClass = $entityClass;
         $this->tableName = $tableName;
-        $this->selectQuery = new SelectQuery($connection);
-        $this->selectQuery->from($tableName);
-        $this->selectQuery->setCursorFactory($this->getCursorFactory());
+        $this->connection = $connection;
+        $this->initSelectQuery();
+    }
+
+    protected function initSelectQuery()
+    {
+        $this->selectQuery = new SelectQuery($this->connection);
+        $this->selectQuery->from($this->tableName);
+        $this->selectQuery->setCursorFactory(new CursorFactory($this->entityClass));
     }
 
     /**
@@ -59,12 +73,10 @@ class Repository implements RepositoryInterface
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
-     * @throws DbException
      */
     public function offsetExists($offset)
     {
-        return $this->findByPk((string)$offset)
-            ->selectQuery->fetch()->exists();
+        return isset($this->all()[$offset]);
     }
 
     /**
@@ -75,17 +87,14 @@ class Repository implements RepositoryInterface
      * </p>
      * @return mixed Can return all value types.
      * @since 5.0.0
-     * @throws DbException
      */
     public function offsetGet($offset)
     {
-        $cursor = $this->findByPk((string)$offset)
-            ->selectQuery->fetch()
-            ->setCursorFactory($this->getCursorFactory())
-            ->cursor()
-            ->setLimit(1);
-        $cursor->rewind();
-        return $cursor->current();
+        if (isset($this->all()[$offset])) {
+            return $this->all()[$offset];
+        } else {
+            throw new InvalidArgumentException();
+        }
     }
 
     /**
@@ -122,12 +131,8 @@ class Repository implements RepositoryInterface
     public function findByPk(string $pk): self
     {
         $primaryKey = $this->entityClass::getPrimaryKey();
-        if (is_array($primaryKey)) {
-            $pk = explode(',', $pk);
-            $hash = array_combine($primaryKey, (array)$pk);
-        } else {
-            $hash = [$primaryKey => $pk];
-        }
+        $pk = explode(',', $pk);
+        $hash = array_combine($primaryKey, (array)$pk);
         $this->selectQuery->where()->hashCondition($hash);
         return clone $this;
     }
@@ -141,7 +146,7 @@ class Repository implements RepositoryInterface
      */
     public function getIterator()
     {
-        return $this->selectQuery;
+        return new ArrayIterator($this->all());
     }
 
     protected function getSelectQuery(): SelectClauseInterface
@@ -152,5 +157,45 @@ class Repository implements RepositoryInterface
     protected function getCursorFactory()
     {
         return new CursorFactory($this->entityClass);
+    }
+
+    public function __clone()
+    {
+        $this->rows = null;
+        $this->selectQuery = clone $this->selectQuery;
+    }
+
+    public function all()
+    {
+        if ($this->rows === null) {
+            $this->rows = iterator_to_array($this->selectQuery);
+        }
+        return $this->rows;
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        return count($this->rows);
+    }
+
+    public function withOne(RepositoryInterface $repository, array $link)
+    {
+    }
+
+    public function withMany(RepositoryInterface $repository, array $link)
+    {
+    }
+
+    public function joinWithOne()
+    {
     }
 }

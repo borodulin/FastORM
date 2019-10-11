@@ -24,7 +24,7 @@ abstract class TestCase extends BaseTestCase
     {
         static $connection;
         if (!$connection) {
-            $connection = $this->createConnection('sqlite::memory:');
+            $connection = $this->createConnection();
         }
         $this->connection = $connection;
     }
@@ -34,9 +34,10 @@ abstract class TestCase extends BaseTestCase
      * @return ConnectionInterface
      * @throws NotSupportedException
      */
-    protected function createConnection($dsn): ConnectionInterface
+    protected function createConnection(): ConnectionInterface
     {
-        $connection = new Connection($dsn);
+
+        $connection = new Connection('sqlite::memory:');
         $pdo = $connection->getPdo();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = file_get_contents(__DIR__ . '/db/chinook_sqlite.sql');

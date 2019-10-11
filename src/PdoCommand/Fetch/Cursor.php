@@ -50,13 +50,12 @@ class Cursor implements CursorInterface
      */
     public function next()
     {
-        $this->key++;
-        if ($this->limit && ($this->key() > $this->limit)) {
+        if ($this->limit && ($this->key() >= $this->limit)) {
             $this->closeCursor();
-            $this->setRow(false);
+            $this->handleRow(false);
             return;
         }
-        $this->setRow($this->statement->fetch($this->fetchStyle));
+        $this->fetchRow();
     }
 
     /**
@@ -92,19 +91,9 @@ class Cursor implements CursorInterface
     public function rewind()
     {
         if ($this->key === 0) {
-            $this->key = 1;
-            $this->setRow($this->statement->fetch($this->fetchStyle));
+            $this->fetchRow();
         } else {
             throw new NotSupportedException('Cursor cannot rewind.');
-        }
-    }
-
-    protected function setRow($row): void
-    {
-        if (($row !== false) && is_callable($this->rowHandler)) {
-            $this->row = call_user_func($this->rowHandler, $row);
-        } else {
-            $this->row = $row;
         }
     }
 
@@ -132,5 +121,22 @@ class Cursor implements CursorInterface
     {
         $this->rowHandler = $rowHandler;
         return $this;
+    }
+
+    protected function fetchRow()
+    {
+        $row = $this->statement->fetch($this->fetchStyle);
+        $this->handleRow($row);
+    }
+
+    protected function handleRow($row): void
+    {
+        if (($row !== false) && is_callable($this->rowHandler)) {
+            list($this->row, $key) = call_user_func($this->rowHandler, $row);
+            $this->key = $key === null ? $this->key + 1 : $key;
+        } else {
+            $this->row = $row;
+            $this->key++;
+        }
     }
 }

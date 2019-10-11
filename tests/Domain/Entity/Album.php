@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\Domain\Entity;
 
-
 use FastOrm\ORM\EntityInterface;
 
 class Album implements EntityInterface
@@ -62,8 +61,8 @@ class Album implements EntityInterface
         $this->tracks = $tracks;
     }
 
-    public static function getPrimaryKey()
+    public static function getPrimaryKey(): array
     {
-        return 'AlbumId';
+        return ['AlbumId'];
     }
 }

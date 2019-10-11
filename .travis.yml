@@ -3,6 +3,10 @@ php:
   - '7.2'
   - '7.3'
 
+services:
+  - postgresql
+  - mysql
+
 cache:
   directories:
     - $HOME/.composer/cache
@@ -13,7 +17,8 @@ install:
 
 before_script:
   - mkdir -p build/logs
-
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 script:
   - vendor/bin/phpcs --standard=psr12 --extensions=php src
   - vendor/bin/phpstan analyse ./src/

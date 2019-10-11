@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\ORM;
 
-use FastOrm\ORM\CursorHandler\ClassRowHandler;
+use FastOrm\ORM\CursorHandler\EntityHandler;
 use FastOrm\PdoCommand\Fetch\BatchCursor;
 use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
@@ -32,7 +32,9 @@ class CursorFactory implements CursorFactoryInterface
      */
     public function create(PDOStatement $statement, int $fetchStyle = PDO::FETCH_ASSOC): CursorInterface
     {
+        /** @var EntityInterface $className */
+        $className = $this->entityClass;
         return (new BatchCursor($statement, $fetchStyle))
-            ->setRowHandler(new ClassRowHandler($this->entityClass));
+            ->setRowHandler(new EntityHandler($this->entityClass));
     }
 }

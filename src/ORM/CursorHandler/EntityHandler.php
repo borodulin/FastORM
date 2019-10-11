@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace FastOrm\ORM\CursorHandler;
 
+use FastOrm\InvalidArgumentException;
+use FastOrm\ORM\EntityInterface;
 use ReflectionClass;
 use ReflectionException;
 
-class ClassRowHandler
+class EntityHandler
 {
     /**
      * @var string
@@ -21,6 +23,10 @@ class ClassRowHandler
      * @var array
      */
     private $lowerNames;
+    /**
+     * @var array
+     */
+    private $lowerKey;
 
     /**
      * ClassRowHandler constructor.
@@ -29,12 +35,18 @@ class ClassRowHandler
      */
     public function __construct(string $classname)
     {
-        $this->classname = $classname;
         $this->reflection = new ReflectionClass($classname);
+        if (!$this->reflection->implementsInterface(EntityInterface::class)) {
+            throw new InvalidArgumentException();
+        }
+        /** @var EntityInterface $classname */
+        $this->classname = $classname;
         foreach ($this->reflection->getProperties() as $property) {
             $property->setAccessible(true);
             $this->lowerNames[strtolower($property->name)] = $property;
         }
+        $pk = $yourArray = array_map('strtolower', $classname::getPrimaryKey());
+        $this->lowerKey = array_combine($pk, $pk);
     }
 
     public function __invoke(array $row)
@@ -46,6 +58,7 @@ class ClassRowHandler
                 $property->setValue($instance, $row[$lowerName]);
             }
         }
-        return $instance;
+        $key = implode(',', array_intersect_key($row, $this->lowerKey));
+        return [$instance, $key];
     }
 }

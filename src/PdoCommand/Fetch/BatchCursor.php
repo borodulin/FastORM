@@ -11,20 +11,20 @@ class BatchCursor extends Cursor implements BatchCursorInterface
 
     private $batchRows = [];
 
-    protected function setRow($row): void
+    protected function handleRow($row): void
     {
         if ($row === false) {
             $this->handleBatch();
-            parent::setRow($row);
+            parent::handleRow($row);
             return;
         }
         if (is_callable($this->batchHandler)) {
             $this->batchRows[] = $row;
         }
-        if ($this->batchSize && ($this->key() % $this->batchSize === 0)) {
+        if ($this->batchSize && (count($this->batchRows) % $this->batchSize === 0)) {
             $this->handleBatch();
         }
-        parent::setRow($row);
+        parent::handleRow($row);
     }
 
     private function handleBatch()

@@ -6,5 +6,5 @@ namespace FastOrm\ORM;
 
 interface EntityInterface
 {
-    public static function getPrimaryKey();
+    public static function getPrimaryKey(): array;
 }

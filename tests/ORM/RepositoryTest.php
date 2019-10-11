@@ -18,10 +18,10 @@ class RepositoryTest extends TestCase
      */
     public function testIsset()
     {
-        $repository = new Repository(Album::class, 'Album', $this->connection);
-        $this->assertTrue(isset($repository[1]));
         $repository = new Repository(PlaylistTrack::class, 'PlaylistTrack', $this->connection);
         $this->assertTrue(isset($repository['1,1']));
+        $repository = new Repository(Album::class, 'Album', $this->connection);
+        $this->assertTrue(isset($repository[1]));
     }
 
     /**
@@ -34,6 +34,18 @@ class RepositoryTest extends TestCase
         $acdc = $albumsRepository->byArtist(1);
         $this->assertTrue(isset($acdc[1]));
         $this->assertFalse(isset($acdc[2]));
+        $this->assertTrue(isset($albumsRepository[2]));
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testRepoArray()
+    {
+        $albumsRepository = new AlbumRepository($this->connection);
+        $acdc = $albumsRepository->byArtist(1);
+        $rows = iterator_to_array($acdc);
+        $this->assertIsArray($rows);
     }
 
     /**
