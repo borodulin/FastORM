@@ -1,5 +1,6 @@
 #dist: bionic
 language: php
+
 php:
   - '7.2'
   - '7.3'
@@ -26,14 +27,6 @@ script:
   - vendor/bin/phpunit -c phpunit.sqlite.xml --coverage-clover build/logs/clover-sqlite.xml
   - vendor/bin/phpunit -c phpunit.mysql.xml --coverage-clover build/logs/clover-mysql.xml
   - vendor/bin/phpunit -c phpunit.pgsql.xml --coverage-clover build/logs/clover-pgsql.xml
-
-jobs:
-  include:
-    - stage: Metrics and quality
-      env: COVERAGE
-      before_script:
-        - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
-      script:
-        - vendor/bin/phpunit-merger coverage build/logs build/logs/clover.xml
-      after_script:
-        - vendor/bin/php-coveralls --no-interaction
+after_success:
+  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then php vendor/bin/phpunit-merger coverage build/logs build/logs/clover.xml; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then php vendor/bin/php-coveralls --no-interaction; fi;
