@@ -16,6 +16,7 @@ class HashConditionOperator implements
     ExpressionBuilderInterface
 {
     use CompilerAwareTrait;
+
     /**
      * @var array
      */

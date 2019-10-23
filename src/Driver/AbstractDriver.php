@@ -12,7 +12,8 @@ use Psr\Log\LoggerAwareTrait;
 
 abstract class AbstractDriver implements DriverInterface
 {
-    use LoggerAwareTrait, EventDispatcherAwareTrait;
+    use LoggerAwareTrait;
+    use EventDispatcherAwareTrait;
 
     public function createCompiler(): CompilerInterface
     {

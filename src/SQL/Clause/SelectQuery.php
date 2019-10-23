@@ -36,7 +36,9 @@ class SelectQuery implements
     CompilerAwareInterface,
     ExpressionBuilderInterface
 {
-    use EventDispatcherAwareTrait, LoggerAwareTrait, CompilerAwareTrait;
+    use EventDispatcherAwareTrait;
+    use LoggerAwareTrait;
+    use CompilerAwareTrait;
 
     /**
      * @var ConnectionInterface

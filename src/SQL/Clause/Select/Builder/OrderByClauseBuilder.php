@@ -11,7 +11,6 @@ use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-
 class OrderByClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {
     use CompilerAwareTrait;

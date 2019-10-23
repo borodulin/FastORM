@@ -12,7 +12,9 @@ use Psr\Log\LoggerAwareTrait;
 
 class Connection implements ConnectionInterface
 {
-    use LoggerAwareTrait, EventDispatcherAwareTrait;
+    use LoggerAwareTrait;
+    use EventDispatcherAwareTrait;
+
     /**
      * @var Transaction
      */

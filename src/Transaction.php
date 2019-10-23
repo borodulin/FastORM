@@ -11,7 +11,8 @@ use Psr\Log\LoggerAwareTrait;
 
 class Transaction implements EventDispatcherAwareInterface
 {
-    use EventDispatcherAwareTrait, LoggerAwareTrait;
+    use EventDispatcherAwareTrait;
+    use LoggerAwareTrait;
 
     /**
      * A constant representing the transaction isolation level `READ UNCOMMITTED`.

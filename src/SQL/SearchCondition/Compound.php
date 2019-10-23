@@ -18,6 +18,7 @@ class Compound implements
     CompilerAwareInterface
 {
     use CompilerAwareTrait;
+
     /**
      * @var SplStack
      */

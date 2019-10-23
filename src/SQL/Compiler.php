@@ -29,7 +29,8 @@ use Psr\Log\LoggerAwareTrait;
 
 class Compiler implements CompilerInterface
 {
-    use LoggerAwareTrait, EventDispatcherAwareTrait;
+    use LoggerAwareTrait;
+    use EventDispatcherAwareTrait;
 
     protected $quoteColumnChar = '';
     protected $quoteTableChar = '';

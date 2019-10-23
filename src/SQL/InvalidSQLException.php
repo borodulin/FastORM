@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FastOrm\SQL;
-
 
 use FastOrm\Exception;
 

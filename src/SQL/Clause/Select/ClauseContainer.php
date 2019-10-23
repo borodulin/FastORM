@@ -46,6 +46,7 @@ class ClauseContainer implements
     CompilerAwareInterface
 {
     use CompilerAwareTrait;
+
     /**
      * @var SelectClause
      */

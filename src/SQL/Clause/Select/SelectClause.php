@@ -32,7 +32,8 @@ class SelectClause implements ExpressionInterface
                 continue;
             }
             if (is_string($columnDefinition)) {
-                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_.]+)$/', $columnDefinition, $matches) &&
+                if (
+                    preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_.]+)$/', $columnDefinition, $matches) &&
                     !preg_match('/^\d+$/', $matches[2]) &&
                     strpos($matches[2], '.') === false
                 ) {

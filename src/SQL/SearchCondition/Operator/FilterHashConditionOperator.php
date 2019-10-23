@@ -16,6 +16,7 @@ class FilterHashConditionOperator implements
     ExpressionBuilderInterface
 {
     use CompilerAwareTrait;
+
     /**
      * @var array
      */
