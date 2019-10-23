@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestCase;
 
 class FetchTest extends TestCase
@@ -48,12 +49,12 @@ class FetchTest extends TestCase
     public function testExists()
     {
         $fetch = (new SelectQuery($this->connection))
-            ->select('1')
+            ->select(new Expression('1'))
             ->fetch();
         $exists = $fetch->exists();
         $this->assertEquals($exists, true);
         $fetch = (new SelectQuery($this->connection))
-            ->select('0')
+            ->select(new Expression('0'))
             ->fetch();
         $exists = $fetch->exists();
         $this->assertEquals($exists, false);

@@ -9,7 +9,7 @@ class LikeOperator implements OperatorInterface
     private $column;
     private $value;
 
-    public function __construct($column, $value)
+    public function __construct(string $column, $value)
     {
         $this->column = $column;
         $this->value = $value;

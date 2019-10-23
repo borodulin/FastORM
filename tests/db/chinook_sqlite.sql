@@ -13,7 +13,8 @@
 ********************************************************************************/
 
 
-
+CREATE TABLE migrated(migrated int);
+INSERT INTO migrated(migrated) values(1);
 
 
 

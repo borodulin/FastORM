@@ -42,9 +42,11 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
             } elseif (is_string($from)) {
                 if (strpos($from, '(') === false) {
                     if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $from, $matches)) { // with alias
-                        $from = $this->compiler->quoteTableName($matches[1]);
-                        $aliasName = $this->compiler->quoteTableName($matches[2]);
+                        $from = $matches[1];
+                        $aliasName = $matches[2];
                     }
+                    $from = $this->compiler->quoteTableName($from);
+                    $aliasName && $aliasName = $this->compiler->quoteTableName($aliasName);
                 }
                 $result[] = $aliasName ? "$from $aliasName" : $from;
             }

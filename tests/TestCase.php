@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests;
 
-use FastOrm\Connection;
 use FastOrm\ConnectionInterface;
 use FastOrm\NotSupportedException;
-use PDO;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -36,12 +34,13 @@ abstract class TestCase extends BaseTestCase
      */
     protected function createConnection(): ConnectionInterface
     {
-
-        $connection = new Connection('sqlite::memory:');
-        $pdo = $connection->getPdo();
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = file_get_contents(__DIR__ . '/db/chinook_sqlite.sql');
-        $pdo->exec($sql);
-        return $connection;
+        return (new TestConnectionFactory())->create();
+//
+//        $connection = new Connection('sqlite::memory:');
+//        $pdo = $connection->getPdo();
+//        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//        $sql = file_get_contents(__DIR__ . '/db/chinook_sqlite.sql');
+//        $pdo->exec($sql);
+//        return $connection;
     }
 }

@@ -30,7 +30,7 @@ class BetweenColumnsOperator implements
      */
     private $not;
 
-    public function __construct($value, $intervalStartColumn, $intervalEndColumn)
+    public function __construct($value, string $intervalStartColumn, string $intervalEndColumn)
     {
         $this->value = $value;
         $this->intervalStartColumn = $intervalStartColumn;

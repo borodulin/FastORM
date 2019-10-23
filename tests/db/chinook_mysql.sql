@@ -11,17 +11,19 @@
 /*******************************************************************************
    Drop database if it exists
 ********************************************************************************/
-DROP DATABASE IF EXISTS `Chinook`;
+DROP DATABASE IF EXISTS `chinook`;
 
 
 /*******************************************************************************
    Create database
 ********************************************************************************/
-CREATE DATABASE `Chinook`;
+CREATE DATABASE `chinook`;
 
 
-USE `Chinook`;
+USE `chinook`;
 
+CREATE TABLE migrated(migrated int);
+INSERT INTO migrated(migrated) values(1);
 
 /*******************************************************************************
    Create Tables

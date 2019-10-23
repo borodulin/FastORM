@@ -7,6 +7,7 @@ namespace FastOrm\Tests\PdoCommand;
 use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\PdoValue;
 use FastOrm\PdoCommand\Statement;
+use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestCase;
 use PDO;
 
@@ -15,54 +16,34 @@ class StatementTest extends TestCase
     /**
      * @throws DbException
      */
-    public function testErrorOptions()
-    {
-        $this->expectException(DbException::class);
-        (new Statement(
-            $this->connection->getPdo(),
-            'select * from Album',
-            [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]
-        ))
-            ->execute();
-    }
-
-    /**
-     * @throws DbException
-     */
     public function testErrorQuery()
     {
         $this->expectException(DbException::class);
-        (new Statement($this->connection->getPdo(), 'select * from albums11'))
+        (new Statement($this->connection->getPdo(), 'select * from bad_table_name'))
             ->execute();
     }
 
     /**
-     * @throws DbException
-     */
-    public function testErrorExecute()
-    {
-        $this->expectException(DbException::class);
-        (new Statement($this->connection->getPdo(), 'select * from Album where AlbumId=1111111111111111111'))
-            ->execute(['p1' => '1222222222222222222'])->fetchAll();
-    }
-
-    /**
-     * @throws DbException
      */
     public function testErrorParams()
     {
         $this->expectException(DbException::class);
-        (new Statement($this->connection->getPdo(), 'select * from Album where AlbumId=:p1'))
-            ->execute(['p2' => 1])->fetchAll();
+        (new SelectQuery($this->connection))
+            ->from('Album')
+            ->where()->equal('AlbumId', ':p1')
+            ->fetch()
+            ->all(['p2' => 1]);
     }
 
     /**
-     * @throws DbException
      */
     public function testPdoValue()
     {
-        $all = (new Statement($this->connection->getPdo(), 'select * from Album where AlbumId=:p1'))
-            ->execute(['p1' => new PdoValue(1, PDO::PARAM_STR)])->fetchAll();
+        $all = (new SelectQuery($this->connection))
+            ->from('Album')
+            ->where()->equal('AlbumId', ':p1')
+            ->fetch()
+            ->all(['p1' => new PdoValue(1, PDO::PARAM_STR)]);
         $this->assertCount(1, $all);
     }
 }

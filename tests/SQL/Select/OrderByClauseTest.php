@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestCase;
 
 class OrderByClauseTest extends TestCase
@@ -38,17 +37,6 @@ class OrderByClauseTest extends TestCase
             ->from('Track')->as('t')
             ->limit(5)
             ->orderBy('TrackId, Name desc')
-            ->fetch();
-        $row = $fetch->one();
-        $this->assertEquals(1, $row['TrackId']);
-    }
-
-    public function testExpression()
-    {
-        $fetch = (new SelectQuery($this->connection))
-            ->from('Track')->as('t')
-            ->limit(5)
-            ->orderBy(new Expression('TrackId asc'))
             ->fetch();
         $row = $fetch->one();
         $this->assertEquals(1, $row['TrackId']);

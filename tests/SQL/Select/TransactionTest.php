@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
-use FastOrm\Exception;
-use FastOrm\NotSupportedException;
 use FastOrm\PdoCommand\DbException;
 use FastOrm\PdoCommand\Statement;
 use FastOrm\SQL\Clause\SelectQuery;
@@ -15,7 +13,6 @@ class TransactionTest extends TestCase
 {
     /**
      * @throws DbException
-     * @throws NotSupportedException
      */
     public function testRollback()
     {
@@ -38,8 +35,6 @@ class TransactionTest extends TestCase
 
     /**
      * @throws DbException
-     * @throws NotSupportedException
-     * @throws Exception
      */
     public function testCommit()
     {
@@ -62,8 +57,7 @@ class TransactionTest extends TestCase
     }
 
     /**
-     * @throws NotSupportedException
-     * @throws Exception
+     * @throws DbException
      */
     public function testError()
     {

@@ -56,6 +56,9 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
                 throw new InvalidSQLException('Join SQL clause is invalid.');
             }
             $on = $joinItem->getOn();
+            if ($on instanceof ExpressionInterface) {
+                $on = $this->compiler->compile($on);
+            }
             $alias && $alias = $this->compiler->quoteTableName($alias);
             $result[] = "$joinType $join $alias ON $on";
         }

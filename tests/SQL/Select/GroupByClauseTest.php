@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
@@ -13,12 +13,12 @@ class GroupByClauseTest extends TestCase
     public function testGroupBy()
     {
         $count = (int)(new SelectQuery($this->connection))
-            ->select('count(1)')
+            ->select(new Expression('count(1)'))
             ->from('Genre')
             ->fetch()
             ->scalar();
         $fetch = (new SelectQuery($this->connection))
-            ->select(['GenreId', 'count(1) as cnt'])
+            ->select(['GenreId', new Expression('count(1) as cnt')])
             ->from('Track')->as('t')
             ->groupBy(['GenreId'])
             ->fetch();
@@ -29,9 +29,9 @@ class GroupByClauseTest extends TestCase
     public function testString()
     {
         $fetch = (new SelectQuery($this->connection))
-            ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
+            ->select(['GenreId', 'MediaTypeId', new Expression('count(1) as cnt')])
             ->from('Track')->as('t')
-            ->groupBy('GenreId, MediaTypeId')
+            ->groupBy(['GenreId', 'MediaTypeId'])
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(38, $rows);
@@ -40,9 +40,9 @@ class GroupByClauseTest extends TestCase
     public function testExpression()
     {
         $fetch = (new SelectQuery($this->connection))
-            ->select(['GenreId', 'MediaTypeId', 'count(1) as cnt'])
+            ->select(['GenreId', 'MediaTypeId', new Expression('count(1) as cnt')])
             ->from('Track')->as('t')
-            ->groupBy(new Expression('GenreId, MediaTypeId'))
+            ->groupBy(['GenreId', 'MediaTypeId'])
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(38, $rows);

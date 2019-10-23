@@ -19,7 +19,7 @@ class JoinItem implements ExpressionInterface
         $this->joinType = $joinType;
     }
 
-    public function setOn(string $condition): void
+    public function setOn($condition): void
     {
         $this->on = $condition;
     }
@@ -41,9 +41,9 @@ class JoinItem implements ExpressionInterface
     }
 
     /**
-     * @return string
+     * @return string|ExpressionInterface
      */
-    public function getOn(): string
+    public function getOn()
     {
         return $this->on;
     }

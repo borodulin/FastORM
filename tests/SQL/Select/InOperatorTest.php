@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
@@ -58,7 +58,7 @@ class InOperatorTest extends TestCase
     {
         $fetch = (new SelectQuery($this->connection))
             ->from('Employee e')
-            ->where()->in('EmployeeId', (new SelectQuery($this->connection))->select('1'))
+            ->where()->in('EmployeeId', (new SelectQuery($this->connection))->select(new Expression('1')))
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(1, $rows);

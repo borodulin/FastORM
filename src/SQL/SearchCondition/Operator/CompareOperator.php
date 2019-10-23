@@ -21,7 +21,7 @@ class CompareOperator implements
     private $operator;
     private $value;
 
-    public function __construct($column, $operator, $value)
+    public function __construct(string $column, string $operator, $value)
     {
         $this->column = $column;
         $this->operator = $operator;

@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace FastOrm\Tests\PdoCommand;
+
+use FastOrm\PdoCommand\DbException;
+use FastOrm\PdoCommand\Statement;
+use FastOrm\Tests\TestCase;
+use PDO;
+
+class StatementTestSqlite extends TestCase
+{
+
+//    public function testErrorExecute()
+//    {
+//        $statement = new Statement(
+//            $this->connection->getPdo(),
+//            'select * from Album where AlbumId=:p12',
+//            [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]
+//        );
+//        $this->expectException(DbException::class);
+//        $cursor = (new Fetch($statement))->cursor(['p12' => false]);
+//        $rows = [];
+//        foreach ($cursor as $value) {
+//            $rows[] = $value;
+//        }
+//    }
+
+    /**
+     * @throws DbException
+     */
+    public function testErrorOptions()
+    {
+        $this->expectException(DbException::class);
+        (new Statement(
+            $this->connection->getPdo(),
+            'select * from Album',
+            [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]
+        ))
+            ->execute();
+    }
+
+    /**
+     * @throws DbException
+     */
+    public function testErrorExecute()
+    {
+        $this->expectException(DbException::class);
+        (new Statement($this->connection->getPdo(), 'select * from Album where AlbumId=1111111111111111111'))
+            ->execute(['p1' => '1222222222222222222'])->fetchAll();
+    }
+}

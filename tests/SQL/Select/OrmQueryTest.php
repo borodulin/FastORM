@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\SearchCondition\ConditionInterface;

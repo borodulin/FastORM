@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
@@ -10,11 +10,10 @@ use FastOrm\Tests\TestCase;
 
 class SelectClauseTest extends TestCase
 {
-
     public function testString()
     {
         $query = (new SelectQuery($this->connection))
-            ->select('1');
+            ->select(new Expression('1'));
         $this->assertEquals('SELECT 1', (string)$query);
     }
 
@@ -26,8 +25,8 @@ class SelectClauseTest extends TestCase
                 'id' => 'TrackId',
                 'Name as name1',
                 'Name as name2',
-                new Expression('5')
-            ])->select('*')
+                new Expression('5 as "5"')
+            ])->select('t.*')
             ->from('Track')->as('t')
             ->limit(10)
             ->fetch();
@@ -46,8 +45,8 @@ class SelectClauseTest extends TestCase
                 'GenreName' => (new SelectQuery($this->connection))
                     ->select('Name')
                     ->from('Genre g')
-                    ->where()->expression('g.GenreId=t.GenreId'),
-            ])->select('*')
+                    ->where()->compareColumns('g.GenreId', '=', 't.GenreId'),
+            ])->select('t.*')
             ->from('Track t')
             ->limit(10);
         $fetch = $query->fetch();

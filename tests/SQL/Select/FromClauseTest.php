@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
-use FastOrm\PdoCommand\DbException;
 use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestCase;
 
 class FromClauseTest extends TestCase
@@ -13,7 +13,7 @@ class FromClauseTest extends TestCase
     public function testEmptyFrom()
     {
         $fetch = (new SelectQuery($this->connection))
-            ->select('1')
+            ->select(new Expression('1'))
             ->fetch();
         $one = $fetch->scalar();
         $this->assertEquals(1, $one);
@@ -23,8 +23,8 @@ class FromClauseTest extends TestCase
     {
         $command = (new SelectQuery($this->connection))
             ->from('Track')->as('t')
-            ->innerJoin('Genre')->alias('g')->on('g.GenreID=t.GenreId')
-            ->innerJoin('MediaType')->alias('mt')->on('mt.MediaTypeId=t.MediaTypeId')
+            ->innerJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
+            ->innerJoin('MediaType')->alias('mt')->onColumns('mt.MediaTypeId', 't.MediaTypeId')
             ->limit(10)
             ->fetch();
         $all = $command->all();
@@ -57,38 +57,18 @@ class FromClauseTest extends TestCase
     {
         $fetch = (new SelectQuery($this->connection))
             ->from('Track')->as('t')
-            ->leftJoin('Genre')->alias('g')->on('g.GenreID=t.GenreId')
+            ->leftJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
             ->limit(10)
             ->fetch();
         $all = $fetch->all();
         $this->assertCount(10, $all);
     }
 
-    public function testRightJoin()
-    {
-        $this->expectException(DbException::class);
-        (new SelectQuery($this->connection))
-            ->from('Track')->as('t')
-            ->rightJoin('genres')->alias('g')->on('g.GenreID=t.GenreId')
-            ->limit(10)
-            ->fetch();
-    }
-
-    public function testFullJoin()
-    {
-        $this->expectException(DbException::class);
-        (new SelectQuery($this->connection))
-            ->from('Track')->as('t')
-            ->fullJoin('Genre')->alias('g')->on('g.GenreID=t.GenreId')
-            ->limit(10)
-            ->fetch();
-    }
-
     public function testCustomJoin()
     {
         $fetch = (new SelectQuery($this->connection))
             ->from('Track')->as('t')
-            ->join('Genre g', 'left outer join')->on('g.GenreID=t.GenreId')
+            ->join('Genre g', 'left outer join')->onColumns('g.GenreId', 't.GenreId')
             ->limit(10)
             ->fetch();
         $all = $fetch->all();

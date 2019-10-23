@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
+use FastOrm\SQL\Expression;
 use FastOrm\SQL\QueryBuilder;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
+use FastOrm\SQL\SearchCondition\Operator\CompareColumnsOperator;
 use FastOrm\Tests\TestCase;
 
 /**
@@ -87,9 +89,9 @@ class QueryBuilderTest extends TestCase
             ->where()->like('Name', 'Rock')
             ->fetch()->scalar();
         $fetch = (new SelectQuery($this->connection))
-            ->select(['t.GenreId', 'count(1) as cnt'])
+            ->select(['t.GenreId', new Expression('count(1) as cnt')])
             ->from('Track t')->as('t')
-            ->innerJoin('Genre g')->on('g.GenreId=t.GenreId')
+            ->innerJoin('Genre g')->on(new CompareColumnsOperator('g.GenreId', '=', 't.GenreId'))
             ->groupBy(['t.GenreId', 'g.Name'])
             ->having()->like('g.Name', 'Rock')
             ->fetch();

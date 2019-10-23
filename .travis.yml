@@ -17,12 +17,14 @@ install:
 
 before_script:
   - mkdir -p build/logs
-  - psql -c 'create database travis_ci_test;' -U postgres
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+  - psql -c 'create database chinook;' -U postgres
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS chinook;'
 script:
   - vendor/bin/phpcs --standard=psr12 --extensions=php src
   - vendor/bin/phpstan analyse ./src/
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit -c phpunit.sqlite.xml --coverage-clover build/logs/clover-sqlite.xml
+  - vendor/bin/phpunit -c phpunit.mysql.xml --coverage-clover build/logs/clover-mysql.xml
+  - vendor/bin/phpunit -c phpunit.pgsql.xml --coverage-clover build/logs/clover-pgsql.xml
 
 jobs:
   include:
@@ -31,6 +33,6 @@ jobs:
       before_script:
         - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
       script:
-        - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+        - vendor/bin/phpunit-merger coverage build/logs build/logs/clover.xml
       after_script:
-        - ./vendor/bin/php-coveralls --no-interaction
+        - vendor/bin/php-coveralls --no-interaction

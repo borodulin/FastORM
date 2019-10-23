@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
@@ -19,7 +19,7 @@ class ConditionTest extends TestCase
             ->where()->exists(
                 (new SelectQuery($this->connection))
                 ->from('Artist t')
-                ->where()->expression('t.ArtistId=a.ArtistId')
+                ->where()->compareColumns('t.ArtistId', '=', 'a.ArtistId')
                 ->and()->like('Name', 'Kiss')
             )
             ->fetch();

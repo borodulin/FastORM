@@ -31,7 +31,10 @@ class Compiler implements CompilerInterface
 {
     use LoggerAwareTrait, EventDispatcherAwareTrait;
 
-    private static $defaultClassMap = [
+    protected $quoteColumnChar = '';
+    protected $quoteTableChar = '';
+
+    protected static $defaultClassMap = [
         SelectClause::class => SelectClauseBuilder::class,
         FromClause::class => FromClauseBuilder::class,
         JoinClause::class => JoinClauseBuilder::class,
@@ -88,16 +91,29 @@ class Compiler implements CompilerInterface
 
     public function quoteColumnName(string $name): string
     {
+        if ($this->quoteColumnChar) {
+            if (preg_match('/^([\w]+)(?i:\.)([\w*]+)$/', $name, $matches)) {
+                return $this->quoteName($matches[1], $this->quoteColumnChar) . '.'
+                    . (($matches[2] === '*') ? $matches[2] : $this->quoteName($matches[2], $this->quoteColumnChar));
+            } else {
+                return $this->quoteName($name, $this->quoteColumnChar);
+            }
+        }
         return $name;
     }
 
     public function quoteTableName(string $name): string
     {
-        return $name;
+        return  $this->quoteTableChar ? $this->quoteName($name, $this->quoteTableChar) : $name;
     }
 
     public function getParams(): ParamsInterface
     {
         return $this->params;
+    }
+
+    protected function quoteName($name, $quoteChar)
+    {
+        return $quoteChar . trim($name, $quoteChar) . $quoteChar;
     }
 }

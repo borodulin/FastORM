@@ -21,7 +21,7 @@ class BetweenOperator implements
     private $intervalStart;
     private $intervalEnd;
 
-    public function __construct($column, $intervalStart, $intervalEnd)
+    public function __construct(string $column, $intervalStart, $intervalEnd)
     {
         $this->column = $column;
         $this->intervalStart = $intervalStart;

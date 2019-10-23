@@ -8,7 +8,7 @@ use FastOrm\NotSupportedException;
 use FastOrm\Tests\TestCase;
 use FastOrm\Transaction;
 
-class ConnectionTest extends TestCase
+class ConnectionTestSqlite extends TestCase
 {
     public function testError()
     {

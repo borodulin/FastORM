@@ -11,18 +11,16 @@
     <testsuites>
         <testsuite name="default">
             <directory suffix="Test.php">tests</directory>
-            <directory suffix="TestSqlite.php">tests</directory>
-        </testsuite>
-        <testsuite name="mysql">
-            <directory suffix="Test.php">tests</directory>
-            <directory suffix="TestMysql.php">tests</directory>
-        </testsuite>
-        <testsuite name="postgres">
-            <directory suffix="Test.php">tests</directory>
-            <directory suffix="TestPostgres.php">tests</directory>
+            <directory suffix="TestPgsql.php">tests</directory>
         </testsuite>
     </testsuites>
-
+    <php>
+        <env name="DB_ENGINE" value="pgsql"/>
+        <env name="POSTGRES_DATABASE" value="chinook"/>
+        <env name="POSTGRES_USER" value="postgres"/>
+        <env name="POSTGRES_PASSWORD" value=""/>
+        <env name="POSTGRES_HOST" value="localhost"/>
+    </php>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>

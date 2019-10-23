@@ -27,8 +27,10 @@ class GroupByClauseBuilder implements ExpressionBuilderInterface, CompilerAwareI
         foreach ($columns as $i => $column) {
             if ($column instanceof ExpressionInterface) {
                 $column = $this->compiler->compile($column);
+            } else {
+                $column = $this->compiler->quoteColumnName($column);
             }
-            $columns[$i] = $this->compiler->quoteColumnName($column);
+            $columns[$i] = $column;
         }
 
         return 'GROUP BY ' . implode(', ', $columns);

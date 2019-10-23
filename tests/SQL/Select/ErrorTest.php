@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\AliasClause;

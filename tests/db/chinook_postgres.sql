@@ -8,6 +8,8 @@
    License: http://www.codeplex.com/ChinookDatabase/license
 ********************************************************************************/
 
+CREATE TABLE migrated(migrated int);
+INSERT INTO migrated(migrated) values(1);
 
 /*******************************************************************************
    Create Tables

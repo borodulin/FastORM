@@ -23,6 +23,7 @@ use FastOrm\SQL\SearchCondition\CompoundInterface;
 use FastOrm\SQL\SearchCondition\ConditionInterface;
 use FastOrm\SQL\SearchCondition\Operator\BetweenColumnsOperator;
 use FastOrm\SQL\SearchCondition\Operator\BetweenOperator;
+use FastOrm\SQL\SearchCondition\Operator\CompareColumnsOperator;
 use FastOrm\SQL\SearchCondition\Operator\CompareOperator;
 use FastOrm\SQL\SearchCondition\Operator\EqualOperator;
 use FastOrm\SQL\SearchCondition\Operator\ExistsOperator;
@@ -176,14 +177,14 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function between($column, $intervalStart, $intervalEnd): CompoundInterface
+    public function between(string $column, $intervalStart, $intervalEnd): CompoundInterface
     {
         $this->activeCompound->getCondition()
             ->setOperator(new BetweenOperator($column, $intervalStart, $intervalEnd));
         return $this;
     }
 
-    public function betweenColumns($value, $intervalStartColumn, $intervalEndColumn): CompoundInterface
+    public function betweenColumns($value, string $intervalStartColumn, string $intervalEndColumn): CompoundInterface
     {
         $this->activeCompound->getCondition()
             ->setOperator(new BetweenColumnsOperator($value, $intervalStartColumn, $intervalEndColumn));
@@ -197,28 +198,35 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function in($column, $values): CompoundInterface
+    public function in(string $column, $values): CompoundInterface
     {
         $this->activeCompound->getCondition()
             ->setOperator(new InOperator($column, $values));
         return $this;
     }
 
-    public function like($column, $values): CompoundInterface
+    public function like(string $column, $values): CompoundInterface
     {
         $this->activeCompound->getCondition()
             ->setOperator(new LikeOperator($column, $values));
         return $this;
     }
 
-    public function compare($column, $operator, $value): CompoundInterface
+    public function compare(string $column, string $operator, $value): CompoundInterface
     {
         $this->activeCompound->getCondition()
             ->setOperator(new CompareOperator($column, $operator, $value));
         return $this;
     }
 
-    public function equal($column, $value): CompoundInterface
+    public function compareColumns(string $column1, string $operator, string $column2): CompoundInterface
+    {
+        $this->activeCompound->getCondition()
+            ->setOperator(new CompareColumnsOperator($column1, $operator, $column2));
+        return $this;
+    }
+
+    public function equal(string $column, $value): CompoundInterface
     {
         $this->activeCompound->getCondition()
             ->setOperator(new EqualOperator($column, $value));
@@ -353,9 +361,15 @@ class ClauseContainer implements
         return count($this->fetch()->column());
     }
 
-    public function on(string $condition): FromClauseInterface
+    public function on($condition): FromClauseInterface
     {
         $this->joinClause->getJoin()->setOn($condition);
+        return $this;
+    }
+
+    public function onColumns(string $column1, string $column2): FromClauseInterface
+    {
+        $this->joinClause->getJoin()->setOn(new CompareColumnsOperator($column1, '=', $column2));
         return $this;
     }
 

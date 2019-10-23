@@ -4,19 +4,72 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests;
 
+use FastOrm\Connection;
 use FastOrm\ConnectionInterface;
+use FastOrm\NotSupportedException;
+use PDO;
+use PDOException;
 
 class TestConnectionFactory
 {
+    /**
+     * @var array|false|string
+     */
+    private $driver;
+
     private function getTestDriverMap()
     {
         return [
-            'sqlite' => [],
+            'sqlite' => [
+                'dsn' => 'sqlite::memory:',
+                'options' => [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                'migration' => __DIR__ . '/db/chinook_sqlite.sql',
+            ],
+            'pgsql' => [
+                'dsn' => 'pgsql:host=127.0.0.1;port=5432;dbname=chinook;',
+                'username' => getenv('POSTGRES_USER'),
+                'password' => getenv('POSTGRES_PASSWORD'),
+                'options' => [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                'migration' => __DIR__ . '/db/chinook_postgres.sql',
+            ],
+            'mysql' => [
+                'dsn' => 'mysql:host=127.0.0.1;port=3306;dbname=chinook;',
+                'username' => getenv('MYSQL_USER'),
+                'password' => getenv('MYSQL_PASSWORD'),
+                'options' => [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+                'migration' => __DIR__ . '/db/chinook_mysql.sql',
+            ],
         ];
     }
 
+    public function __construct()
+    {
+        $this->driver = getenv('DB_ENGINE') ?: 'sqlite';
+    }
+
+    /**
+     * @return ConnectionInterface
+     * @throws NotSupportedException
+     */
     public function create(): ConnectionInterface
     {
-        $driver = getenv('dsn', 'sqlite::memory:');
+        $params = $this->getTestDriverMap()[$this->driver] ?? [];
+        if (!$params) {
+            throw new NotSupportedException();
+        }
+        $connection = new Connection(
+            $params['dsn'],
+            $params['username']?? null,
+            $params['password'] ?? null,
+            $params['options'] ?? []
+        );
+        $pdo = $connection->getPdo();
+        try {
+            $pdo->query('select * from migrated');
+        } catch (PDOException $exception) {
+            $sql = file_get_contents($params['migration']);
+            $pdo->exec($sql);
+        }
+        return $connection;
     }
 }

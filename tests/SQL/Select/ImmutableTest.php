@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace FastOrm\Tests\SQL\Select;
 
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestCase;
@@ -12,7 +12,7 @@ class ImmutableTest extends TestCase
     public function testSelect()
     {
         $query1 = (new SelectQuery($this->connection))
-            ->from('Album')->select('AlbumId');
+            ->from('Album');
         $query2 = clone $query1;
         $countAll1 = count($query1->fetch()->column());
         $countAll2 = (int)$query2->select('count(1)')->fetch()->scalar();

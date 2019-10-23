@@ -35,6 +35,7 @@ class LikeOperatorBuilder implements ExpressionBuilderInterface, CompilerAwareIn
         }
         $operator = $this->getOperator();
         $column = $expression->getColumn();
+        $column = $this->compiler->quoteColumnName($column);
         return "$column $operator $like";
     }
 }

@@ -29,7 +29,7 @@ class InOperator implements
      * @param $column
      * @param $values
      */
-    public function __construct($column, $values)
+    public function __construct(string $column, $values)
     {
         $this->column = $column;
         $this->values = $values;
