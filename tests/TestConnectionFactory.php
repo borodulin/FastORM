@@ -19,6 +19,8 @@ class TestConnectionFactory
 
     private function getTestDriverMap()
     {
+        $mysqlHost = getenv('MYSQL_HOST');
+        $pgsqlHost = getenv('POSTGRES_HOST');
         return [
             'sqlite' => [
                 'dsn' => 'sqlite::memory:',
@@ -26,14 +28,14 @@ class TestConnectionFactory
                 'migration' => __DIR__ . '/db/chinook_sqlite.sql',
             ],
             'pgsql' => [
-                'dsn' => 'pgsql:host=127.0.0.1;port=5432;dbname=chinook;',
+                'dsn' => "pgsql:host=$pgsqlHost;port=5432;dbname=chinook;",
                 'username' => getenv('POSTGRES_USER'),
                 'password' => getenv('POSTGRES_PASSWORD'),
                 'options' => [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
                 'migration' => __DIR__ . '/db/chinook_postgres.sql',
             ],
             'mysql' => [
-                'dsn' => 'mysql:host=127.0.0.1;port=3306;dbname=chinook;',
+                'dsn' => "mysql:host=$mysqlHost;port=3306;dbname=chinook;",
                 'username' => getenv('MYSQL_USER'),
                 'password' => getenv('MYSQL_PASSWORD'),
                 'options' => [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
