@@ -20,14 +20,14 @@ class FromClauseTestMysql extends TestCase
         $this->assertCount(10, $all);
     }
 
-    public function testFullJoin()
-    {
-        $all = (new SelectQuery($this->connection))
-            ->from('Track')->as('t')
-            ->fullJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
-            ->limit(10)
-            ->fetch()
-            ->all();
-        $this->assertCount(10, $all);
-    }
+//    public function testFullJoin()
+//    {
+//        $all = (new SelectQuery($this->connection))
+//            ->from('Track')->as('t')
+//            ->fullJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
+//            ->limit(10)
+//            ->fetch()
+//            ->all();
+//        $this->assertCount(10, $all);
+//    }
 }
