@@ -6,7 +6,7 @@ namespace FastOrm\SQL;
 
 class Params implements ParamsInterface
 {
-    const PARAM_PREFIX = 'p';
+    public const PARAM_PREFIX = 'p';
 
     private $params = [];
     private $counter = 0;

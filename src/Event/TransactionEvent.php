@@ -8,9 +8,9 @@ use FastOrm\Transaction;
 
 class TransactionEvent
 {
-    const EVENT_BEGIN = 'begin';
-    const EVENT_COMMIT = 'commit';
-    const EVENT_ROLLBACK = 'rollback';
+    public const EVENT_BEGIN = 'begin';
+    public const EVENT_COMMIT = 'commit';
+    public const EVENT_ROLLBACK = 'rollback';
 
 
     /**

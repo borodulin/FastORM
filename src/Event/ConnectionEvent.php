@@ -8,7 +8,7 @@ use FastOrm\ConnectionInterface;
 
 class ConnectionEvent
 {
-    const EVENT_AFTER_OPEN = 'afterOpen';
+    public const EVENT_AFTER_OPEN = 'afterOpen';
 
     /**
      * @var ConnectionInterface
