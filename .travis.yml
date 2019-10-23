@@ -24,9 +24,9 @@ before_script:
 script:
   - vendor/bin/phpcs --standard=psr12 --extensions=php src
   - vendor/bin/phpstan analyse ./src/
-  - vendor/bin/phpunit -c phpunit.sqlite.xml --coverage-clover build/logs/clover-sqlite.xml
-  - vendor/bin/phpunit -c phpunit.mysql.xml --coverage-clover build/logs/clover-mysql.xml
-  - vendor/bin/phpunit -c phpunit.pgsql.xml --coverage-clover build/logs/clover-pgsql.xml
+  - vendor/bin/phpunit -c phpunit.sqlite.xml --coverage-php build/logs/sqlite.cov
+  - vendor/bin/phpunit -c phpunit.mysql.xml --coverage-php build/logs/mysql.cov
+  - vendor/bin/phpunit -c phpunit.pgsql.xml --coverage-php build/logs/pgsql.cov
 after_success:
-  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then php vendor/bin/phpunit-merger coverage build/logs build/logs/clover.xml; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then php vendor/bin/phpcov merge build/logs build/logs/clover.xml; fi;
   - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then php vendor/bin/php-coveralls --no-interaction; fi;
