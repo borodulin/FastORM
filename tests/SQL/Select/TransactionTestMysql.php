@@ -9,7 +9,7 @@ use FastOrm\PdoCommand\Statement;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestCase;
 
-class TransactionTest extends TestCase
+class TransactionTestMysql extends TestCase
 {
     /**
      * @throws DbException
