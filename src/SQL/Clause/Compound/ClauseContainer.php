@@ -32,17 +32,12 @@ class ClauseContainer implements
     use CompilerAwareTrait;
 
     /**
-     * @var ConnectionInterface
-     */
-    protected $connection;
-    /**
      * @var Compound
      */
     protected $compound;
 
     public function __construct(ConnectionInterface $connection)
     {
-        $this->connection = $connection;
         $this->compound = new Compound($connection);
     }
 

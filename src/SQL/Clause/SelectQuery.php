@@ -41,17 +41,12 @@ class SelectQuery implements
     use CompilerAwareTrait;
 
     /**
-     * @var ConnectionInterface
-     */
-    private $connection;
-    /**
      * @var ClauseContainer
      */
     private $container;
 
     public function __construct(ConnectionInterface $connection)
     {
-        $this->connection = $connection;
         $this->container = new ClauseContainer($connection);
     }
 
@@ -155,11 +150,6 @@ class SelectQuery implements
     public function count()
     {
         return count($this->container);
-    }
-
-    public function getConnection(): ConnectionInterface
-    {
-        return $this->container->getConnection();
     }
 
     public function build(ExpressionInterface $expression): string

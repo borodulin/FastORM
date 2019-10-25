@@ -2,14 +2,10 @@
 
 namespace FastOrm\SQL\Clause;
 
-use Countable;
 use FastOrm\SQL\Clause\Update\SetClauseInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-interface UpdateClauseInterface extends
-    Countable,
-    ExpressionInterface,
-    HasStatementInterface
+interface UpdateClauseInterface extends ExpressionInterface
 {
-    public function update(string $table): SetClauseInterface;
+    public function update($table): SetClauseInterface;
 }

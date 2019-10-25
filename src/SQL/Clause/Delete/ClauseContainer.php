@@ -7,10 +7,9 @@ namespace FastOrm\SQL\Clause\Delete;
 use FastOrm\ConnectionInterface;
 use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
-use FastOrm\PdoCommand\Statement;
-use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
 use FastOrm\SQL\Clause\DeleteClauseInterface;
+use FastOrm\SQL\Clause\HasStatementTrait;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
@@ -26,16 +25,13 @@ class ClauseContainer implements
     ExpressionBuilderInterface
 {
     use CompilerAwareTrait;
+    use HasStatementTrait;
 
-    private $table;
-    /**
-     * @var ConnectionInterface
-     */
-    private $connection;
+    protected $table;
     /**
      * @var CompoundClauseContainer
      */
-    private $whereClause;
+    protected $whereClause;
 
     public function __construct(ConnectionInterface $connection)
     {
@@ -87,20 +83,6 @@ class ClauseContainer implements
     public function count()
     {
         return $this->execute();
-    }
-
-    /**
-     * @param array $options
-     * @return StatementInterface
-     * @throws DbException
-     */
-    public function statement(array $options = []): StatementInterface
-    {
-        $compiler = $this->connection->getDriver()->createCompiler();
-        $sql = $compiler->compile($this);
-        $statement = new Statement($this->connection->getPdo(), $sql, $options);
-        $statement->prepare($compiler->getParams());
-        return $statement;
     }
 
     /**

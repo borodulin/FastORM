@@ -11,9 +11,8 @@ use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\Fetch;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
-use FastOrm\PdoCommand\Statement;
-use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
+use FastOrm\SQL\Clause\HasStatementTrait;
 use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
@@ -33,6 +32,7 @@ class ClauseContainer implements
     CompilerAwareInterface
 {
     use CompilerAwareTrait;
+    use HasStatementTrait;
 
     /**
      * @var SelectClause
@@ -71,10 +71,6 @@ class ClauseContainer implements
      */
     protected $unionClause;
     /**
-     * @var ConnectionInterface
-     */
-    private $connection;
-    /**
      * @var CompoundClauseContainer
      */
     private $activeCompound;
@@ -95,20 +91,6 @@ class ClauseContainer implements
         $this->orderByClause = new OrderByClause();
         $this->unionClause = new UnionClause();
         $this->limitClause = new LimitClause();
-    }
-
-    /**
-     * @param array $options
-     * @return StatementInterface
-     * @throws DbException
-     */
-    public function statement(array $options = []): StatementInterface
-    {
-        $compiler = $this->connection->getDriver()->createCompiler();
-        $sql = $compiler->compile($this);
-        $statement = new Statement($this->connection->getPdo(), $sql, $options);
-        $statement->prepare($compiler->getParams());
-        return $statement;
     }
 
     public function as($alias): FromClauseInterface
