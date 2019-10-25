@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace FastOrm\Tests\SQL\Update;
 
 use FastOrm\SQL\Clause\UpdateQuery;
-use FastOrm\Tests\TestCase;
+use FastOrm\Tests\TransactionTestCase;
 
-class UpdateClauseTest extends TestCase
+class UpdateClauseTest extends TransactionTestCase
 {
     public function testUpdate()
     {
