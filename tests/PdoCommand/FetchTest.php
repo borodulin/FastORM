@@ -11,7 +11,7 @@ class FetchTest extends TestCase
 {
     public function testIndexed()
     {
-        $all = (new QueryBuilder($this->connection))->select()
+        $all = (new QueryBuilder($this->db))->select()
             ->from('Album')
             ->limit(10)
             ->fetch()
@@ -22,7 +22,7 @@ class FetchTest extends TestCase
 
     public function testGrouped()
     {
-        $all = (new QueryBuilder($this->connection))
+        $all = (new QueryBuilder($this->db))
             ->select()
             ->from('Album')
             ->limit(10)
@@ -34,7 +34,7 @@ class FetchTest extends TestCase
 
     public function testBatchCursor()
     {
-        $cursor = (new QueryBuilder($this->connection))
+        $cursor = (new QueryBuilder($this->db))
             ->select()
             ->from('Album')
             ->fetch()

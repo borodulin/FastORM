@@ -12,12 +12,12 @@ class GroupByClauseTest extends TestCase
 {
     public function testGroupBy()
     {
-        $count = (int)(new SelectQuery($this->connection))
+        $count = (int)(new SelectQuery($this->db))
             ->select(new Expression('count(1)'))
             ->from('Genre')
             ->fetch()
             ->scalar();
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select(['GenreId', new Expression('count(1) as cnt')])
             ->from('Track')->as('t')
             ->groupBy(['GenreId'])
@@ -28,7 +28,7 @@ class GroupByClauseTest extends TestCase
 
     public function testString()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select(['GenreId', 'MediaTypeId', new Expression('count(1) as cnt')])
             ->from('Track')->as('t')
             ->groupBy(['GenreId', 'MediaTypeId'])
@@ -39,7 +39,7 @@ class GroupByClauseTest extends TestCase
 
     public function testExpression()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select(['GenreId', 'MediaTypeId', new Expression('count(1) as cnt')])
             ->from('Track')->as('t')
             ->groupBy(['GenreId', 'MediaTypeId'])

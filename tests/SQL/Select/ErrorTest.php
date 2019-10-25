@@ -30,7 +30,7 @@ class ErrorTest extends TestCase
     public function testContainer()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new ClauseContainer($this->connection))->build(new SelectQuery($this->connection));
+        (new ClauseContainer($this->db))->build(new SelectQuery($this->db));
     }
 
     public function testExpressionBuilder()
@@ -50,7 +50,7 @@ class ErrorTest extends TestCase
     public function testCompound()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new Compound($this->connection))
+        (new Compound($this->db))
             ->build(new AliasClause());
     }
 
@@ -71,7 +71,7 @@ class ErrorTest extends TestCase
         (new EqualOperator('', ''))->build(new AliasClause());
 
         $this->expectException(InvalidArgumentException::class);
-        (new ExistsOperator(new SelectQuery($this->connection)))->build(new AliasClause());
+        (new ExistsOperator(new SelectQuery($this->db)))->build(new AliasClause());
 
         $this->expectException(InvalidArgumentException::class);
         (new ExpressionOperator(''))->build(new AliasClause());

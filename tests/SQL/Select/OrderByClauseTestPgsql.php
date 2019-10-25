@@ -12,7 +12,7 @@ class OrderByClauseTestPgsql extends TestCase
 {
     public function testExpression()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->limit(5)
             ->orderBy(new Expression('1 asc'))

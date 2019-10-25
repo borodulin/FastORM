@@ -14,7 +14,7 @@ class CursorTest extends TestCase
      */
     public function testCursor()
     {
-        $query = (new SelectQuery($this->connection))
+        $query = (new SelectQuery($this->db))
             ->from('Album')->as('t1');
         $count = count($query);
         $rows = [];

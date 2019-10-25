@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * @var ConnectionInterface
      */
-    protected $connection;
+    protected $db;
 
     /**
      * @throws NotSupportedException
@@ -24,7 +24,7 @@ abstract class TestCase extends BaseTestCase
         if (!$connection) {
             $connection = $this->createConnection();
         }
-        $this->connection = $connection;
+        $this->db = $connection;
     }
 
     /**

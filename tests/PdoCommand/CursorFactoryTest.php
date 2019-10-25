@@ -16,7 +16,7 @@ class CursorFactoryTest extends TestCase implements CursorFactoryInterface
 {
     public function testIterator()
     {
-        $query = new SelectQuery($this->connection);
+        $query = new SelectQuery($this->db);
         $query->from('Album')->setCursorFactory($this);
         $this->assertCount(100, iterator_to_array($query));
     }

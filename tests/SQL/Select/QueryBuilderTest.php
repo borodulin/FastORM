@@ -19,7 +19,7 @@ class QueryBuilderTest extends TestCase
 {
     public function testParamBinding()
     {
-        $query = (new QueryBuilder($this->connection))->select();
+        $query = (new QueryBuilder($this->db))->select();
         $fetch = $query
             ->from('Album')->as('t1')
             ->where()
@@ -33,7 +33,7 @@ class QueryBuilderTest extends TestCase
 
     public function testOr()
     {
-        $query = new SelectQuery($this->connection);
+        $query = new SelectQuery($this->db);
         $fetch = $query
             ->from('Album')->as('t1')
             ->where()->equal('AlbumId', 1)
@@ -47,7 +47,7 @@ class QueryBuilderTest extends TestCase
 
     public function testHashCondition()
     {
-        $query = new SelectQuery($this->connection);
+        $query = new SelectQuery($this->db);
         /** @var ConditionInterface  $expression */
         $fetch = $query
             ->from('Album')->as('t1')
@@ -59,7 +59,7 @@ class QueryBuilderTest extends TestCase
 
     public function testLike()
     {
-        $query = (new SelectQuery($this->connection))
+        $query = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->where()->like('Name', 'rock')
             ->limit(5);
@@ -70,7 +70,7 @@ class QueryBuilderTest extends TestCase
 
     public function testLimit()
     {
-        $command = (new SelectQuery($this->connection))
+        $command = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->limit(5)->offset(10)
             ->orderBy(['TrackId' => SORT_ASC])
@@ -81,12 +81,12 @@ class QueryBuilderTest extends TestCase
 
     public function testHaving()
     {
-        $count = (int)(new SelectQuery($this->connection))
+        $count = (int)(new SelectQuery($this->db))
             ->select('count(1)')
             ->from('Genre')
             ->where()->like('Name', 'Rock')
             ->fetch()->scalar();
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select(['t.GenreId', new Expression('count(1) as cnt')])
             ->from('Track t')->as('t')
             ->innerJoin('Genre g')->on(new CompareColumnsOperator('g.GenreId', '=', 't.GenreId'))

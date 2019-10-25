@@ -34,7 +34,7 @@ class StatementTestSqlite extends TestCase
     {
         $this->expectException(DbException::class);
         (new Statement(
-            $this->connection->getPdo(),
+            $this->db->getPdo(),
             'select * from Album',
             [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]
         ))
@@ -47,7 +47,7 @@ class StatementTestSqlite extends TestCase
     public function testErrorExecute()
     {
         $this->expectException(DbException::class);
-        (new Statement($this->connection->getPdo(), 'select * from Album where AlbumId=1111111111111111111'))
+        (new Statement($this->db->getPdo(), 'select * from Album where AlbumId=1111111111111111111'))
             ->execute(['p1' => '1222222222222222222'])->fetchAll();
     }
 }

@@ -13,6 +13,6 @@ class WhereClause extends CompoundClauseContainer
     {
         $where = parent::build($expression);
 
-        return $where === '' ? '' : 'WHERE ' . $where;
+        return $where === '' ? '' : trim('WHERE' . $where);
     }
 }

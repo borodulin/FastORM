@@ -11,7 +11,7 @@ class ImmutableTest extends TestCase
 {
     public function testSelect()
     {
-        $query1 = (new SelectQuery($this->connection))
+        $query1 = (new SelectQuery($this->db))
             ->from('Album');
         $query2 = clone $query1;
         $countAll1 = count($query1->fetch()->column());
@@ -23,7 +23,7 @@ class ImmutableTest extends TestCase
 
     public function testWhere()
     {
-        $query1 = (new SelectQuery($this->connection))
+        $query1 = (new SelectQuery($this->db))
             ->from('Album')
             ->select('AlbumId')
             ->where()->equal('AlbumId', 1);

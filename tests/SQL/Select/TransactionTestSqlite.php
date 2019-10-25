@@ -16,14 +16,14 @@ class TransactionTestSqlite extends TestCase
      */
     public function testRollback()
     {
-        $nameFetch = (new SelectQuery($this->connection))
+        $nameFetch = (new SelectQuery($this->db))
             ->select('Title')
             ->from('Album')
             ->where()->equal('AlbumId', 1)
             ->fetch();
         $oldName = $nameFetch->scalar();
-        $tran = $this->connection->beginTransaction();
-        $statement = new Statement($this->connection->getPdo(), 'update Album set Title = :t where AlbumId=:id');
+        $tran = $this->db->beginTransaction();
+        $statement = new Statement($this->db->getPdo(), 'update Album set Title = :t where AlbumId=:id');
         $cnt = $statement->execute(['t' => 'test', 'id' => 1])->rowCount();
         $this->assertEquals($cnt, 1);
         $newName = $nameFetch->scalar();
@@ -38,14 +38,14 @@ class TransactionTestSqlite extends TestCase
      */
     public function testCommit()
     {
-        $nameFetch = (new SelectQuery($this->connection))
+        $nameFetch = (new SelectQuery($this->db))
             ->select('Title')
             ->from('Album')
             ->where()->equal('AlbumId', 1)
             ->fetch();
         $oldName = $nameFetch->scalar();
-        $tran = $this->connection->beginTransaction();
-        $command = new Statement($this->connection->getPdo(), 'update Album set Title = :t where AlbumId=:id');
+        $tran = $this->db->beginTransaction();
+        $command = new Statement($this->db->getPdo(), 'update Album set Title = :t where AlbumId=:id');
         $cnt = $command->execute(['t' => 'test', 'id' => 1])->rowCount();
         $this->assertEquals($cnt, 1);
         $tran->commit();
@@ -61,7 +61,7 @@ class TransactionTestSqlite extends TestCase
      */
     public function testError()
     {
-        $tran = $this->connection->beginTransaction();
+        $tran = $this->db->beginTransaction();
         $tran->rollBack();
         $this->expectException(DbException::class);
         $tran->commit();

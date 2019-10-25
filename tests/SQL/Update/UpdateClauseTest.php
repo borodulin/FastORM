@@ -11,8 +11,8 @@ class UpdateClauseTest extends TestCase
 {
     public function testUpdate()
     {
-        $tran = $this->connection->beginTransaction();
-        $count = (new UpdateQuery($this->connection))
+        $tran = $this->db->beginTransaction();
+        $count = (new UpdateQuery($this->db))
             ->update('Artist')
             ->set(['Name' => 'Dummy'])
             ->where()->equal('ArtistId', 1)

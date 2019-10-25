@@ -19,7 +19,7 @@ class StatementTest extends TestCase
     public function testErrorQuery()
     {
         $this->expectException(DbException::class);
-        (new Statement($this->connection->getPdo(), 'select * from bad_table_name'))
+        (new Statement($this->db->getPdo(), 'select * from bad_table_name'))
             ->execute();
     }
 
@@ -28,7 +28,7 @@ class StatementTest extends TestCase
     public function testErrorParams()
     {
         $this->expectException(DbException::class);
-        (new SelectQuery($this->connection))
+        (new SelectQuery($this->db))
             ->from('Album')
             ->where()->equal('AlbumId', ':p1')
             ->fetch()
@@ -39,7 +39,7 @@ class StatementTest extends TestCase
      */
     public function testPdoValue()
     {
-        $all = (new SelectQuery($this->connection))
+        $all = (new SelectQuery($this->db))
             ->from('Album')
             ->where()->equal('AlbumId', ':p1')
             ->fetch()

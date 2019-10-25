@@ -11,7 +11,7 @@ class OrderByClauseTest extends TestCase
 {
     public function testOrderBy()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->limit(5)
             ->orderBy(['TrackId' => SORT_DESC])
@@ -22,7 +22,7 @@ class OrderByClauseTest extends TestCase
 
     public function testArray()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->limit(5)
             ->orderBy(['TrackId', 'Name' => SORT_DESC])
@@ -33,7 +33,7 @@ class OrderByClauseTest extends TestCase
 
     public function testString()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->limit(5)
             ->orderBy('TrackId, Name desc')

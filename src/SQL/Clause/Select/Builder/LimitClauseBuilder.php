@@ -18,13 +18,13 @@ class LimitClauseBuilder implements ExpressionBuilderInterface
             throw new InvalidArgumentException();
         }
 
-        $sql = '';
+        $sql = [];
         if ($limit = $expression->getLimit()) {
-            $sql = 'LIMIT ' . $limit;
+            $sql[] = 'LIMIT ' . $limit;
         }
         if ($offset = $expression->getOffset()) {
-            $sql .= ' OFFSET ' . $offset;
+            $sql[] = 'OFFSET ' . $offset;
         }
-        return $sql;
+        return implode(' ', $sql);
     }
 }

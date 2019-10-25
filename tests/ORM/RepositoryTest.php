@@ -18,9 +18,9 @@ class RepositoryTest extends TestCase
      */
     public function testIsset()
     {
-        $repository = new Repository(PlaylistTrack::class, 'PlaylistTrack', $this->connection);
+        $repository = new Repository(PlaylistTrack::class, 'PlaylistTrack', $this->db);
         $this->assertTrue(isset($repository['1,1']));
-        $repository = new Repository(Album::class, 'Album', $this->connection);
+        $repository = new Repository(Album::class, 'Album', $this->db);
         $this->assertTrue(isset($repository[1]));
     }
 
@@ -29,7 +29,7 @@ class RepositoryTest extends TestCase
      */
     public function testRepoFilter()
     {
-        $albumsRepository = new AlbumRepository($this->connection);
+        $albumsRepository = new AlbumRepository($this->db);
         $this->assertTrue(isset($albumsRepository[1]));
         $acdc = $albumsRepository->byArtist(1);
         $this->assertTrue(isset($acdc[1]));
@@ -42,7 +42,7 @@ class RepositoryTest extends TestCase
      */
     public function testRepoArray()
     {
-        $albumsRepository = new AlbumRepository($this->connection);
+        $albumsRepository = new AlbumRepository($this->db);
         $acdc = $albumsRepository->byArtist(1);
         $rows = iterator_to_array($acdc);
         $this->assertIsArray($rows);
@@ -53,7 +53,7 @@ class RepositoryTest extends TestCase
      */
     public function testRowHandler()
     {
-        $albumsRepository = new AlbumRepository($this->connection);
+        $albumsRepository = new AlbumRepository($this->db);
         $album = $albumsRepository[1];
         $this->assertInstanceOf(Album::class, $album);
     }

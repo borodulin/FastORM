@@ -7,6 +7,7 @@ namespace FastOrm\SQL\Clause\Select\Builder;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Select\AliasClause;
 use FastOrm\SQL\Clause\Select\FromClause;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -35,10 +36,14 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
         foreach ($aliases as $alias) {
             $from = $alias->getExpression();
             $aliasName = $alias->getAlias();
-            if ($from instanceof ExpressionInterface) {
+            if ($from instanceof SelectClauseInterface) {
                 $sql = $this->compiler->compile($from);
                 $aliasName = $aliasName ?? 's' . ++$counter;
                 $result[] = "($sql) " . $this->compiler->quoteTableName($aliasName);
+            } elseif ($from instanceof ExpressionInterface) {
+                $sql = $this->compiler->compile($from);
+                $aliasName = $aliasName ? ' ' . $this->compiler->quoteTableName($aliasName) : '';
+                $result[] = "$sql" . $aliasName;
             } elseif (is_string($from)) {
                 if (strpos($from, '(') === false) {
                     if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $from, $matches)) { // with alias

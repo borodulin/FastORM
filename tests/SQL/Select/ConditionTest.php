@@ -14,10 +14,10 @@ class ConditionTest extends TestCase
      */
     public function testExists()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Album a')
             ->where()->exists(
-                (new SelectQuery($this->connection))
+                (new SelectQuery($this->db))
                 ->from('Artist t')
                 ->where()->compareColumns('t.ArtistId', '=', 'a.ArtistId')
                 ->and()->like('Name', 'Kiss')
@@ -31,7 +31,7 @@ class ConditionTest extends TestCase
      */
     public function testCompare()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Album a')
             ->where()->compare('AlbumId', '>', 10)
             ->and()->not()->compare('AlbumId', '>', new Expression(':p12', ['p12' => 11]))
@@ -44,7 +44,7 @@ class ConditionTest extends TestCase
      */
     public function testBetweenColumns()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->betweenColumns('2000-01-01', 'BirthDate', 'HireDate')
             ->fetch();
@@ -56,7 +56,7 @@ class ConditionTest extends TestCase
      */
     public function testFilterHashCondition()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->filterHashCondition([
                 'State' => null,
@@ -70,7 +70,7 @@ class ConditionTest extends TestCase
      */
     public function testEqual()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Album a')
             ->where()->equal('AlbumId', new Expression('(:p12)', ['p12' => 1]))
             ->fetch();
@@ -82,7 +82,7 @@ class ConditionTest extends TestCase
      */
     public function testLike()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Album a')
             ->where()->like('Title', new Expression(':p12', ['p12' => '%rock%']))
             ->and()->like('Title', 'rock')

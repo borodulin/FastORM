@@ -19,7 +19,7 @@ class EventTest extends TestCase
     public function testDispatcher()
     {
         $dispatcher = new DummyEventDispatcher();
-        $connection = $this->connection;
+        $connection = $this->db;
         $connection->setEventDispatcher($dispatcher);
         $tran = $connection->beginTransaction();
         $tran->commit();

@@ -12,7 +12,7 @@ class SelectClauseTest extends TestCase
 {
     public function testString()
     {
-        $query = (new SelectQuery($this->connection))
+        $query = (new SelectQuery($this->db))
             ->select(new Expression('1'));
         $this->assertEquals('SELECT 1', (string)$query);
     }
@@ -20,7 +20,7 @@ class SelectClauseTest extends TestCase
 
     public function testSelect()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select([
                 'id' => 'TrackId',
                 'Name as name1',
@@ -40,9 +40,9 @@ class SelectClauseTest extends TestCase
 
     public function testSelectQuery()
     {
-        $query = (new SelectQuery($this->connection))
+        $query = (new SelectQuery($this->db))
             ->select([
-                'GenreName' => (new SelectQuery($this->connection))
+                'GenreName' => (new SelectQuery($this->db))
                     ->select('Name')
                     ->from('Genre g')
                     ->where()->compareColumns('g.GenreId', '=', 't.GenreId'),
@@ -57,7 +57,7 @@ class SelectClauseTest extends TestCase
 
     public function testUnionAll()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select([
                 'TrackId as id',
                 'Name'
@@ -65,7 +65,7 @@ class SelectClauseTest extends TestCase
             ->from('Track t')
             ->limit(10)
             ->unionAll(
-                (new SelectQuery($this->connection))
+                (new SelectQuery($this->db))
                 ->select(['AlbumId', 'Title'])
                 ->from('Album')
             )
@@ -76,7 +76,7 @@ class SelectClauseTest extends TestCase
 
     public function testUnion()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select([
                 'TrackId as id',
                 'Name'
@@ -84,7 +84,7 @@ class SelectClauseTest extends TestCase
             ->from('Track t')
             ->limit(10)
             ->union(
-                (new SelectQuery($this->connection))
+                (new SelectQuery($this->db))
                 ->select(['AlbumId', 'Title'])
                 ->from('Album')
             )
@@ -95,7 +95,7 @@ class SelectClauseTest extends TestCase
 
     public function testDistinct()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select('ArtistId as id')
             ->distinct()
             ->from('Album')

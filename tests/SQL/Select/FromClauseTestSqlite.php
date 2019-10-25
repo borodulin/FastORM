@@ -13,7 +13,7 @@ class FromClauseTestSqlite extends TestCase
     public function testRightJoin()
     {
         $this->expectException(DbException::class);
-        (new SelectQuery($this->connection))
+        (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->rightJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
             ->limit(10)
@@ -23,7 +23,7 @@ class FromClauseTestSqlite extends TestCase
     public function testFullJoin()
     {
         $this->expectException(DbException::class);
-        (new SelectQuery($this->connection))
+        (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->fullJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
             ->limit(10)

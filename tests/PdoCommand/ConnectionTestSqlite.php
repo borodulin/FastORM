@@ -13,7 +13,7 @@ class ConnectionTestSqlite extends TestCase
     public function testError()
     {
         $this->expectException(NotSupportedException::class);
-        $this->connection->setTransactionIsolationLevel(Transaction::REPEATABLE_READ);
+        $this->db->setTransactionIsolationLevel(Transaction::REPEATABLE_READ);
     }
 
 //    /**

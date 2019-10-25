@@ -13,7 +13,7 @@ class InOperatorTest extends TestCase
 {
     public function testEmpty()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->in('EmployeeId', [])
             ->fetch();
@@ -23,7 +23,7 @@ class InOperatorTest extends TestCase
 
     public function testArray()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->in('EmployeeId', [1,2])
             ->fetch();
@@ -33,14 +33,14 @@ class InOperatorTest extends TestCase
 
     public function testExpression()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->in('EmployeeId', new Expression('(:p1,:p2)', ['p1' => 1, 'p2' => 2]))
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(2, $rows);
 
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->in(
                 'EmployeeId',
@@ -56,9 +56,9 @@ class InOperatorTest extends TestCase
 
     public function testQuery()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
-            ->where()->in('EmployeeId', (new SelectQuery($this->connection))->select(new Expression('1')))
+            ->where()->in('EmployeeId', (new SelectQuery($this->db))->select(new Expression('1')))
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(1, $rows);
@@ -66,7 +66,7 @@ class InOperatorTest extends TestCase
 
     public function testValue()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->in('EmployeeId', 1)
             ->fetch();
@@ -76,7 +76,7 @@ class InOperatorTest extends TestCase
 
     public function testObject()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
             ->where()->in('EmployeeId', (object)[])
             ->fetch();

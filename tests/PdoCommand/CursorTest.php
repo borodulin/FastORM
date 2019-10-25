@@ -13,12 +13,12 @@ class CursorTest extends TestCase
 {
     public function testCursor()
     {
-        $count = (new SelectQuery($this->connection))
+        $count = (new SelectQuery($this->db))
             ->select(new Expression('count(*)'))
             ->from('Album')
             ->fetch()
             ->scalar();
-        $cursor = (new SelectQuery($this->connection))
+        $cursor = (new SelectQuery($this->db))
             ->from('Album')
             ->fetch()
             ->cursor();
@@ -31,7 +31,7 @@ class CursorTest extends TestCase
      */
     public function testRewind()
     {
-        $cursor = $cursor = (new SelectQuery($this->connection))
+        $cursor = $cursor = (new SelectQuery($this->db))
             ->from('Album')
             ->fetch()
             ->cursor();
@@ -44,7 +44,7 @@ class CursorTest extends TestCase
 
     public function testLimit()
     {
-        $cursor = (new SelectQuery($this->connection))
+        $cursor = (new SelectQuery($this->db))
             ->from('Album')
             ->fetch()
             ->cursor()

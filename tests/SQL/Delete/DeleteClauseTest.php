@@ -11,8 +11,8 @@ class DeleteClauseTest extends TestCase
 {
     public function testDelete()
     {
-        $tran = $this->connection->beginTransaction();
-        $count = (new DeleteQuery($this->connection))
+        $tran = $this->db->beginTransaction();
+        $count = (new DeleteQuery($this->db))
             ->from('InvoiceLine')
             ->where()->equal('InvoiceLineId', 1)
             ->execute();

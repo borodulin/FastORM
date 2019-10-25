@@ -17,13 +17,13 @@ class BatchCursorTest extends TestCase
 
     public function testBatch()
     {
-        $count = (int)(new SelectQuery($this->connection))
+        $count = (int)(new SelectQuery($this->db))
             ->select(new Expression('count(*)'))
             ->from('Album')
             ->fetch()
             ->scalar();
 
-        $cursor = (new SelectQuery($this->connection))
+        $cursor = (new SelectQuery($this->db))
             ->from('Album')
             ->fetch()
             ->batchCursor()
@@ -43,7 +43,7 @@ class BatchCursorTest extends TestCase
 
     public function testRowHandler()
     {
-        $count = (int)(new SelectQuery($this->connection))
+        $count = (int)(new SelectQuery($this->db))
             ->select(new Expression('count(*)'))
             ->from('Album')
             ->fetch()
@@ -51,7 +51,7 @@ class BatchCursorTest extends TestCase
 
         $this->count = 0;
 
-        $cursor = (new SelectQuery($this->connection))
+        $cursor = (new SelectQuery($this->db))
             ->from('Album')
             ->fetch()
             ->batchCursor()

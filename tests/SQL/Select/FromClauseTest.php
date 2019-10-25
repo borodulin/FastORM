@@ -12,7 +12,7 @@ class FromClauseTest extends TestCase
 {
     public function testEmptyFrom()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select(new Expression('1'))
             ->fetch();
         $one = $fetch->scalar();
@@ -21,7 +21,7 @@ class FromClauseTest extends TestCase
 
     public function testJoins()
     {
-        $command = (new SelectQuery($this->connection))
+        $command = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->innerJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
             ->innerJoin('MediaType')->alias('mt')->onColumns('mt.MediaTypeId', 't.MediaTypeId')
@@ -33,10 +33,10 @@ class FromClauseTest extends TestCase
 
     public function testSubQuery()
     {
-        $query = (new SelectQuery($this->connection))
+        $query = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->limit(10);
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from($query)->as('s')
             ->fetch();
         $all = $fetch->all();
@@ -45,7 +45,7 @@ class FromClauseTest extends TestCase
 
     public function testFromAlias()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Track t')
             ->limit(10)
             ->fetch();
@@ -55,7 +55,7 @@ class FromClauseTest extends TestCase
 
     public function testLeftJoin()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->leftJoin('Genre')->alias('g')->onColumns('g.GenreId', 't.GenreId')
             ->limit(10)
@@ -66,7 +66,7 @@ class FromClauseTest extends TestCase
 
     public function testCustomJoin()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
             ->join('Genre g', 'left outer join')->onColumns('g.GenreId', 't.GenreId')
             ->limit(10)

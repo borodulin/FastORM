@@ -15,7 +15,7 @@ class FetchTest extends TestCase
      */
     public function testColumn()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select([
                 'id' => 'TrackId',
             ])
@@ -30,7 +30,7 @@ class FetchTest extends TestCase
      */
     public function testMap()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select([
                 'id' => 'TrackId',
                 'TrackId'
@@ -48,12 +48,12 @@ class FetchTest extends TestCase
      */
     public function testExists()
     {
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select(new Expression('1'))
             ->fetch();
         $exists = $fetch->exists();
         $this->assertEquals($exists, true);
-        $fetch = (new SelectQuery($this->connection))
+        $fetch = (new SelectQuery($this->db))
             ->select(new Expression('0'))
             ->fetch();
         $exists = $fetch->exists();
