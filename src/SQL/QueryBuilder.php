@@ -11,7 +11,7 @@ use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
 use FastOrm\SQL\Clause\InsertQuery;
 use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
 use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Clause\Update\SetClauseInterface;
+use FastOrm\SQL\Clause\UpdateClauseInterface;
 use FastOrm\SQL\Clause\UpdateQuery;
 
 class QueryBuilder implements QueryBuilderInterface
@@ -31,7 +31,7 @@ class QueryBuilder implements QueryBuilderInterface
         return (new SelectQuery($this->connection))->select($columns);
     }
 
-    public function update($table): SetClauseInterface
+    public function update($table): UpdateClauseInterface
     {
         return (new UpdateQuery($this->connection))->update($table);
     }

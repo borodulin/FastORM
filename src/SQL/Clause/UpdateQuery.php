@@ -8,8 +8,10 @@ use FastOrm\ConnectionInterface;
 use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
+use FastOrm\PdoCommand\DbException;
+use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Update\ClauseContainer;
-use FastOrm\SQL\Clause\Update\SetClauseInterface;
+use FastOrm\SQL\Clause\Update\ConditionInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
@@ -46,7 +48,7 @@ class UpdateQuery implements
         return $this->compiler->compile($expression->container);
     }
 
-    public function update($table): SetClauseInterface
+    public function update($table): UpdateClauseInterface
     {
         return $this->container->update($table);
     }
@@ -59,5 +61,51 @@ class UpdateQuery implements
     public function __toString()
     {
         return (string)$this->container;
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     * @throws DbException
+     */
+    public function count()
+    {
+        return $this->container->count();
+    }
+
+    /**
+     * @param array $params
+     * @return int
+     * @throws DbException
+     */
+    public function execute(array $params = []): int
+    {
+        return $this->container->execute($params);
+    }
+
+    /**
+     * @param array $options
+     * @return StatementInterface
+     * @throws DbException
+     */
+    public function statement(array $options = []): StatementInterface
+    {
+        return $this->container->statement($options);
+    }
+
+    public function set(array $set): UpdateClauseInterface
+    {
+        $this->container->set($set);
+        return $this;
+    }
+
+    public function where(): ConditionInterface
+    {
+        return $this->container->where();
     }
 }

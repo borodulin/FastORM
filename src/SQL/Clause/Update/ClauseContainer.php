@@ -21,8 +21,6 @@ use Throwable;
 
 class ClauseContainer implements
     UpdateClauseInterface,
-    SetClauseInterface,
-    WhereClauseInterface,
     CompoundInterface,
     ConditionInterface,
     ExpressionBuilderInterface,
@@ -52,13 +50,13 @@ class ClauseContainer implements
         $this->whereClause = new CompoundClauseContainer($connection);
     }
 
-    public function update($table): SetClauseInterface
+    public function update($table): UpdateClauseInterface
     {
         $this->table = $table;
         return $this;
     }
 
-    public function set(array $set): WhereClauseInterface
+    public function set(array $set): UpdateClauseInterface
     {
         $this->set = $set;
         return $this;
