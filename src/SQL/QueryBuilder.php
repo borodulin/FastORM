@@ -9,7 +9,7 @@ use FastOrm\SQL\Clause\Delete\WhereClauseInterface;
 use FastOrm\SQL\Clause\DeleteQuery;
 use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
 use FastOrm\SQL\Clause\InsertQuery;
-use FastOrm\SQL\Clause\SelectClauseInterface;
+use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Clause\Update\SetClauseInterface;
 use FastOrm\SQL\Clause\UpdateQuery;
@@ -26,9 +26,9 @@ class QueryBuilder implements QueryBuilderInterface
         $this->connection = $connection;
     }
 
-    public function select(): SelectClauseInterface
+    public function select($columns = []): SelectDistinctInterface
     {
-        return new SelectQuery($this->connection);
+        return (new SelectQuery($this->connection))->select($columns);
     }
 
     public function update($table): SetClauseInterface

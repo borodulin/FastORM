@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Insert;
 
-interface ValuesClauseInterface
+use Countable;
+use FastOrm\SQL\Clause\ExecuteInterface;
+
+interface ValuesClauseInterface extends ExecuteInterface, Countable
 {
     public function values($values): self;
 }

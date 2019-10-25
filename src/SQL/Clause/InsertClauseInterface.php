@@ -7,7 +7,7 @@ namespace FastOrm\SQL\Clause;
 use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
 use FastOrm\SQL\ExpressionInterface;
 
-interface InsertClauseInterface extends ExpressionInterface
+interface InsertClauseInterface extends ExpressionInterface, HasStatementInterface
 {
     public function into($table): ColumnsClauseInterface;
 }

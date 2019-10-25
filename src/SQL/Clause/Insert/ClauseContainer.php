@@ -6,6 +6,8 @@ namespace FastOrm\SQL\Clause\Insert;
 
 use FastOrm\ConnectionInterface;
 use FastOrm\InvalidArgumentException;
+use FastOrm\PdoCommand\DbException;
+use FastOrm\SQL\Clause\HasStatementTrait;
 use FastOrm\SQL\Clause\InsertClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
@@ -25,11 +27,8 @@ class ClauseContainer implements
 {
     use LoggerAwareTrait;
     use CompilerAwareTrait;
+    use HasStatementTrait;
 
-    /**
-     * @var ConnectionInterface
-     */
-    private $connection;
     private $table;
     /**
      * @var array
@@ -85,6 +84,7 @@ class ClauseContainer implements
         }
         $columns = $this->processColumns();
         $values = $this->processValues();
+        $values = $values ? " VALUES {$values}" : '';
         return "INSERT INTO {$table}{$columns}{$values}";
     }
 
@@ -100,8 +100,9 @@ class ClauseContainer implements
                     $column = $this->compiler->quoteColumnName($column);
                 }
             } elseif (is_string($key)) {
-                $column = $this->compiler->quoteColumnName($key);
+                $key = $this->compiler->quoteColumnName($key);
                 $values[$key] = $column;
+                $column = $key;
             }
             $columns[] = $column;
         }
@@ -137,5 +138,35 @@ class ClauseContainer implements
             }
         }
         return implode(',', $values);
+    }
+
+    public function __clone()
+    {
+        $this->values = [];
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @throws DbException
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        return $this->execute();
+    }
+
+    /**
+     * @param array $params
+     * @return int
+     * @throws DbException
+     */
+    public function execute(array $params = []): int
+    {
+        return $this->statement()->execute($params)->rowCount();
     }
 }

@@ -8,6 +8,8 @@ use FastOrm\ConnectionInterface;
 use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
+use FastOrm\PdoCommand\DbException;
+use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Insert\ClauseContainer;
 use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
@@ -59,5 +61,20 @@ class InsertQuery implements
     public function __clone()
     {
         $this->container = clone $this->container;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->container;
+    }
+
+    /**
+     * @param array $options
+     * @return StatementInterface
+     * @throws DbException
+     */
+    public function statement(array $options = []): StatementInterface
+    {
+        return $this->container->statement($options);
     }
 }

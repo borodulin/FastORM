@@ -6,12 +6,12 @@ namespace FastOrm\SQL;
 
 use FastOrm\SQL\Clause\Delete\WhereClauseInterface;
 use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
-use FastOrm\SQL\Clause\SelectClauseInterface;
+use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
 use FastOrm\SQL\Clause\Update\SetClauseInterface;
 
 interface QueryBuilderInterface
 {
-    public function select(): SelectClauseInterface;
+    public function select($columns = []): SelectDistinctInterface;
 
     public function update($table): SetClauseInterface;
 

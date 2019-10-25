@@ -11,25 +11,32 @@ class FetchTest extends TestCase
 {
     public function testIndexed()
     {
-        $all = (new QueryBuilder($this->db))->select()
+        $all = (new QueryBuilder($this->db))
+            ->select(['Title', 'AlbumId'])
             ->from('Album')
             ->limit(10)
             ->fetch()
             ->indexed();
         $this->assertCount(10, $all);
-        $this->assertArrayNotHasKey('AlbumId', $all[1]);
+        foreach (array_keys($all) as $key) {
+            $this->assertIsString($key);
+        }
+        $this->assertArrayNotHasKey('Title', array_shift($all));
     }
 
     public function testGrouped()
     {
         $all = (new QueryBuilder($this->db))
-            ->select()
+            ->select(['Title', 'AlbumId'])
             ->from('Album')
             ->limit(10)
             ->fetch()
             ->grouped();
         $this->assertCount(10, $all);
-        $this->assertArrayNotHasKey('AlbumId', $all[1]);
+        foreach (array_keys($all) as $key) {
+            $this->assertIsString($key);
+        }
+        $this->assertArrayNotHasKey('Title', array_shift($all));
     }
 
     public function testBatchCursor()

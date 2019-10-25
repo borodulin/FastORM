@@ -65,7 +65,7 @@ class DeleteQuery implements
 
     public function __toString()
     {
-        return $this->compiler->compile($this->container);
+        return (string)$this->container;
     }
 
     /**

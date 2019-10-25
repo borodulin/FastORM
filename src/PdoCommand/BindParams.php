@@ -9,15 +9,38 @@ use PDOStatement;
 
 class BindParams
 {
-    public function __invoke(PDOStatement $statement, iterable $params)
+    /**
+     * @var iterable
+     */
+    private $params;
+
+    public function __construct(iterable $params)
     {
-        foreach ($params as $name => $value) {
+        $this->params = $params;
+    }
+
+    public function __invoke(PDOStatement $statement)
+    {
+        foreach ($this->params as $name => $value) {
             if ($value instanceof PdoValue) {
                 $statement->bindValue($name, $value->getValue(), $value->getType());
             } else {
                 $statement->bindValue($name, $value, $this->getPdoType($value));
             }
         }
+    }
+
+    public function __toString()
+    {
+        $result = [];
+        foreach ($this->params as $name => $value) {
+            if ($value instanceof PdoValue) {
+                $result[] = ":$name=" . $value->getValue();
+            } else {
+                $result[] = ":$name=" . $value;
+            }
+        }
+        return implode(',', $result);
     }
 
     protected function getPdoType($data)

@@ -11,13 +11,11 @@ class UpdateClauseTest extends TransactionTestCase
 {
     public function testUpdate()
     {
-        $tran = $this->db->beginTransaction();
         $count = (new UpdateQuery($this->db))
             ->update('Artist')
             ->set(['Name' => 'Dummy'])
             ->where()->equal('ArtistId', 1)
             ->execute();
         $this->assertEquals(1, $count);
-        $tran->rollBack();
     }
 }
