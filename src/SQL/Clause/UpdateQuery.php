@@ -55,4 +55,9 @@ class UpdateQuery implements
     {
         $this->container = clone $this->container;
     }
+
+    public function __toString()
+    {
+        return (string)$this->container;
+    }
 }

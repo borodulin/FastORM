@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\SQL\Clause\DeleteClauseInterface;
-use FastOrm\SQL\Clause\InsertClauseInterface;
+use FastOrm\SQL\Clause\Delete\WhereClauseInterface;
+use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
 use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\Clause\UpdateClauseInterface;
+use FastOrm\SQL\Clause\Update\SetClauseInterface;
 
 interface QueryBuilderInterface
 {
     public function select(): SelectClauseInterface;
 
-    public function update(): UpdateClauseInterface;
+    public function update($table): SetClauseInterface;
 
-    public function insert(): InsertClauseInterface;
+    public function insertInto($table): ColumnsClauseInterface;
 
-    public function delete(): DeleteClauseInterface;
+    public function deleteFrom($table): WhereClauseInterface;
 }

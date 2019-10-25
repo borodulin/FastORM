@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL\Select;
 
+use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
+use FastOrm\SQL\Clause\Operator\HashConditionOperator;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestCase;
@@ -117,5 +119,11 @@ class SelectQueryTest extends TestCase
         $compiler = $this->db->getDriver()->createCompiler();
         $sql = $compiler->compile($query);
         $this->assertEquals('SELECT *', $sql);
+    }
+
+    public function testBuildError()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new SelectQuery($this->db))->build(new HashConditionOperator([]));
     }
 }

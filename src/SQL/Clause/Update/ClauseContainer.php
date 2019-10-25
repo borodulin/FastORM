@@ -15,6 +15,9 @@ use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Throwable;
 
 class ClauseContainer implements
     UpdateClauseInterface,
@@ -23,10 +26,12 @@ class ClauseContainer implements
     CompoundInterface,
     ConditionInterface,
     ExpressionBuilderInterface,
-    CompilerAwareInterface
+    CompilerAwareInterface,
+    LoggerAwareInterface
 {
     use CompilerAwareTrait;
     use HasStatementTrait;
+    use LoggerAwareTrait;
 
     /**
      * @var CompoundClauseContainer
@@ -35,7 +40,7 @@ class ClauseContainer implements
     /**
      * @var array
      */
-    private $set;
+    private $set = [];
     /**
      * @var string
      */
@@ -186,10 +191,13 @@ class ClauseContainer implements
         }
         if ($expression->table instanceof ExpressionInterface) {
             $table = $this->compiler->compile($expression->table);
-        } else {
+        } elseif (is_string($this->table)) {
             $table = $this->compiler->quoteTableName($this->table);
+        } else {
+            throw new InvalidArgumentException();
         }
         $where = $this->compiler->compile($expression->whereClause);
+        $where = $where ? " WHERE $where" : '';
         $set = [];
         $params = $this->compiler->getParams();
         foreach ($expression->set as $key => $value) {
@@ -203,6 +211,17 @@ class ClauseContainer implements
             }
         }
         $set = implode(',', $set);
-        return "UPDATE $table SET $set WHERE $where";
+        return "UPDATE $table SET {$set}{$where}";
+    }
+
+    public function __toString()
+    {
+        try {
+            $compiler = $this->connection->getDriver()->createCompiler();
+            return $compiler->compile($this);
+        } catch (Throwable $exception) {
+            $this->logger && $this->logger->error($exception);
+            return '';
+        }
     }
 }

@@ -15,6 +15,9 @@ use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Throwable;
 
 class ClauseContainer implements
     DeleteClauseInterface,
@@ -22,10 +25,12 @@ class ClauseContainer implements
     CompoundInterface,
     ConditionInterface,
     CompilerAwareInterface,
-    ExpressionBuilderInterface
+    ExpressionBuilderInterface,
+    LoggerAwareInterface
 {
     use CompilerAwareTrait;
     use HasStatementTrait;
+    use LoggerAwareTrait;
 
     protected $table;
     /**
@@ -57,12 +62,13 @@ class ClauseContainer implements
             throw new InvalidArgumentException();
         }
         $where = $this->compiler->compile($this->whereClause);
+        $where = $where ? " WHERE $where" : '';
         if ($this->table instanceof ExpressionInterface) {
             $table = $this->compiler->compile($this->table);
         } else {
             $table = $this->compiler->quoteTableName($this->table);
         }
-        return "DELETE FROM {$table} WHERE {$where}";
+        return "DELETE FROM {$table}{$where}";
     }
 
     public function __clone()
@@ -177,5 +183,16 @@ class ClauseContainer implements
     {
         $this->whereClause->or();
         return $this;
+    }
+
+    public function __toString()
+    {
+        try {
+            $compiler = $this->connection->getDriver()->createCompiler();
+            return $compiler->compile($this);
+        } catch (Throwable $exception) {
+            $this->logger && $this->logger->error($exception);
+            return '';
+        }
     }
 }
