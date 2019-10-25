@@ -51,6 +51,14 @@ class ClauseContainer implements
         return $this->compound;
     }
 
+    public function appendCompound(): self
+    {
+        if ($this->compound->getCompounds()->count()) {
+            $this->and();
+        }
+        return $this;
+    }
+
 
     public function not(): OperatorListInterface
     {
@@ -153,5 +161,10 @@ class ClauseContainer implements
             throw new InvalidArgumentException();
         }
         return $this->compiler->compile($this->compound);
+    }
+
+    public function __clone()
+    {
+        $this->compound = clone $this->compound;
     }
 }

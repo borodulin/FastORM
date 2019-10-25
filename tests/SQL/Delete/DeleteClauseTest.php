@@ -11,9 +11,12 @@ class DeleteClauseTest extends TestCase
 {
     public function testDelete()
     {
-        (new DeleteQuery($this->connection))
-            ->from('Album')
-            ->where()->equal('AlbumId', 1);
-        $this->assertTrue(true);
+        $tran = $this->connection->beginTransaction();
+        $count = (new DeleteQuery($this->connection))
+            ->from('InvoiceLine')
+            ->where()->equal('InvoiceLineId', 1)
+            ->execute();
+        $this->assertEquals($count, 1);
+        $tran->rollBack();
     }
 }

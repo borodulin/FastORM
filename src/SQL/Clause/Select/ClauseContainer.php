@@ -13,18 +13,8 @@ use FastOrm\PdoCommand\Fetch\Fetch;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\PdoCommand\Statement;
 use FastOrm\PdoCommand\StatementInterface;
-use FastOrm\SQL\Clause\Compound\Compound;
-use FastOrm\SQL\Clause\Operator\BetweenColumnsOperator;
-use FastOrm\SQL\Clause\Operator\BetweenOperator;
+use FastOrm\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
 use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
-use FastOrm\SQL\Clause\Operator\CompareOperator;
-use FastOrm\SQL\Clause\Operator\EqualOperator;
-use FastOrm\SQL\Clause\Operator\ExistsOperator;
-use FastOrm\SQL\Clause\Operator\ExpressionOperator;
-use FastOrm\SQL\Clause\Operator\FilterHashConditionOperator;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Clause\Operator\InOperator;
-use FastOrm\SQL\Clause\Operator\LikeOperator;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
@@ -85,7 +75,7 @@ class ClauseContainer implements
      */
     private $connection;
     /**
-     * @var Compound
+     * @var CompoundClauseContainer
      */
     private $activeCompound;
     /**
@@ -195,10 +185,7 @@ class ClauseContainer implements
 
     public function having(): ConditionInterface
     {
-        if ($this->havingClause->getCompounds()->count()) {
-            $this->havingClause->and();
-        }
-        $this->activeCompound = $this->havingClause;
+        $this->activeCompound = $this->havingClause->appendCompound();
         return $this;
     }
 
@@ -228,10 +215,7 @@ class ClauseContainer implements
 
     public function where(): ConditionInterface
     {
-        if ($this->whereClause->getCompounds()->count()) {
-            $this->whereClause->and();
-        }
-        $this->activeCompound = $this->whereClause;
+        $this->activeCompound = $this->whereClause->appendCompound();
         return $this;
     }
 
@@ -343,84 +327,73 @@ class ClauseContainer implements
 
     public function not(): OperatorListInterface
     {
-        $this->activeCompound->getCompoundItem()->not();
+        $this->activeCompound->not();
         return $this;
     }
 
     public function between(string $column, $intervalStart, $intervalEnd): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new BetweenOperator($column, $intervalStart, $intervalEnd));
+        $this->activeCompound->between($column, $intervalStart, $intervalEnd);
         return $this;
     }
 
     public function betweenColumns($value, string $intervalStartColumn, string $intervalEndColumn): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new BetweenColumnsOperator($value, $intervalStartColumn, $intervalEndColumn));
+        $this->activeCompound->betweenColumns($value, $intervalStartColumn, $intervalEndColumn);
         return $this;
     }
 
     public function exists(SelectClauseInterface $query): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new ExistsOperator($query));
+        $this->activeCompound->exists($query);
         return $this;
     }
 
     public function in(string $column, $values): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new InOperator($column, $values));
+        $this->activeCompound->in($column, $values);
         return $this;
     }
 
     public function like(string $column, $values): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new LikeOperator($column, $values));
+        $this->activeCompound->like($column, $values);
         return $this;
     }
 
     public function compare(string $column, string $operator, $value): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new CompareOperator($column, $operator, $value));
+        $this->activeCompound->compare($column, $operator, $value);
         return $this;
     }
 
     public function compareColumns(string $column1, string $operator, string $column2): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new CompareColumnsOperator($column1, $operator, $column2));
+        $this->activeCompound->compareColumns($column1, $operator, $column2);
         return $this;
     }
 
     public function equal(string $column, $value): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new EqualOperator($column, $value));
+        $this->activeCompound->equal($column, $value);
         return $this;
     }
 
     public function expression($expression, array $params = []): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new ExpressionOperator($expression, $params));
+        $this->activeCompound->expression($expression, $params);
         return $this;
     }
 
     public function filterHashCondition(array $hash): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new FilterHashConditionOperator($hash));
+        $this->activeCompound->filterHashCondition($hash);
         return $this;
     }
 
     public function hashCondition(array $hash): CompoundInterface
     {
-        $this->activeCompound
-            ->setOperator(new HashConditionOperator($hash));
+        $this->activeCompound->hashCondition($hash);
         return $this;
     }
 

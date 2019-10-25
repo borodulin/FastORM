@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
+use Countable;
 use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
-use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\ConditionInterface;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
 use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
 use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
-use FastOrm\SQL\ContextInterface;
+use FastOrm\SQL\ExpressionInterface;
+use IteratorAggregate;
 
-interface SelectClauseInterface extends ContextInterface
+interface SelectClauseInterface extends
+    IteratorAggregate,
+    Countable,
+    ExpressionInterface,
+    HasStatementInterface
 {
     public function select($columns): SelectDistinctInterface;
 
@@ -32,8 +37,6 @@ interface SelectClauseInterface extends ContextInterface
     public function unionAll(SelectClauseInterface $query): SelectClauseInterface;
 
     public function where(): ConditionInterface;
-
-    public function statement(array $options = []): StatementInterface;
 
     public function fetch(array $params = []): FetchInterface;
 

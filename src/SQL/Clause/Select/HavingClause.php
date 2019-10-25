@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
-use FastOrm\SQL\Clause\Compound\Compound;
+use FastOrm\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
 use FastOrm\SQL\ExpressionInterface;
 
-class HavingClause extends Compound
+class HavingClause extends CompoundClauseContainer
 {
     public function build(ExpressionInterface $expression): string
     {

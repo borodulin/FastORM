@@ -84,7 +84,6 @@ class Compound implements
         }
         $conditions = [];
         $compounds = $expression->getCompounds();
-        $compounds->rewind();
         /** @var CompoundItem $compoundItem */
         foreach ($compounds as $compoundItem) {
             if ($text = $this->compiler->compile($compoundItem)) {
@@ -101,7 +100,7 @@ class Compound implements
     {
         $compounds = new SplStack();
         foreach ($this->compounds as $compoundItem) {
-            $compounds->add(0, clone $compoundItem);
+            $compounds->push(clone $compoundItem);
         }
         $this->compounds = $compounds;
     }

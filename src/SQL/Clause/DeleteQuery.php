@@ -8,6 +8,8 @@ use FastOrm\ConnectionInterface;
 use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
+use FastOrm\PdoCommand\DbException;
+use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Delete\ClauseContainer;
 use FastOrm\SQL\Clause\Delete\WhereClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
@@ -50,7 +52,7 @@ class DeleteQuery implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof SelectQuery) {
+        if (!$expression instanceof DeleteQuery) {
             throw new InvalidArgumentException();
         }
         return $this->compiler->compile($this->container);
@@ -59,5 +61,35 @@ class DeleteQuery implements
     public function __clone()
     {
         $this->container = clone $this->container;
+    }
+
+    public function __toString()
+    {
+        return $this->compiler->compile($this->container);
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     * @throws DbException
+     */
+    public function count()
+    {
+        return $this->container->count();
+    }
+
+    /**
+     * @param array $options
+     * @return StatementInterface
+     * @throws DbException
+     */
+    public function statement(array $options = []): StatementInterface
+    {
+        return $this->container->statement($options);
     }
 }
