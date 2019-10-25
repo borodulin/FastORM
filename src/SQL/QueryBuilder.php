@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace FastOrm\SQL;
 
 use FastOrm\ConnectionInterface;
-use FastOrm\SQL\Clause\Delete\DeleteClauseInterface;
-use FastOrm\SQL\Clause\Insert\InsertClauseInterface;
+use FastOrm\SQL\Clause\DeleteClauseInterface;
+use FastOrm\SQL\Clause\DeleteQuery;
+use FastOrm\SQL\Clause\InsertClauseInterface;
+use FastOrm\SQL\Clause\InsertQuery;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Clause\Update\UpdateClauseInterface;
+use FastOrm\SQL\Clause\UpdateClauseInterface;
+use FastOrm\SQL\Clause\UpdateQuery;
 
 class QueryBuilder implements QueryBuilderInterface
 {
@@ -30,16 +33,16 @@ class QueryBuilder implements QueryBuilderInterface
 
     public function update(): UpdateClauseInterface
     {
-        // TODO: Implement update() method.
+        return new UpdateQuery($this->connection);
     }
 
     public function insert(): InsertClauseInterface
     {
-        // TODO: Implement insert() method.
+        return new InsertQuery($this->connection);
     }
 
     public function delete(): DeleteClauseInterface
     {
-        // TODO: Implement delete() method.
+        return new DeleteQuery($this->connection);
     }
 }

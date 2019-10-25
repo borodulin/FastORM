@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL\Select;
 
+use FastOrm\SQL\Clause\Compound\ConditionInterface;
+use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
 use FastOrm\SQL\QueryBuilder;
-use FastOrm\SQL\SearchCondition\ConditionInterface;
-use FastOrm\SQL\SearchCondition\Operator\CompareColumnsOperator;
 use FastOrm\Tests\TestCase;
 
 /**
@@ -20,7 +20,6 @@ class QueryBuilderTest extends TestCase
     public function testParamBinding()
     {
         $query = (new QueryBuilder($this->connection))->select();
-        /** @var ConditionInterface  $expression */
         $fetch = $query
             ->from('Album')->as('t1')
             ->where()
@@ -35,7 +34,6 @@ class QueryBuilderTest extends TestCase
     public function testOr()
     {
         $query = new SelectQuery($this->connection);
-        /** @var ConditionInterface  $expression */
         $fetch = $query
             ->from('Album')->as('t1')
             ->where()->equal('AlbumId', 1)

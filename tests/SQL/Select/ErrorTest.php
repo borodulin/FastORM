@@ -4,24 +4,23 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\SQL\Select;
 
+use FastOrm\Driver\Postgres\LikeOperatorBuilder;
 use FastOrm\InvalidArgumentException;
+use FastOrm\SQL\Clause\Compound\Compound;
+use FastOrm\SQL\Clause\Operator\BetweenColumnsOperator;
+use FastOrm\SQL\Clause\Operator\BetweenOperator;
+use FastOrm\SQL\Clause\Operator\CompareOperator;
+use FastOrm\SQL\Clause\Operator\EqualOperator;
+use FastOrm\SQL\Clause\Operator\ExistsOperator;
+use FastOrm\SQL\Clause\Operator\ExpressionOperator;
+use FastOrm\SQL\Clause\Operator\FilterHashConditionOperator;
+use FastOrm\SQL\Clause\Operator\HashConditionOperator;
+use FastOrm\SQL\Clause\Operator\InOperator;
 use FastOrm\SQL\Clause\Select\AliasClause;
 use FastOrm\SQL\Clause\Select\ClauseContainer;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Compiler;
 use FastOrm\SQL\ExpressionBuilder;
-use FastOrm\SQL\SearchCondition\Builder\LikeOperatorBuilder;
-use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
-use FastOrm\SQL\SearchCondition\Compound;
-use FastOrm\SQL\SearchCondition\Operator\BetweenColumnsOperator;
-use FastOrm\SQL\SearchCondition\Operator\BetweenOperator;
-use FastOrm\SQL\SearchCondition\Operator\CompareOperator;
-use FastOrm\SQL\SearchCondition\Operator\EqualOperator;
-use FastOrm\SQL\SearchCondition\Operator\ExistsOperator;
-use FastOrm\SQL\SearchCondition\Operator\ExpressionOperator;
-use FastOrm\SQL\SearchCondition\Operator\FilterHashConditionOperator;
-use FastOrm\SQL\SearchCondition\Operator\HashConditionOperator;
-use FastOrm\SQL\SearchCondition\Operator\InOperator;
 use FastOrm\Tests\TestCase;
 
 class ErrorTest extends TestCase
@@ -51,7 +50,7 @@ class ErrorTest extends TestCase
     public function testCompound()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new Compound((new ClauseContainer($this->connection))))
+        (new Compound($this->connection))
             ->build(new AliasClause());
     }
 
@@ -88,8 +87,5 @@ class ErrorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         (new LikeOperatorBuilder())->build(new AliasClause());
-
-        $this->expectException(InvalidArgumentException::class);
-        (new SearchConditionBuilder())->build(new AliasClause());
     }
 }

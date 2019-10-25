@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL;
 
-use FastOrm\SQL\Clause\Delete\DeleteClauseInterface;
-use FastOrm\SQL\Clause\Insert\InsertClauseInterface;
+use FastOrm\SQL\Clause\DeleteClauseInterface;
+use FastOrm\SQL\Clause\InsertClauseInterface;
 use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\Clause\Update\UpdateClauseInterface;
+use FastOrm\SQL\Clause\UpdateClauseInterface;
 
 interface QueryBuilderInterface
 {

@@ -6,6 +6,8 @@ namespace FastOrm\SQL;
 
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
+use FastOrm\SQL\Clause\Operator\Builder\LikeOperatorBuilder;
+use FastOrm\SQL\Clause\Operator\LikeOperator;
 use FastOrm\SQL\Clause\Select\Builder\FromClauseBuilder;
 use FastOrm\SQL\Clause\Select\Builder\GroupByClauseBuilder;
 use FastOrm\SQL\Clause\Select\Builder\JoinClauseBuilder;
@@ -20,10 +22,6 @@ use FastOrm\SQL\Clause\Select\LimitClause;
 use FastOrm\SQL\Clause\Select\OrderByClause;
 use FastOrm\SQL\Clause\Select\SelectClause;
 use FastOrm\SQL\Clause\Select\UnionClause;
-use FastOrm\SQL\SearchCondition\Builder\LikeOperatorBuilder;
-use FastOrm\SQL\SearchCondition\Builder\SearchConditionBuilder;
-use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
-use FastOrm\SQL\SearchCondition\SearchCondition;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -44,7 +42,6 @@ class Compiler implements CompilerInterface
         OrderByClause::class => OrderByClauseBuilder::class,
         LimitClause::class => LimitClauseBuilder::class,
 
-        SearchCondition::class => SearchConditionBuilder::class,
         LikeOperator::class => LikeOperatorBuilder::class,
 
         Expression::class => ExpressionBuilder::class,

@@ -7,41 +7,38 @@ namespace FastOrm\SQL\Clause\Select;
 use FastOrm\ConnectionInterface;
 use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
+use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\Fetch;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
-use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Statement;
 use FastOrm\PdoCommand\StatementInterface;
+use FastOrm\SQL\Clause\Compound\Compound;
+use FastOrm\SQL\Clause\Operator\BetweenColumnsOperator;
+use FastOrm\SQL\Clause\Operator\BetweenOperator;
+use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
+use FastOrm\SQL\Clause\Operator\CompareOperator;
+use FastOrm\SQL\Clause\Operator\EqualOperator;
+use FastOrm\SQL\Clause\Operator\ExistsOperator;
+use FastOrm\SQL\Clause\Operator\ExpressionOperator;
+use FastOrm\SQL\Clause\Operator\FilterHashConditionOperator;
+use FastOrm\SQL\Clause\Operator\HashConditionOperator;
+use FastOrm\SQL\Clause\Operator\InOperator;
+use FastOrm\SQL\Clause\Operator\LikeOperator;
 use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\SQL\CompilerAwareInterface;
 use FastOrm\SQL\CompilerAwareTrait;
 use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
-use FastOrm\SQL\SearchCondition\Compound;
-use FastOrm\SQL\SearchCondition\CompoundInterface;
-use FastOrm\SQL\SearchCondition\ConditionInterface;
-use FastOrm\SQL\SearchCondition\Operator\BetweenColumnsOperator;
-use FastOrm\SQL\SearchCondition\Operator\BetweenOperator;
-use FastOrm\SQL\SearchCondition\Operator\CompareColumnsOperator;
-use FastOrm\SQL\SearchCondition\Operator\CompareOperator;
-use FastOrm\SQL\SearchCondition\Operator\EqualOperator;
-use FastOrm\SQL\SearchCondition\Operator\ExistsOperator;
-use FastOrm\SQL\SearchCondition\Operator\ExpressionOperator;
-use FastOrm\SQL\SearchCondition\Operator\FilterHashConditionOperator;
-use FastOrm\SQL\SearchCondition\Operator\HashConditionOperator;
-use FastOrm\SQL\SearchCondition\Operator\InOperator;
-use FastOrm\SQL\SearchCondition\Operator\LikeOperator;
-use FastOrm\SQL\SearchCondition\Operator\OperatorListInterface;
 
 class ClauseContainer implements
     SelectClauseInterface,
+    ConditionInterface,
+    CompoundInterface,
     SelectDistinctInterface,
     FromClauseInterface,
-    ConditionInterface,
     OffsetClauseInterface,
     JoinAliasClauseInterface,
-    CompoundInterface,
     ExpressionBuilderInterface,
     CompilerAwareInterface
 {
@@ -102,9 +99,9 @@ class ClauseContainer implements
         $this->selectClause = new SelectClause();
         $this->fromClause = new FromClause($this);
         $this->joinClause = new JoinClause();
-        $this->whereClause = new WhereClause($this);
+        $this->whereClause = new WhereClause($connection);
         $this->groupByClause = new GroupByClause();
-        $this->havingClause = new HavingClause($this);
+        $this->havingClause = new HavingClause($connection);
         $this->orderByClause = new OrderByClause();
         $this->unionClause = new UnionClause();
         $this->limitClause = new LimitClause();
@@ -166,92 +163,9 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function not(): OperatorListInterface
-    {
-        $this->activeCompound->getCondition()->not();
-        return $this;
-    }
-
     public function offset(int $offset): SelectClauseInterface
     {
         $this->limitClause->setOffset($offset);
-        return $this;
-    }
-
-    public function between(string $column, $intervalStart, $intervalEnd): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new BetweenOperator($column, $intervalStart, $intervalEnd));
-        return $this;
-    }
-
-    public function betweenColumns($value, string $intervalStartColumn, string $intervalEndColumn): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new BetweenColumnsOperator($value, $intervalStartColumn, $intervalEndColumn));
-        return $this;
-    }
-
-    public function exists(SelectClauseInterface $query): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new ExistsOperator($query));
-        return $this;
-    }
-
-    public function in(string $column, $values): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new InOperator($column, $values));
-        return $this;
-    }
-
-    public function like(string $column, $values): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new LikeOperator($column, $values));
-        return $this;
-    }
-
-    public function compare(string $column, string $operator, $value): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new CompareOperator($column, $operator, $value));
-        return $this;
-    }
-
-    public function compareColumns(string $column1, string $operator, string $column2): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new CompareColumnsOperator($column1, $operator, $column2));
-        return $this;
-    }
-
-    public function equal(string $column, $value): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new EqualOperator($column, $value));
-        return $this;
-    }
-
-    public function expression($expression, array $params = []): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new ExpressionOperator($expression, $params));
-        return $this;
-    }
-
-    public function filterHashCondition(array $hash): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new FilterHashConditionOperator($hash));
-        return $this;
-    }
-
-    public function hashCondition(array $hash): CompoundInterface
-    {
-        $this->activeCompound->getCondition()
-            ->setOperator(new HashConditionOperator($hash));
         return $this;
     }
 
@@ -380,18 +294,6 @@ class ClauseContainer implements
         return $this;
     }
 
-    public function and(): ConditionInterface
-    {
-        $this->activeCompound->and();
-        return $this;
-    }
-
-    public function or(): ConditionInterface
-    {
-        $this->activeCompound->or();
-        return $this;
-    }
-
     public function build(ExpressionInterface $expression): string
     {
         if (!$expression instanceof ClauseContainer) {
@@ -408,14 +310,6 @@ class ClauseContainer implements
             $this->compiler->compile($expression->orderByClause),
             $this->compiler->compile($expression->limitClause),
         ]));
-    }
-
-    /**
-     * @param Compound $activeCompound
-     */
-    public function setActiveCompound(Compound $activeCompound): void
-    {
-        $this->activeCompound = $activeCompound;
     }
 
     public function __clone()
@@ -444,6 +338,101 @@ class ClauseContainer implements
     public function setCursorFactory(CursorFactoryInterface $factory): SelectClauseInterface
     {
         $this->cursorFactory = $factory;
+        return $this;
+    }
+
+    public function not(): OperatorListInterface
+    {
+        $this->activeCompound->getCompoundItem()->not();
+        return $this;
+    }
+
+    public function between(string $column, $intervalStart, $intervalEnd): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new BetweenOperator($column, $intervalStart, $intervalEnd));
+        return $this;
+    }
+
+    public function betweenColumns($value, string $intervalStartColumn, string $intervalEndColumn): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new BetweenColumnsOperator($value, $intervalStartColumn, $intervalEndColumn));
+        return $this;
+    }
+
+    public function exists(SelectClauseInterface $query): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new ExistsOperator($query));
+        return $this;
+    }
+
+    public function in(string $column, $values): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new InOperator($column, $values));
+        return $this;
+    }
+
+    public function like(string $column, $values): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new LikeOperator($column, $values));
+        return $this;
+    }
+
+    public function compare(string $column, string $operator, $value): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new CompareOperator($column, $operator, $value));
+        return $this;
+    }
+
+    public function compareColumns(string $column1, string $operator, string $column2): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new CompareColumnsOperator($column1, $operator, $column2));
+        return $this;
+    }
+
+    public function equal(string $column, $value): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new EqualOperator($column, $value));
+        return $this;
+    }
+
+    public function expression($expression, array $params = []): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new ExpressionOperator($expression, $params));
+        return $this;
+    }
+
+    public function filterHashCondition(array $hash): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new FilterHashConditionOperator($hash));
+        return $this;
+    }
+
+    public function hashCondition(array $hash): CompoundInterface
+    {
+        $this->activeCompound
+            ->setOperator(new HashConditionOperator($hash));
+        return $this;
+    }
+
+    public function and(): ConditionInterface
+    {
+        $this->activeCompound->and();
+        return $this;
+    }
+
+    public function or(): ConditionInterface
+    {
+        $this->activeCompound->or();
         return $this;
     }
 }

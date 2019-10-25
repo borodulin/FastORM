@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause;
 
-use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
+use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\PdoCommand\StatementInterface;
+use FastOrm\SQL\Clause\Select\ConditionInterface;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
 use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
 use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
 use FastOrm\SQL\ContextInterface;
-use FastOrm\SQL\ExpressionInterface;
-use FastOrm\SQL\SearchCondition\ConditionInterface;
 
-interface SelectClauseInterface extends ExpressionInterface, ContextInterface
+interface SelectClauseInterface extends ContextInterface
 {
     public function select($columns): SelectDistinctInterface;
 

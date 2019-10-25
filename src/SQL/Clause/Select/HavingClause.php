@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FastOrm\SQL\Clause\Select;
 
+use FastOrm\SQL\Clause\Compound\Compound;
 use FastOrm\SQL\ExpressionInterface;
-use FastOrm\SQL\SearchCondition\Compound;
 
 class HavingClause extends Compound
 {
