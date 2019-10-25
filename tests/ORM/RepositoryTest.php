@@ -31,7 +31,7 @@ class RepositoryTest extends TestCase
     {
         $albumsRepository = new AlbumRepository($this->db);
         $this->assertTrue(isset($albumsRepository[1]));
-        $acdc = $albumsRepository->byArtist(1);
+        $acdc = $albumsRepository->byArtist(1)->toArray();
         $this->assertTrue(isset($acdc[1]));
         $this->assertFalse(isset($acdc[2]));
         $this->assertTrue(isset($albumsRepository[2]));

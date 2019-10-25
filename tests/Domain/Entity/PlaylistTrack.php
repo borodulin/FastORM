@@ -22,6 +22,6 @@ class PlaylistTrack implements EntityInterface
 
     public static function getPrimaryKey(): array
     {
-        return ['playlistId', 'trackId'];
+        return ['PlaylistId', 'TrackId'];
     }
 }

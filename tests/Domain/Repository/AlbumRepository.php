@@ -6,6 +6,7 @@ namespace FastOrm\Tests\Domain\Repository;
 
 use FastOrm\ConnectionInterface;
 use FastOrm\ORM\Repository;
+use FastOrm\SQL\Clause\SelectClauseInterface;
 use FastOrm\Tests\Domain\Entity\Album;
 
 class AlbumRepository extends Repository
@@ -15,10 +16,9 @@ class AlbumRepository extends Repository
         parent::__construct(Album::class, 'Album', $connection);
     }
 
-    public function byArtist($artistId): self
+    public function byArtist($artistId): SelectClauseInterface
     {
-        ($clone = clone $this)
-            ->getSelectQuery()->where()->equal('ArtistId', $artistId);
-        return $clone;
+        return $this->queryBuilder->select()
+            ->where()->equal('ArtistId', $artistId);
     }
 }

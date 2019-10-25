@@ -210,7 +210,7 @@ class ClauseContainer implements
     {
         $statement = $this->statement();
         $statement->prepare($params);
-        return new Fetch($statement);
+        return (new Fetch($statement))->setCursorFactory($this->cursorFactory);
     }
 
     /**
@@ -389,5 +389,10 @@ class ClauseContainer implements
     {
         $this->activeCompound->or();
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return iterator_to_array($this);
     }
 }

@@ -41,4 +41,6 @@ interface SelectClauseInterface extends
     public function fetch(array $params = []): FetchInterface;
 
     public function setCursorFactory(CursorFactoryInterface $factory): SelectClauseInterface;
+
+    public function toArray(): array;
 }

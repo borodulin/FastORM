@@ -32,8 +32,6 @@ class CursorFactory implements CursorFactoryInterface
      */
     public function create(PDOStatement $statement, int $fetchStyle = PDO::FETCH_ASSOC): CursorInterface
     {
-        /** @var EntityInterface $className */
-        $className = $this->entityClass;
         return (new BatchCursor($statement, $fetchStyle))
             ->setRowHandler(new EntityHandler($this->entityClass));
     }

@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace FastOrm\ORM;
 
-use ArrayIterator;
 use FastOrm\ConnectionInterface;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\Clause\SelectQuery;
 use ReflectionClass;
 use ReflectionException;
-use Traversable;
 
 class Repository implements RepositoryInterface
 {
@@ -24,17 +21,13 @@ class Repository implements RepositoryInterface
      */
     private $tableName;
     /**
-     * @var SelectClauseInterface
-     */
-    private $selectQuery;
-    /**
      * @var ConnectionInterface
      */
     private $connection;
     /**
-     * @var array|SelectClauseInterface
+     * @var QueryBuilder
      */
-    private $rows;
+    protected $queryBuilder;
 
     /**
      * Repository constructor.
@@ -52,14 +45,7 @@ class Repository implements RepositoryInterface
         $this->entityClass = $entityClass;
         $this->tableName = $tableName;
         $this->connection = $connection;
-        $this->initSelectQuery();
-    }
-
-    protected function initSelectQuery()
-    {
-        $this->selectQuery = new SelectQuery($this->connection);
-        $this->selectQuery->from($this->tableName);
-        $this->selectQuery->setCursorFactory(new CursorFactory($this->entityClass));
+        $this->queryBuilder = new QueryBuilder($this->connection, $entityClass, $tableName);
     }
 
     /**
@@ -76,7 +62,9 @@ class Repository implements RepositoryInterface
      */
     public function offsetExists($offset)
     {
-        return isset($this->all()[$offset]);
+        $hash = $this->getPkAsHash($offset);
+        return $this->queryBuilder->select()->where()
+            ->hashCondition($hash)->fetch()->exists();
     }
 
     /**
@@ -90,11 +78,11 @@ class Repository implements RepositoryInterface
      */
     public function offsetGet($offset)
     {
-        if (isset($this->all()[$offset])) {
-            return $this->all()[$offset];
-        } else {
-            throw new InvalidArgumentException();
-        }
+        $hash = $this->getPkAsHash($offset);
+        $cursor = $this->queryBuilder->select()->where()
+            ->hashCondition($hash)->fetch()->cursor()->setLimit(1);
+        $cursor->rewind();
+        return $cursor->current();
     }
 
     /**
@@ -111,7 +99,16 @@ class Repository implements RepositoryInterface
      */
     public function offsetSet($offset, $value)
     {
-        // TODO: Implement offsetSet() method.
+        $hash = $this->getPkAsHash($offset);
+        if ($this->offsetExists($offset)) {
+            $this->queryBuilder->update()
+                ->set($value)->where()->hashCondition($hash)
+                ->execute();
+        } else {
+            $this->queryBuilder->insert()
+                ->columns($value)
+                ->execute();
+        }
     }
 
     /**
@@ -125,77 +122,20 @@ class Repository implements RepositoryInterface
      */
     public function offsetUnset($offset)
     {
-        // TODO: Implement offsetUnset() method.
+        $hash = $this->getPkAsHash($offset);
+        $this->queryBuilder->delete()->where()
+            ->hashCondition($hash)->execute();
     }
 
-    public function findByPk(string $pk): self
+    public function getPkAsHash($pk): array
     {
         $primaryKey = $this->entityClass::getPrimaryKey();
-        $pk = explode(',', $pk);
-        $hash = array_combine($primaryKey, (array)$pk);
-        $this->selectQuery->where()->hashCondition($hash);
-        return clone $this;
-    }
-
-    /**
-     * Retrieve an external iterator
-     * @link https://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
-     * @since 5.0.0
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->all());
-    }
-
-    protected function getSelectQuery(): SelectClauseInterface
-    {
-        return $this->selectQuery;
-    }
-
-    protected function getCursorFactory()
-    {
-        return new CursorFactory($this->entityClass);
+        $pk = explode(',', (string)$pk);
+        return $hash = array_combine($primaryKey, (array)$pk);
     }
 
     public function __clone()
     {
-        $this->rows = null;
-        $this->selectQuery = clone $this->selectQuery;
-    }
-
-    public function all()
-    {
-        if ($this->rows === null) {
-            $this->rows = iterator_to_array($this->selectQuery);
-        }
-        return $this->rows;
-    }
-
-    /**
-     * Count elements of an object
-     * @link https://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
-     * @since 5.1.0
-     */
-    public function count()
-    {
-        return count($this->rows);
-    }
-
-    public function withOne(RepositoryInterface $repository, array $link)
-    {
-    }
-
-    public function withMany(RepositoryInterface $repository, array $link)
-    {
-    }
-
-    public function joinWithOne()
-    {
+        $this->queryBuilder = clone $this->queryBuilder;
     }
 }

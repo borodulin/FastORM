@@ -8,6 +8,7 @@ use FastOrm\Driver\Postgres\LikeOperatorBuilder;
 use FastOrm\InvalidArgumentException;
 use FastOrm\SQL\Clause\Operator\BetweenColumnsOperator;
 use FastOrm\SQL\Clause\Operator\BetweenOperator;
+use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
 use FastOrm\SQL\Clause\Operator\CompareOperator;
 use FastOrm\SQL\Clause\Operator\EqualOperator;
 use FastOrm\SQL\Clause\Operator\ExistsOperator;
@@ -81,5 +82,11 @@ class OperatorErrorTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         (new LikeOperatorBuilder())->build(new AliasClause());
+    }
+
+    public function testCompareColumnsOperator()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new CompareColumnsOperator('', '', ''))->build(new AliasClause());
     }
 }

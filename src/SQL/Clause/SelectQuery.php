@@ -169,4 +169,9 @@ class SelectQuery implements
     {
         $this->container = clone $this->container;
     }
+
+    public function toArray(): array
+    {
+        return $this->container->toArray();
+    }
 }
