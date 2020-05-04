@@ -50,6 +50,7 @@ class InsertQuery implements
         if (!$expression instanceof SelectQuery) {
             throw new InvalidArgumentException();
         }
+
         return $this->compiler->compile($this->container);
     }
 
@@ -65,12 +66,10 @@ class InsertQuery implements
 
     public function __toString()
     {
-        return (string)$this->container;
+        return (string) $this->container;
     }
 
     /**
-     * @param array $options
-     * @return StatementInterface
      * @throws DbException
      */
     public function statement(array $options = []): StatementInterface

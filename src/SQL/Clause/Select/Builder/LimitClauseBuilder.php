@@ -11,7 +11,6 @@ use FastOrm\SQL\ExpressionInterface;
 
 class LimitClauseBuilder implements ExpressionBuilderInterface
 {
-
     public function build(ExpressionInterface $expression): string
     {
         if (!$expression instanceof LimitClause) {
@@ -20,11 +19,12 @@ class LimitClauseBuilder implements ExpressionBuilderInterface
 
         $sql = [];
         if ($limit = $expression->getLimit()) {
-            $sql[] = 'LIMIT ' . $limit;
+            $sql[] = 'LIMIT '.$limit;
         }
         if ($offset = $expression->getOffset()) {
-            $sql[] = 'OFFSET ' . $offset;
+            $sql[] = 'OFFSET '.$offset;
         }
+
         return implode(' ', $sql);
     }
 }

@@ -47,13 +47,14 @@ class ExpressionOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof ExpressionOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $this->compiler->getParams()->bindAll($this->params);
         if ($expression->expression instanceof ExpressionInterface) {
             $expression->expression = $this->compiler->compile($expression->expression);
         }
+
         return $expression->expression;
     }
 }

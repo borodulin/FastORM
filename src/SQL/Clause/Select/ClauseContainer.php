@@ -7,8 +7,6 @@ namespace FastOrm\SQL\Clause\Select;
 use FastOrm\ConnectionInterface;
 use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
-use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
-use FastOrm\PdoCommand\Fetch\CursorInterface;
 use FastOrm\PdoCommand\Fetch\Fetch;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
@@ -74,10 +72,6 @@ class ClauseContainer implements
      * @var CompoundClauseContainer
      */
     private $activeCompound;
-    /**
-     * @var CursorFactoryInterface
-     */
-    private $cursorFactory;
 
     public function __construct(ConnectionInterface $connection)
     {
@@ -96,130 +90,143 @@ class ClauseContainer implements
     public function as($alias): FromClauseInterface
     {
         $this->fromClause->setAlias($alias);
+
         return $this;
     }
 
     public function __toString()
     {
         $compiler = $this->connection->getDriver()->createCompiler();
+
         return $compiler->compile($this);
     }
 
     public function join($join, string $joinType = 'INNER JOIN'): JoinAliasClauseInterface
     {
         $this->joinClause->addJoin($join, $joinType);
+
         return $this;
     }
 
     public function innerJoin($join): JoinAliasClauseInterface
     {
         $this->joinClause->addJoin($join, 'INNER JOIN');
+
         return $this;
     }
 
     public function leftJoin($join): JoinAliasClauseInterface
     {
         $this->joinClause->addJoin($join, 'LEFT JOIN');
+
         return $this;
     }
 
     public function rightJoin($join): JoinAliasClauseInterface
     {
         $this->joinClause->addJoin($join, 'RIGHT JOIN');
+
         return $this;
     }
 
     public function fullJoin($join): JoinAliasClauseInterface
     {
         $this->joinClause->addJoin($join, 'FULL JOIN');
+
         return $this;
     }
 
     public function offset(int $offset): SelectClauseInterface
     {
         $this->limitClause->setOffset($offset);
+
         return $this;
     }
 
     public function distinct(): SelectClauseInterface
     {
         $this->selectClause->setDistinct(true);
+
         return $this;
     }
 
     public function select($columns): SelectDistinctInterface
     {
         $this->selectClause->addColumns($columns);
+
         return $this;
     }
 
     public function from($from): FromClauseInterface
     {
         $this->fromClause->addFrom($from);
+
         return $this;
     }
 
     public function groupBy($columns): SelectClauseInterface
     {
         $this->groupByClause->addGroupBy($columns);
+
         return $this;
     }
 
     public function having(): ConditionInterface
     {
         $this->activeCompound = $this->havingClause->appendCompound();
+
         return $this;
     }
 
     public function limit(int $limit): OffsetClauseInterface
     {
         $this->limitClause->setLimit($limit);
+
         return $this;
     }
 
     public function orderBy($columns): SelectClauseInterface
     {
         $this->orderByClause->addOrderBy($columns);
+
         return $this;
     }
 
     public function union(SelectClauseInterface $query): SelectClauseInterface
     {
         $this->unionClause->addUnion($query);
+
         return $this;
     }
 
     public function unionAll(SelectClauseInterface $query): SelectClauseInterface
     {
         $this->unionClause->addUnionAll($query);
+
         return $this;
     }
 
     public function where(): ConditionInterface
     {
         $this->activeCompound = $this->whereClause->appendCompound();
+
         return $this;
     }
 
     /**
-     * @param array $params
-     * @return FetchInterface
      * @throws DbException
      */
     public function fetch(array $params = []): FetchInterface
     {
         $statement = $this->statement();
         $statement->prepare($params);
-        return (new Fetch($statement))->setCursorFactory($this->cursorFactory);
+
+        return new Fetch($statement);
     }
 
-    /**
-     * @return CursorInterface
-     * @throws DbException
-     */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
-        return (new Fetch($this->statement()))->setCursorFactory($this->cursorFactory)->cursor();
+        return (new Fetch($this->statement()))->cursor();
     }
 
     public function getConnection(): ConnectionInterface
@@ -228,43 +235,51 @@ class ClauseContainer implements
     }
 
     /**
-     * Count elements of an object
-     * @link https://php.net/manual/en/countable.count.php
+     * Count elements of an object.
+     *
+     * @see https://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
+     *             </p>
+     *             <p>
+     *             The return value is cast to an integer.
+     *
      * @since 5.1.0
+     *
      * @throws DbException
      */
     public function count()
     {
-        return count($this->fetch()->column());
+        return \count($this->fetch()->column());
     }
 
     public function on($condition): FromClauseInterface
     {
         $this->joinClause->getJoin()->setOn($condition);
+
         return $this;
     }
 
     public function onColumns(string $column1, string $column2): FromClauseInterface
     {
         $this->joinClause->getJoin()->setOn(new CompareColumnsOperator($column1, '=', $column2));
+
         return $this;
     }
 
     public function alias($alias): OnClauseInterface
     {
         $this->joinClause->getJoin()->setAlias($alias);
+
         return $this;
     }
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof ClauseContainer) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
+
         return implode(' ', array_filter([
             $this->compiler->compile($expression->selectClause),
             $this->compiler->compile($expression->fromClause),
@@ -301,93 +316,101 @@ class ClauseContainer implements
         $this->limitClause = clone $this->limitClause;
     }
 
-    public function setCursorFactory(CursorFactoryInterface $factory): SelectClauseInterface
-    {
-        $this->cursorFactory = $factory;
-        return $this;
-    }
-
     public function not(): OperatorListInterface
     {
         $this->activeCompound->not();
+
         return $this;
     }
 
     public function between(string $column, $intervalStart, $intervalEnd): CompoundInterface
     {
         $this->activeCompound->between($column, $intervalStart, $intervalEnd);
+
         return $this;
     }
 
     public function betweenColumns($value, string $intervalStartColumn, string $intervalEndColumn): CompoundInterface
     {
         $this->activeCompound->betweenColumns($value, $intervalStartColumn, $intervalEndColumn);
+
         return $this;
     }
 
     public function exists(SelectClauseInterface $query): CompoundInterface
     {
         $this->activeCompound->exists($query);
+
         return $this;
     }
 
     public function in(string $column, $values): CompoundInterface
     {
         $this->activeCompound->in($column, $values);
+
         return $this;
     }
 
     public function like(string $column, $values): CompoundInterface
     {
         $this->activeCompound->like($column, $values);
+
         return $this;
     }
 
     public function compare(string $column, string $operator, $value): CompoundInterface
     {
         $this->activeCompound->compare($column, $operator, $value);
+
         return $this;
     }
 
     public function compareColumns(string $column1, string $operator, string $column2): CompoundInterface
     {
         $this->activeCompound->compareColumns($column1, $operator, $column2);
+
         return $this;
     }
 
     public function equal(string $column, $value): CompoundInterface
     {
         $this->activeCompound->equal($column, $value);
+
         return $this;
     }
 
     public function expression($expression, array $params = []): CompoundInterface
     {
         $this->activeCompound->expression($expression, $params);
+
         return $this;
     }
 
     public function filterHashCondition(array $hash): CompoundInterface
     {
         $this->activeCompound->filterHashCondition($hash);
+
         return $this;
     }
 
     public function hashCondition(array $hash): CompoundInterface
     {
         $this->activeCompound->hashCondition($hash);
+
         return $this;
     }
 
     public function and(): ConditionInterface
     {
         $this->activeCompound->and();
+
         return $this;
     }
 
     public function or(): ConditionInterface
     {
         $this->activeCompound->or();
+
         return $this;
     }
 

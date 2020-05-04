@@ -19,8 +19,6 @@ trait HasStatementTrait
     protected $connection;
 
     /**
-     * @param array $options
-     * @return StatementInterface
      * @throws DbException
      */
     public function statement(array $options = []): StatementInterface
@@ -31,6 +29,7 @@ trait HasStatementTrait
         $sql = $compiler->compile($this);
         $statement = new Statement($this->connection->getPdo(), $sql, $options);
         $statement->prepare($compiler->getParams());
+
         return $statement;
     }
 }

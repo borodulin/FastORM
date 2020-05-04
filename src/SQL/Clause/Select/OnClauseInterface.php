@@ -10,7 +10,6 @@ interface OnClauseInterface
 {
     /**
      * @param ExpressionInterface|string $condition
-     * @return FromClauseInterface
      */
     public function on($condition): FromClauseInterface;
 

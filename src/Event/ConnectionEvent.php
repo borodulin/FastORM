@@ -25,9 +25,6 @@ class ConnectionEvent
         $this->event = $event;
     }
 
-    /**
-     * @return string
-     */
     public function getEvent(): string
     {
         return $this->event;

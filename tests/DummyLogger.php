@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests;
 
-
 use Psr\Log\LoggerInterface;
 
 class DummyLogger implements LoggerInterface
@@ -15,11 +14,8 @@ class DummyLogger implements LoggerInterface
      * System is unusable.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function emergency($message, array $context = array())
+    public function emergency($message, array $context = []): void
     {
         $this->logs['emergency'][] = $message;
     }
@@ -31,11 +27,8 @@ class DummyLogger implements LoggerInterface
      * trigger the SMS alerts and wake you up.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function alert($message, array $context = array())
+    public function alert($message, array $context = []): void
     {
         $this->logs['alert'][] = $message;
     }
@@ -46,11 +39,8 @@ class DummyLogger implements LoggerInterface
      * Example: Application component unavailable, unexpected exception.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function critical($message, array $context = array())
+    public function critical($message, array $context = []): void
     {
         $this->logs['critical'][] = $message;
     }
@@ -60,11 +50,8 @@ class DummyLogger implements LoggerInterface
      * be logged and monitored.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function error($message, array $context = array())
+    public function error($message, array $context = []): void
     {
         $this->logs['error'][] = $message;
     }
@@ -76,11 +63,8 @@ class DummyLogger implements LoggerInterface
      * that are not necessarily wrong.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function warning($message, array $context = array())
+    public function warning($message, array $context = []): void
     {
         $this->logs['warning'][] = $message;
     }
@@ -89,11 +73,8 @@ class DummyLogger implements LoggerInterface
      * Normal but significant events.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function notice($message, array $context = array())
+    public function notice($message, array $context = []): void
     {
         $this->logs['notice'][] = $message;
     }
@@ -104,11 +85,8 @@ class DummyLogger implements LoggerInterface
      * Example: User logs in, SQL logs.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function info($message, array $context = array())
+    public function info($message, array $context = []): void
     {
         $this->logs['info'][] = $message;
     }
@@ -117,11 +95,8 @@ class DummyLogger implements LoggerInterface
      * Detailed debug information.
      *
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function debug($message, array $context = array())
+    public function debug($message, array $context = []): void
     {
         $this->logs['debug'][] = $message;
     }
@@ -129,13 +104,10 @@ class DummyLogger implements LoggerInterface
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed $level
+     * @param mixed  $level
      * @param string $message
-     * @param array $context
-     *
-     * @return void
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = []): void
     {
         $this->logs[$level][] = $message;
     }

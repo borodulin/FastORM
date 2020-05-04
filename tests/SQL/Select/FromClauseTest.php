@@ -10,7 +10,7 @@ use FastOrm\Tests\TestCase;
 
 class FromClauseTest extends TestCase
 {
-    public function testEmptyFrom()
+    public function testEmptyFrom(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select(new Expression('1'))
@@ -19,7 +19,7 @@ class FromClauseTest extends TestCase
         $this->assertEquals(1, $one);
     }
 
-    public function testJoins()
+    public function testJoins(): void
     {
         $command = (new SelectQuery($this->db))
             ->from('Track')->as('t')
@@ -31,7 +31,7 @@ class FromClauseTest extends TestCase
         $this->assertCount(10, $all);
     }
 
-    public function testSubQuery()
+    public function testSubQuery(): void
     {
         $query = (new SelectQuery($this->db))
             ->from('Track')->as('t')
@@ -43,7 +43,7 @@ class FromClauseTest extends TestCase
         $this->assertCount(10, $all);
     }
 
-    public function testFromAlias()
+    public function testFromAlias(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track t')
@@ -53,7 +53,7 @@ class FromClauseTest extends TestCase
         $this->assertCount(10, $all);
     }
 
-    public function testLeftJoin()
+    public function testLeftJoin(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
@@ -64,7 +64,7 @@ class FromClauseTest extends TestCase
         $this->assertCount(10, $all);
     }
 
-    public function testCustomJoin()
+    public function testCustomJoin(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')

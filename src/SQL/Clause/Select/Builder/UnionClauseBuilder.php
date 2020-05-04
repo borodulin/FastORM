@@ -32,7 +32,7 @@ class UnionClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInt
         /** @var UnionItem $union */
         foreach ($unions as $union) {
             $query = $this->compiler->compile($union->getQuery());
-            $result .= ' UNION ' . ($union->isAll() ? 'ALL ' : '') . $query;
+            $result .= ' UNION '.($union->isAll() ? 'ALL ' : '').$query;
         }
 
         return trim($result);

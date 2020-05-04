@@ -24,7 +24,6 @@ class HashConditionOperator implements
 
     /**
      * HashConditionOperator constructor.
-     * @param array $hash
      */
     public function __construct(array $hash)
     {
@@ -33,7 +32,7 @@ class HashConditionOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof HashConditionOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $hash = $expression->hash;
@@ -42,19 +41,19 @@ class HashConditionOperator implements
         }
         $parts = [];
         foreach ($hash as $column => $value) {
-            if (is_int($column)) {
+            if (\is_int($column)) {
                 if ($value instanceof ExpressionInterface) {
                     $parts[] = $this->compiler->compile(new ExpressionOperator($value, []));
                 }
 //                elseif (is_array($value)) {
 //
 //                }
-            } elseif ($value instanceof ExpressionInterface || is_array($value)) {
+            } elseif ($value instanceof ExpressionInterface || \is_array($value)) {
                 $parts[] = $this->compiler->compile(new InOperator($column, $value));
             } else {
                 $column = $this->compiler->quoteColumnName($column);
 
-                if ($value === null) {
+                if (null === $value) {
                     $parts[] = "$column IS NULL";
                 } else {
                     $paramName = $this->compiler->getParams()->bindValue($value);
@@ -62,6 +61,7 @@ class HashConditionOperator implements
                 }
             }
         }
-        return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
+
+        return 1 === \count($parts) ? $parts[0] : '('.implode(') AND (', $parts).')';
     }
 }

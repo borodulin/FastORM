@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\Domain\Entity;
 
-
 class Artist
 {
     /**
@@ -20,6 +19,30 @@ class Artist
      */
     private $albums;
 
+    public function getArtistId(): int
+    {
+        return $this->artistId;
+    }
+
+    public function setArtistId(int $artistId): self
+    {
+        $this->artistId = $artistId;
+
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     /**
      * @return Album[]
      */
@@ -31,9 +54,10 @@ class Artist
     /**
      * @param Album[] $albums
      */
-    public function setAlbums(array $albums): void
+    public function setAlbums(array $albums): self
     {
         $this->albums = $albums;
-    }
 
+        return $this;
+    }
 }

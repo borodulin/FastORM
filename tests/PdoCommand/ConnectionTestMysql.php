@@ -13,12 +13,11 @@ use FastOrm\Transaction;
 
 class ConnectionTestMysql extends TestCase
 {
-
     /**
      * @throws DbException
      * @throws NotSupportedException
      */
-    public function testIsolationLevel()
+    public function testIsolationLevel(): void
     {
         $db1 = $this->createConnection();
         $db2 = $this->createConnection();
@@ -26,7 +25,7 @@ class ConnectionTestMysql extends TestCase
         $db2->setTransactionIsolationLevel(Transaction::READ_UNCOMMITTED);
         $tran = $db2->beginTransaction();
         $count = (new Statement($db2->getPdo(), 'update Album set Title = :p1 where AlbumId = :p2'))
-            ->execute(['p1' => 'test','p2' => 1])
+            ->execute(['p1' => 'test', 'p2' => 1])
             ->rowCount();
         $this->assertEquals($count, 1);
         $title = (new SelectQuery($db1))

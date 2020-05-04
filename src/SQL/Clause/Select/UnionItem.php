@@ -31,9 +31,6 @@ class UnionItem
         return $this->query;
     }
 
-    /**
-     * @return bool
-     */
     public function isAll(): bool
     {
         return $this->all;

@@ -16,16 +16,14 @@ class StatementTest extends TestCase
     /**
      * @throws DbException
      */
-    public function testErrorQuery()
+    public function testErrorQuery(): void
     {
         $this->expectException(DbException::class);
         (new Statement($this->db->getPdo(), 'select * from bad_table_name'))
             ->execute();
     }
 
-    /**
-     */
-    public function testErrorParams()
+    public function testErrorParams(): void
     {
         $this->expectException(DbException::class);
         (new SelectQuery($this->db))
@@ -35,9 +33,7 @@ class StatementTest extends TestCase
             ->all(['p2' => 1]);
     }
 
-    /**
-     */
-    public function testPdoValue()
+    public function testPdoValue(): void
     {
         $all = (new SelectQuery($this->db))
             ->from('Album')

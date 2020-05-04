@@ -44,18 +44,21 @@ class ClauseContainer implements
     public function into($table): ColumnsClauseInterface
     {
         $this->table = $table;
+
         return $this;
     }
 
     public function columns(array $columns): ValuesClauseInterface
     {
         $this->columns = $columns;
+
         return $this;
     }
 
     public function values($values): ValuesClauseInterface
     {
         $this->values[] = $values;
+
         return $this;
     }
 
@@ -63,21 +66,23 @@ class ClauseContainer implements
     {
         try {
             $compiler = $this->connection->getDriver()->createCompiler();
+
             return $compiler->compile($this);
         } catch (Throwable $exception) {
             $this->logger && $this->logger->error($exception);
+
             return '';
         }
     }
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof ClauseContainer) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         if ($this->table instanceof ExpressionInterface) {
             $table = $this->compiler->compile($this->table);
-        } elseif (is_string($this->table)) {
+        } elseif (\is_string($this->table)) {
             $table = $this->compiler->quoteTableName($this->table);
         } else {
             throw new InvalidArgumentException();
@@ -85,6 +90,7 @@ class ClauseContainer implements
         $columns = $this->processColumns();
         $values = $this->processValues();
         $values = $values ? " VALUES {$values}" : '';
+
         return "INSERT INTO {$table}{$columns}{$values}";
     }
 
@@ -93,13 +99,13 @@ class ClauseContainer implements
         $columns = [];
         $values = [];
         foreach ($this->columns as $key => $column) {
-            if (is_int($key)) {
+            if (\is_int($key)) {
                 if ($column instanceof ExpressionInterface) {
                     $column = $this->compiler->compile($column);
                 } else {
                     $column = $this->compiler->quoteColumnName($column);
                 }
-            } elseif (is_string($key)) {
+            } elseif (\is_string($key)) {
                 $key = $this->compiler->quoteColumnName($key);
                 $values[$key] = $column;
                 $column = $key;
@@ -111,6 +117,7 @@ class ClauseContainer implements
         }
         $this->columns = $columns;
         $columns = implode(',', $columns);
+
         return $columns ? " ($columns)" : '';
     }
 
@@ -122,21 +129,22 @@ class ClauseContainer implements
             if ($row instanceof ExpressionInterface) {
                 $row = $this->compiler->compile($row);
                 $values[] = "($row)";
-            } elseif (is_array($row)) {
+            } elseif (\is_array($row)) {
                 $string = [];
                 foreach ($row as $key => $value) {
                     if ($value instanceof ExpressionInterface) {
                         $value = $this->compiler->compile($value);
                     } else {
-                        $value = ':' . $params->bindValue($value);
+                        $value = ':'.$params->bindValue($value);
                     }
                     $string[$key] = $value;
                 }
-                $values[] = '(' . implode(',', $string) . ')';
+                $values[] = '('.implode(',', $string).')';
             } else {
                 throw new InvalidArgumentException();
             }
         }
+
         return implode(',', $values);
     }
 
@@ -146,13 +154,17 @@ class ClauseContainer implements
     }
 
     /**
-     * Count elements of an object
-     * @link https://php.net/manual/en/countable.count.php
+     * Count elements of an object.
+     *
+     * @see https://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
+     *             </p>
+     *             <p>
+     *             The return value is cast to an integer.
+     *
      * @throws DbException
+     *
      * @since 5.1.0
      */
     public function count()
@@ -161,8 +173,6 @@ class ClauseContainer implements
     }
 
     /**
-     * @param array $params
-     * @return int
      * @throws DbException
      */
     public function execute(array $params = []): int

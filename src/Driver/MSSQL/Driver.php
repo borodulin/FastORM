@@ -10,13 +10,6 @@ use PDO;
 
 class Driver extends AbstractDriver implements SavepointInterface
 {
-    /**
-     * @param string $dsn
-     * @param string|null $username
-     * @param string|null $passwd
-     * @param array $options
-     * @return PDO
-     */
     public function createPdoInstance(
         string $dsn,
         string $username = null,
@@ -24,19 +17,20 @@ class Driver extends AbstractDriver implements SavepointInterface
         array $options = []
     ): PDO {
         $driverName = explode(':', $dsn)[0];
-        if ($driverName === 'mssql' || $driverName === 'dblib') {
+        if ('mssql' === $driverName || 'dblib' === $driverName) {
             $pdoClass = MssqlPDO::class;
-        } elseif ($driverName === 'sqlsrv') {
+        } elseif ('sqlsrv' === $driverName) {
             $pdoClass = SqlsrvPDO::class;
         } else {
             $pdoClass = PDO::class;
         }
+
         return new $pdoClass($dsn, $username, $passwd, $options);
     }
 
     /**
      * Creates a new savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function createSavepoint(PDO $pdo, string $name): void
@@ -46,7 +40,7 @@ class Driver extends AbstractDriver implements SavepointInterface
 
     /**
      * Releases an existing savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function releaseSavepoint(PDO $pdo, string $name): void
@@ -56,7 +50,7 @@ class Driver extends AbstractDriver implements SavepointInterface
 
     /**
      * Rolls back to a previously created savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function rollBackSavepoint(PDO $pdo, string $name): void

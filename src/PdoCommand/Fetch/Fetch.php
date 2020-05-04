@@ -16,12 +16,8 @@ class Fetch implements FetchInterface
     private $statement;
 
     /**
-     * @var CursorFactoryInterface
-     */
-    private $cursorFactory;
-
-    /**
      * Fetch constructor.
+     *
      * @param StatementInterface $statement Prepared statement
      */
     public function __construct(StatementInterface $statement)
@@ -29,157 +25,121 @@ class Fetch implements FetchInterface
         $this->statement = $statement;
     }
 
-    private $indexBy;
-
-    /**
-     * @param array $params
-     * @return array
-     */
     public function one(iterable $params = []): array
     {
-        $pdoStatement =  $this->statement->execute($params);
+        $pdoStatement = $this->statement->execute($params);
         $result = $pdoStatement->fetch($this->fetchStyle);
         $pdoStatement->closeCursor();
-        return is_array($result) ? $result : [];
+
+        return \is_array($result) ? $result : [];
     }
 
-    /**
-     * @param int $columnNumber
-     * @param array $params
-     * @return array
-     */
+    public function all(iterable $params = []): array
+    {
+        $pdoStatement = $this->statement->execute($params);
+        $result = $pdoStatement->fetchAll($this->fetchStyle);
+        $pdoStatement->closeCursor();
+
+        return \is_array($result) ? $result : [];
+    }
+
     public function column(int $columnNumber = 0, iterable $params = []): array
     {
-        $pdoStatement =  $this->statement->execute($params);
+        $pdoStatement = $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_COLUMN, $columnNumber);
-        return is_array($result) ? $result : [];
+
+        return \is_array($result) ? $result : [];
     }
 
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @param int $columnNumber
+     *
      * @param array $params
-     * @return string|null|false the value of the first column in the first row of the query result.
-     * False is returned if there is no value.
+     *
+     * @return string|false|null the value of the first column in the first row of the query result.
+     *                           False is returned if there is no value.
      */
     public function scalar(int $columnNumber = 0, iterable $params = [])
     {
-        $pdoStatement =  $this->statement->execute($params);
+        $pdoStatement = $this->statement->execute($params);
         $result = $pdoStatement->fetchColumn($columnNumber);
-        if (is_resource($result) && get_resource_type($result) === 'stream') {
+        if (\is_resource($result) && 'stream' === get_resource_type($result)) {
             return stream_get_contents($result);
         }
         $pdoStatement->closeCursor();
+
         return $result;
     }
 
-    /**
-     * @param array $params
-     * @return bool
-     */
     public function exists(iterable $params = []): bool
     {
         return (bool) $this->scalar(0, $params);
     }
 
     /**
-     * @param $column
-     * @return FetchAllInterface
-     */
-    public function indexBy($column): FetchAllInterface
-    {
-        $this->indexBy = $column;
-        return $this;
-    }
-
-    /**
-     * @param array $params
-     * @return array
-     */
-    public function all(iterable $params = []): array
-    {
-        $pdoStatement =  $this->statement->execute($params);
-        if ($this->indexBy) {
-            $result = [];
-            while ($row = $pdoStatement->fetch($this->fetchStyle)) {
-                $result[$row[$this->indexBy]] = $row;
-            }
-        } else {
-            $result = $pdoStatement->fetchAll($this->fetchStyle);
-        }
-        return is_array($result) ? $result : [];
-    }
-
-    /**
      * Fetch a two-column result into an array where the first column is a key and the second column is the value.
+     *
      * @param array $params
-     * @return array
      */
     public function map(iterable $params = []): array
     {
-        $pdoStatement =  $this->statement->execute($params);
+        $pdoStatement = $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_KEY_PAIR);
-        return is_array($result) ? $result : [];
+
+        return \is_array($result) ? $result : [];
     }
 
     /**
-     * Fetch rows indexed by first column
+     * Fetch rows indexed by first column.
+     *
      * @param array $params
-     * @return array
+     *
      * @see PDO::FETCH_UNIQUE
      */
     public function indexed(iterable $params = []): array
     {
-        $pdoStatement =  $this->statement->execute($params);
+        $pdoStatement = $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_UNIQUE);
-        return is_array($result) ? $result : [];
+
+        return \is_array($result) ? $result : [];
     }
 
     /**
-     * Fetch rows grouped by first column values
+     * Fetch rows grouped by first column values.
+     *
      * @param array $params
-     * @return array
+     *
      * @see PDO::FETCH_GROUP
      */
     public function grouped(iterable $params = []): array
     {
-        $pdoStatement =  $this->statement->execute($params);
+        $pdoStatement = $this->statement->execute($params);
         $result = $pdoStatement->fetchAll(PDO::FETCH_GROUP);
-        return is_array($result) ? $result : [];
+
+        return \is_array($result) ? $result : [];
     }
 
     /**
-     * @param array $params
-     * @return CursorInterface
+     * Iterates over database cursor.
      */
-    public function cursor(iterable $params = []): CursorInterface
+    public function cursor(iterable $params = [], int $limit = null): \Traversable
     {
-        $pdoStatement =  $this->statement->execute($params);
-        if ($this->cursorFactory) {
-            return $this->cursorFactory->create($pdoStatement, $this->fetchStyle);
-        } else {
-            return new Cursor($pdoStatement, $this->fetchStyle);
-        }
+        $pdoStatement = $this->statement->execute($params);
+
+        return (new Cursor($pdoStatement, $this->fetchStyle))
+            ->setLimit($limit);
     }
 
     /**
-     * @param array $params
-     * @return BatchCursorInterface
+     * Returns iterable batch array of rows.
      */
-    public function batchCursor(iterable $params = []): BatchCursorInterface
+    public function batchCursor(iterable $params = [], int $batchSize = 25, int $limit = null): \Traversable
     {
-        $pdoStatement =  $this->statement->execute($params);
-        return new BatchCursor($pdoStatement, $this->fetchStyle);
-    }
+        $pdoStatement = $this->statement->execute($params);
 
-    /**
-     * @param CursorFactoryInterface $cursorFactory
-     * @return Fetch
-     */
-    public function setCursorFactory(?CursorFactoryInterface $cursorFactory): FetchInterface
-    {
-        $this->cursorFactory = $cursorFactory;
-        return $this;
+        return (new BatchCursor($pdoStatement, $this->fetchStyle))
+            ->setBatchSize($batchSize)
+            ->setLimit($limit);
     }
 }

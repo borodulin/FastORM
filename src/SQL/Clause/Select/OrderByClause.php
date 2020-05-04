@@ -14,7 +14,7 @@ class OrderByClause implements ExpressionInterface
     {
         if ($columns instanceof ExpressionInterface) {
             $this->columns[] = $columns;
-        } elseif (is_string($columns)) {
+        } elseif (\is_string($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
             foreach ($columns as $column) {
                 if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
@@ -23,9 +23,9 @@ class OrderByClause implements ExpressionInterface
                     $this->columns[$column] = SORT_ASC;
                 }
             }
-        } elseif (is_array($columns)) {
+        } elseif (\is_array($columns)) {
             foreach ($columns as $key => $column) {
-                if (is_int($key)) {
+                if (\is_int($key)) {
                     $this->columns[$column] = SORT_ASC;
                 } else {
                     $this->columns[$key] = $column;

@@ -51,13 +51,14 @@ class ClauseContainer implements
         if ($this->compound->getCompounds()->count()) {
             $this->and();
         }
+
         return $this;
     }
-
 
     public function not(): OperatorListInterface
     {
         $this->getCompound()->getCompoundItem()->not();
+
         return $this;
     }
 
@@ -65,6 +66,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new BetweenOperator($column, $intervalStart, $intervalEnd));
+
         return $this;
     }
 
@@ -72,6 +74,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new BetweenColumnsOperator($value, $intervalStartColumn, $intervalEndColumn));
+
         return $this;
     }
 
@@ -79,6 +82,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new ExistsOperator($query));
+
         return $this;
     }
 
@@ -86,6 +90,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new InOperator($column, $values));
+
         return $this;
     }
 
@@ -93,6 +98,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new LikeOperator($column, $values));
+
         return $this;
     }
 
@@ -100,6 +106,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new CompareOperator($column, $operator, $value));
+
         return $this;
     }
 
@@ -107,6 +114,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new CompareColumnsOperator($column1, $operator, $column2));
+
         return $this;
     }
 
@@ -114,6 +122,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new EqualOperator($column, $value));
+
         return $this;
     }
 
@@ -121,6 +130,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new ExpressionOperator($expression, $params));
+
         return $this;
     }
 
@@ -128,6 +138,7 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new FilterHashConditionOperator($hash));
+
         return $this;
     }
 
@@ -135,26 +146,30 @@ class ClauseContainer implements
     {
         $this->getCompound()
             ->setOperator(new HashConditionOperator($hash));
+
         return $this;
     }
 
     public function and(): ConditionInterface
     {
         $this->getCompound()->and();
+
         return $this;
     }
 
     public function or(): ConditionInterface
     {
         $this->getCompound()->or();
+
         return $this;
     }
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof ClauseContainer) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
+
         return $this->compiler->compile($this->compound);
     }
 

@@ -6,7 +6,7 @@ namespace FastOrm\ORM\CursorHandler;
 
 class BatchRelationHandler
 {
-    public function __invoke($rows, $objects)
+    public function __invoke($rows, $objects): void
     {
         // TODO: Implement __invoke() method.
     }

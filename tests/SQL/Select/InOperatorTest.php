@@ -8,10 +8,9 @@ use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestCase;
 
-
 class InOperatorTest extends TestCase
 {
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
@@ -21,17 +20,17 @@ class InOperatorTest extends TestCase
         $this->assertCount(0, $rows);
     }
 
-    public function testArray()
+    public function testArray(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
-            ->where()->in('EmployeeId', [1,2])
+            ->where()->in('EmployeeId', [1, 2])
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(2, $rows);
     }
 
-    public function testExpression()
+    public function testExpression(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
@@ -54,7 +53,7 @@ class InOperatorTest extends TestCase
         $this->assertCount(2, $rows);
     }
 
-    public function testQuery()
+    public function testQuery(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
@@ -64,7 +63,7 @@ class InOperatorTest extends TestCase
         $this->assertCount(1, $rows);
     }
 
-    public function testValue()
+    public function testValue(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
@@ -74,11 +73,11 @@ class InOperatorTest extends TestCase
         $this->assertCount(1, $rows);
     }
 
-    public function testObject()
+    public function testObject(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
-            ->where()->in('EmployeeId', (object)[])
+            ->where()->in('EmployeeId', (object) [])
             ->fetch();
         $rows = $fetch->all();
         $this->assertCount(0, $rows);

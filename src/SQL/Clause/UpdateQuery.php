@@ -42,9 +42,10 @@ class UpdateQuery implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof UpdateQuery) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
+
         return $this->compiler->compile($expression->container);
     }
 
@@ -60,17 +61,21 @@ class UpdateQuery implements
 
     public function __toString()
     {
-        return (string)$this->container;
+        return (string) $this->container;
     }
 
     /**
-     * Count elements of an object
-     * @link https://php.net/manual/en/countable.count.php
+     * Count elements of an object.
+     *
+     * @see https://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
+     *             </p>
+     *             <p>
+     *             The return value is cast to an integer.
+     *
      * @since 5.1.0
+     *
      * @throws DbException
      */
     public function count()
@@ -79,8 +84,6 @@ class UpdateQuery implements
     }
 
     /**
-     * @param array $params
-     * @return int
      * @throws DbException
      */
     public function execute(array $params = []): int
@@ -89,8 +92,6 @@ class UpdateQuery implements
     }
 
     /**
-     * @param array $options
-     * @return StatementInterface
      * @throws DbException
      */
     public function statement(array $options = []): StatementInterface
@@ -101,6 +102,7 @@ class UpdateQuery implements
     public function set(array $set): UpdateClauseInterface
     {
         $this->container->set($set);
+
         return $this;
     }
 

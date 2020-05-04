@@ -9,7 +9,7 @@ use FastOrm\Tests\TransactionTestCase;
 
 class DeleteClauseTest extends TransactionTestCase
 {
-    public function testDelete()
+    public function testDelete(): void
     {
         $count = (new DeleteQuery($this->db))
             ->from('InvoiceLine')

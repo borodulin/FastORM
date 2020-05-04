@@ -10,7 +10,7 @@ use FastOrm\Tests\TestCase;
 
 class FromClauseTestSqlite extends TestCase
 {
-    public function testRightJoin()
+    public function testRightJoin(): void
     {
         $this->expectException(DbException::class);
         (new SelectQuery($this->db))
@@ -20,7 +20,7 @@ class FromClauseTestSqlite extends TestCase
             ->fetch();
     }
 
-    public function testFullJoin()
+    public function testFullJoin(): void
     {
         $this->expectException(DbException::class);
         (new SelectQuery($this->db))

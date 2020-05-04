@@ -9,14 +9,13 @@ use FastOrm\PdoCommand\DbException;
 use FastOrm\Tests\DummyEventDispatcher;
 use FastOrm\Tests\TestCase;
 
-
 class EventTest extends TestCase
 {
     /**
      * @throws NotSupportedException
      * @throws DbException
      */
-    public function testDispatcher()
+    public function testDispatcher(): void
     {
         $dispatcher = new DummyEventDispatcher();
         $connection = $this->db;

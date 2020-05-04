@@ -9,7 +9,7 @@ use FastOrm\Tests\TestCase;
 
 class FromClauseTestMysql extends TestCase
 {
-    public function testRightJoin()
+    public function testRightJoin(): void
     {
         $all = (new SelectQuery($this->db))
             ->from('Track')->as('t')

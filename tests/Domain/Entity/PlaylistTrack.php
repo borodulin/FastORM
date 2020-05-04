@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\Domain\Entity;
 
-
-use FastOrm\ORM\EntityInterface;
-
-class PlaylistTrack implements EntityInterface
+class PlaylistTrack
 {
+    /**
+     * @var int
+     */
     private $playlistId;
+    /**
+     * @var int
+     */
     private $trackId;
     /**
      * @var Playlist
@@ -20,8 +23,51 @@ class PlaylistTrack implements EntityInterface
      */
     private $track;
 
-    public static function getPrimaryKey(): array
+    public function getPlaylistId(): int
     {
-        return ['PlaylistId', 'TrackId'];
+        return $this->playlistId;
+    }
+
+    public function setPlaylistId(int $playlistId): self
+    {
+        $this->playlistId = $playlistId;
+
+        return $this;
+    }
+
+    public function getTrackId(): int
+    {
+        return $this->trackId;
+    }
+
+    public function setTrackId(int $trackId): self
+    {
+        $this->trackId = $trackId;
+
+        return $this;
+    }
+
+    public function getPlaylist(): Playlist
+    {
+        return $this->playlist;
+    }
+
+    public function setPlaylist(Playlist $playlist): self
+    {
+        $this->playlist = $playlist;
+
+        return $this;
+    }
+
+    public function getTrack(): Track
+    {
+        return $this->track;
+    }
+
+    public function setTrack(Track $track): self
+    {
+        $this->track = $track;
+
+        return $this;
     }
 }

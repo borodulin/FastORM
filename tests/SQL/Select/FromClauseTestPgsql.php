@@ -9,7 +9,7 @@ use FastOrm\Tests\TestCase;
 
 class FromClauseTestPgsql extends TestCase
 {
-    public function testRightJoin()
+    public function testRightJoin(): void
     {
         $all = (new SelectQuery($this->db))
             ->from('Track')->as('t')
@@ -20,7 +20,7 @@ class FromClauseTestPgsql extends TestCase
         $this->assertCount(10, $all);
     }
 
-    public function testFullJoin()
+    public function testFullJoin(): void
     {
         $all = (new SelectQuery($this->db))
             ->from('Track')->as('t')

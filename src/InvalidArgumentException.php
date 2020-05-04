@@ -6,5 +6,4 @@ namespace FastOrm;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {
-
 }

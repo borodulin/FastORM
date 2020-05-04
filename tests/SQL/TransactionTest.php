@@ -11,9 +11,7 @@ use FastOrm\Tests\TestCase;
 
 class TransactionTest extends TestCase
 {
-    /**
-     */
-    public function testRollback()
+    public function testRollback(): void
     {
         $nameFetch = (new SelectQuery($this->db))
             ->select('Title')
@@ -38,7 +36,7 @@ class TransactionTest extends TestCase
     /**
      * @throws DbException
      */
-    public function testCommit()
+    public function testCommit(): void
     {
         $nameFetch = (new SelectQuery($this->db))
             ->select('Title')
@@ -69,7 +67,7 @@ class TransactionTest extends TestCase
     /**
      * @throws DbException
      */
-    public function testError()
+    public function testError(): void
     {
         $tran = $this->db->beginTransaction();
         $tran->rollBack();

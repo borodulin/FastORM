@@ -18,8 +18,6 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
     use CompilerAwareTrait;
 
     /**
-     * @param ExpressionInterface $expression
-     * @return string
      * @throws InvalidSQLException
      */
     public function build(ExpressionInterface $expression): string
@@ -39,8 +37,8 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
             $joinType = $joinItem->getJoinType();
             $join = $joinItem->getJoin();
             $alias = $joinItem->getAlias();
-            if (is_string($join)) {
-                if (strpos($join, '(') === false) {
+            if (\is_string($join)) {
+                if (false === strpos($join, '(')) {
                     if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $join, $matches)) {
                         $join = $this->compiler->quoteTableName($matches[1]);
                         $alias = $matches[2];
@@ -51,7 +49,7 @@ class JoinClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
                 if (!$alias) {
                     throw new InvalidSQLException('The Alias for JOIN SQL expression is required.');
                 }
-                $join = '(' . $this->compiler->compile($join) . ')';
+                $join = '('.$this->compiler->compile($join).')';
             } else {
                 throw new InvalidSQLException('Join SQL clause is invalid.');
             }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FastOrm\Driver\MSSQL;
 
 use PDO;

@@ -24,7 +24,6 @@ class FilterHashConditionOperator implements
 
     /**
      * FilterHashOperator constructor.
-     * @param array $hash
      */
     public function __construct(array $hash)
     {
@@ -33,10 +32,11 @@ class FilterHashConditionOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof FilterHashConditionOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $hash = array_filter($expression->hash);
+
         return $this->compiler->compile(new HashConditionOperator($hash));
     }
 }

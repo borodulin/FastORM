@@ -10,9 +10,7 @@ use FastOrm\Tests\TestCase;
 
 class ConditionTest extends TestCase
 {
-    /**
-     */
-    public function testExists()
+    public function testExists(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Album a')
@@ -27,9 +25,7 @@ class ConditionTest extends TestCase
         $this->assertCount(2, $rows);
     }
 
-    /**
-     */
-    public function testCompare()
+    public function testCompare(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Album a')
@@ -40,9 +36,7 @@ class ConditionTest extends TestCase
         $this->assertCount(1, $rows);
     }
 
-    /**
-     */
-    public function testBetweenColumns()
+    public function testBetweenColumns(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
@@ -52,9 +46,7 @@ class ConditionTest extends TestCase
         $this->assertCount(8, $rows);
     }
 
-    /**
-     */
-    public function testFilterHashCondition()
+    public function testFilterHashCondition(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Employee e')
@@ -66,9 +58,7 @@ class ConditionTest extends TestCase
         $this->assertCount(8, $rows);
     }
 
-    /**
-     */
-    public function testEqual()
+    public function testEqual(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Album a')
@@ -78,9 +68,7 @@ class ConditionTest extends TestCase
         $this->assertCount(1, $rows);
     }
 
-    /**
-     */
-    public function testLike()
+    public function testLike(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Album a')

@@ -13,17 +13,17 @@ use FastOrm\Tests\TransactionTestCase;
 
 class UpdateQueryTest extends TransactionTestCase
 {
-    public function testToString()
+    public function testToString(): void
     {
         $update = (new UpdateQuery($this->db));
         $update->update(new Expression('Artist'));
-        $this->assertEquals('UPDATE Artist SET ', (string)$update);
+        $this->assertEquals('UPDATE Artist SET ', (string) $update);
     }
 
     /**
      * @throws DbException
      */
-    public function testImmutable()
+    public function testImmutable(): void
     {
         $update1 = (new UpdateQuery($this->db));
         $update1->update('Artist')
@@ -37,7 +37,7 @@ class UpdateQueryTest extends TransactionTestCase
         $this->assertEquals(0, $count2);
     }
 
-    public function testBuildError()
+    public function testBuildError(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new UpdateQuery($this->db))->build(new HashConditionOperator([]));

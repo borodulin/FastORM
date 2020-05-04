@@ -21,6 +21,7 @@ class ExpressionBuilder extends Expression implements ExpressionBuilderInterface
             throw new InvalidArgumentException();
         }
         $this->compiler->getParams()->bindAll($expression->params);
+
         return $expression->expression;
     }
 }

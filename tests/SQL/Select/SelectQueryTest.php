@@ -13,80 +13,80 @@ use FastOrm\Tests\TestCase;
 
 class SelectQueryTest extends TestCase
 {
-    public function testSelect()
+    public function testSelect(): void
     {
         $query = new SelectQuery($this->db);
         $query->select(new Expression('1'));
-        $this->assertEquals('SELECT 1', (string)$query);
+        $this->assertEquals('SELECT 1', (string) $query);
     }
 
-    public function testFrom()
+    public function testFrom(): void
     {
         $query = new SelectQuery($this->db);
         $query->from(new Expression('Artist'));
-        $this->assertEquals('SELECT * FROM Artist', (string)$query);
+        $this->assertEquals('SELECT * FROM Artist', (string) $query);
     }
 
-    public function testGroupBy()
+    public function testGroupBy(): void
     {
         $query = new SelectQuery($this->db);
         $query->groupBy(new Expression('ArtistId'));
-        $this->assertEquals('SELECT * GROUP BY ArtistId', (string)$query);
+        $this->assertEquals('SELECT * GROUP BY ArtistId', (string) $query);
     }
 
-    public function testHaving()
+    public function testHaving(): void
     {
         $query = new SelectQuery($this->db);
         $query->having()->expression('count(*)>10');
-        $this->assertEquals('SELECT * HAVING (count(*)>10)', (string)$query);
+        $this->assertEquals('SELECT * HAVING (count(*)>10)', (string) $query);
     }
 
-    public function testOrderBy()
+    public function testOrderBy(): void
     {
         $query = new SelectQuery($this->db);
         $query->orderBy(new Expression('ArtistId'));
-        $this->assertEquals('SELECT * ORDER BY ArtistId', (string)$query);
+        $this->assertEquals('SELECT * ORDER BY ArtistId', (string) $query);
     }
 
-    public function testLimit()
+    public function testLimit(): void
     {
         $query = new SelectQuery($this->db);
         $query->limit(10);
-        $this->assertEquals('SELECT * LIMIT 10', (string)$query);
+        $this->assertEquals('SELECT * LIMIT 10', (string) $query);
     }
 
-    public function testOffset()
+    public function testOffset(): void
     {
         $query = new SelectQuery($this->db);
         $query->offset(10);
-        $this->assertEquals('SELECT * OFFSET 10', (string)$query);
+        $this->assertEquals('SELECT * OFFSET 10', (string) $query);
     }
 
-    public function testUnion()
+    public function testUnion(): void
     {
         $query = new SelectQuery($this->db);
         $query->union(new SelectQuery($this->db));
-        $this->assertEquals('SELECT * UNION SELECT *', (string)$query);
+        $this->assertEquals('SELECT * UNION SELECT *', (string) $query);
     }
 
-    public function testUnionAll()
+    public function testUnionAll(): void
     {
         $query = new SelectQuery($this->db);
         $query->unionAll(new SelectQuery($this->db));
-        $this->assertEquals('SELECT * UNION ALL SELECT *', (string)$query);
+        $this->assertEquals('SELECT * UNION ALL SELECT *', (string) $query);
     }
 
-    public function testWhere()
+    public function testWhere(): void
     {
         $query = new SelectQuery($this->db);
         $query->where()->expression('1=1');
-        $this->assertEquals('SELECT * WHERE (1=1)', (string)$query);
+        $this->assertEquals('SELECT * WHERE (1=1)', (string) $query);
     }
 
     /**
      * @throws DbException
      */
-    public function testFetch()
+    public function testFetch(): void
     {
         $query = new SelectQuery($this->db);
         $query->from('Album');
@@ -97,7 +97,7 @@ class SelectQueryTest extends TestCase
     /**
      * @throws DbException
      */
-    public function testStatement()
+    public function testStatement(): void
     {
         $query = new SelectQuery($this->db);
         $query->from('Album');
@@ -105,7 +105,7 @@ class SelectQueryTest extends TestCase
         $this->assertEquals(3, $count);
     }
 
-    public function testCount()
+    public function testCount(): void
     {
         $query = new SelectQuery($this->db);
         $query->from('Album');
@@ -113,7 +113,7 @@ class SelectQueryTest extends TestCase
         $this->assertGreaterThan(100, $count);
     }
 
-    public function testBuild()
+    public function testBuild(): void
     {
         $query = new SelectQuery($this->db);
         $compiler = $this->db->getDriver()->createCompiler();
@@ -121,7 +121,7 @@ class SelectQueryTest extends TestCase
         $this->assertEquals('SELECT *', $sql);
     }
 
-    public function testBuildError()
+    public function testBuildError(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new SelectQuery($this->db))->build(new HashConditionOperator([]));

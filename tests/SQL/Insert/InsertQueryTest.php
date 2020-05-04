@@ -12,14 +12,14 @@ use FastOrm\Tests\TransactionTestCase;
 
 class InsertQueryTest extends TransactionTestCase
 {
-    public function testToString()
+    public function testToString(): void
     {
         $insert = new InsertQuery($this->db);
         $insert->into(new Expression('Album'));
-        $this->assertEquals('INSERT INTO Album', (string)$insert);
+        $this->assertEquals('INSERT INTO Album', (string) $insert);
     }
 
-    public function testImmutable()
+    public function testImmutable(): void
     {
         $insert1 = (new InsertQuery($this->db))->into('Album')
             ->columns(['Title', 'ArtistId', 'AlbumId']);
@@ -31,7 +31,7 @@ class InsertQueryTest extends TransactionTestCase
         $this->assertEquals(1, $cnt2);
     }
 
-    public function testBuildError()
+    public function testBuildError(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new InsertQuery($this->db))->build(new HashConditionOperator([]));

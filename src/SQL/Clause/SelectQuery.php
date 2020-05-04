@@ -9,7 +9,6 @@ use FastOrm\EventDispatcherAwareInterface;
 use FastOrm\EventDispatcherAwareTrait;
 use FastOrm\InvalidArgumentException;
 use FastOrm\PdoCommand\DbException;
-use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\PdoCommand\StatementInterface;
 use FastOrm\SQL\Clause\Select\ClauseContainer;
@@ -26,8 +25,7 @@ use Psr\Log\LoggerAwareTrait;
 use Traversable;
 
 /**
- * Class Query
- * @package FastOrm\SQL
+ * Class Query.
  */
 class SelectQuery implements
     OffsetClauseInterface,
@@ -102,25 +100,15 @@ class SelectQuery implements
 
     public function __toString()
     {
-        return (string)$this->container;
+        return (string) $this->container;
     }
 
-    /**
-     * Retrieve an external iterator
-     * @link https://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
-     * @throws DbException
-     * @since 5.0.0
-     */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return $this->container->getIterator();
     }
 
     /**
-     * @param array $params
-     * @return FetchInterface
      * @throws DbException
      */
     public function fetch(array $params = []): FetchInterface
@@ -129,8 +117,6 @@ class SelectQuery implements
     }
 
     /**
-     * @param array $options
-     * @return StatementInterface
      * @throws DbException
      */
     public function statement(array $options = []): StatementInterface
@@ -139,30 +125,29 @@ class SelectQuery implements
     }
 
     /**
-     * Count elements of an object
-     * @link https://php.net/manual/en/countable.count.php
+     * Count elements of an object.
+     *
+     * @see https://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
+     *             </p>
+     *             <p>
+     *             The return value is cast to an integer.
+     *
      * @since 5.1.0
      */
     public function count()
     {
-        return count($this->container);
+        return \count($this->container);
     }
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof SelectQuery) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
-        return $this->compiler->compile($this->container);
-    }
 
-    public function setCursorFactory(CursorFactoryInterface $factory): SelectClauseInterface
-    {
-        return $this->container->setCursorFactory($factory);
+        return $this->compiler->compile($this->container);
     }
 
     public function __clone()

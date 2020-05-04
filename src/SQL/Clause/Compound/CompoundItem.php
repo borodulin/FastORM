@@ -51,9 +51,6 @@ class CompoundItem implements
         return $this->operator;
     }
 
-    /**
-     * @return bool
-     */
     public function isNot(): bool
     {
         return $this->not;
@@ -65,22 +62,23 @@ class CompoundItem implements
     public function not(): self
     {
         $this->not = true;
+
         return $this;
     }
 
     /**
-     * @param OperatorInterface $operator
      * @return CompoundItem
      */
     public function setOperator(OperatorInterface $operator): self
     {
         $this->operator = $operator;
+
         return $this;
     }
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof CompoundItem) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
 
@@ -95,19 +93,17 @@ class CompoundItem implements
         }
         if ($operator instanceof ExpressionOperator) {
             $expressionOperator = $operator->getExpression();
-            if (is_callable($expressionOperator)) {
+            if (\is_callable($expressionOperator)) {
                 $connection = $expression->compound->getConnection();
-                $container = new ClauseContainer($connection) ;
-                call_user_func($expressionOperator, $container);
+                $container = new ClauseContainer($connection);
+                \call_user_func($expressionOperator, $container);
                 $operator->setExpression($container);
             }
         }
-        return $text .  $this->compiler->compile($operator);
+
+        return $text.$this->compiler->compile($operator);
     }
 
-    /**
-     * @return string
-     */
     public function getCompoundString(): string
     {
         return $this->compoundString;

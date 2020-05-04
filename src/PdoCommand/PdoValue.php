@@ -26,9 +26,6 @@ final class PdoValue
         return $this->value;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;

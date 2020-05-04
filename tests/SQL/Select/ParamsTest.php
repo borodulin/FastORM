@@ -9,7 +9,7 @@ use FastOrm\Tests\TestCase;
 
 class ParamsTest extends TestCase
 {
-    public function testCount()
+    public function testCount(): void
     {
         $params = new Params(['p1' => 1]);
         $this->assertCount(1, $params);
@@ -17,7 +17,7 @@ class ParamsTest extends TestCase
         $this->assertCount(2, $params);
     }
 
-    public function testIterate()
+    public function testIterate(): void
     {
         $params = new Params(['p1' => 1, 'p2' => 2]);
         $params2 = new Params();
@@ -27,28 +27,28 @@ class ParamsTest extends TestCase
         $this->assertEquals($params, $params2);
     }
 
-    public function testClone()
+    public function testClone(): void
     {
         $params = new Params(['p1' => 1, 'p2' => 2]);
         $params2 = clone $params;
         $this->assertEquals($params, $params2);
     }
 
-    public function testAssign()
+    public function testAssign(): void
     {
         $params = new Params(['p1' => 1, 'p2' => 2]);
         $params2 = new Params($params);
         $this->assertEquals($params, $params2);
     }
 
-    public function testUnset()
+    public function testUnset(): void
     {
         $params = new Params(['p1' => 1, 'p2' => 2]);
         unset($params['p1']);
         $this->assertCount(1, $params);
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $params = new Params(['p1' => 11, 'p2' => 2]);
         $this->assertTrue(isset($params['p1']));

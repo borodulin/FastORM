@@ -10,10 +10,7 @@ use FastOrm\Tests\TestCase;
 
 class FetchTest extends TestCase
 {
-
-    /**
-     */
-    public function testColumn()
+    public function testColumn(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select([
@@ -26,14 +23,12 @@ class FetchTest extends TestCase
         $this->assertCount(10, $rows);
     }
 
-    /**
-     */
-    public function testMap()
+    public function testMap(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select([
                 'id' => 'TrackId',
-                'TrackId'
+                'TrackId',
             ])
             ->from('Track t')
             ->orderBy('TrackId desc')
@@ -44,9 +39,7 @@ class FetchTest extends TestCase
         $this->assertTrue($rows == $flip);
     }
 
-    /**
-     */
-    public function testExists()
+    public function testExists(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select(new Expression('1'))

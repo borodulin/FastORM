@@ -22,8 +22,6 @@ interface DriverInterface extends LoggerAwareInterface, EventDispatcherAwareInte
 
     /**
      * Sets transaction isolation level of the db connection.
-     * @param PDO $pdo
-     * @param string $isolationLevel
      */
     public function setTransactionIsolationLevel(PDO $pdo, string $isolationLevel);
 }

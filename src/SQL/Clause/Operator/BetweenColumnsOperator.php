@@ -11,8 +11,7 @@ use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
 /**
- * Class BetweenColumnsOperator
- * @package FastOrm\SQL\SearchCondition\Operator
+ * Class BetweenColumnsOperator.
  */
 class BetweenColumnsOperator implements
     OperatorInterface,
@@ -41,12 +40,13 @@ class BetweenColumnsOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof BetweenColumnsOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $paramName = $this->compiler->getParams()->bindValue($expression->value);
         $intervalStartColumn = $this->compiler->quoteColumnName($expression->intervalStartColumn);
         $intervalEndColumn = $this->compiler->quoteColumnName($expression->intervalEndColumn);
+
         return ":$paramName {$this->not}BETWEEN $intervalStartColumn AND $intervalEndColumn";
     }
 }

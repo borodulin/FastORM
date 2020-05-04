@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\Domain\Entity;
 
-use FastOrm\ORM\EntityInterface;
-
-class Album implements EntityInterface
+class Album
 {
     /**
      * @var int
@@ -29,20 +27,52 @@ class Album implements EntityInterface
      */
     private $tracks;
 
-    /**
-     * @return Artist
-     */
+    public function getAlbumId(): int
+    {
+        return $this->albumId;
+    }
+
+    public function setAlbumId(int $albumId): self
+    {
+        $this->albumId = $albumId;
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getArtistId(): int
+    {
+        return $this->artistId;
+    }
+
+    public function setArtistId(int $artistId): self
+    {
+        $this->artistId = $artistId;
+
+        return $this;
+    }
+
     public function getArtist(): Artist
     {
         return $this->artist;
     }
 
-    /**
-     * @param Artist $artist
-     */
-    public function setArtist(Artist $artist): void
+    public function setArtist(Artist $artist): self
     {
         $this->artist = $artist;
+
+        return $this;
     }
 
     /**
@@ -56,13 +86,10 @@ class Album implements EntityInterface
     /**
      * @param Track[] $tracks
      */
-    public function setTracks(array $tracks): void
+    public function setTracks(array $tracks): self
     {
         $this->tracks = $tracks;
-    }
 
-    public static function getPrimaryKey(): array
-    {
-        return ['AlbumId'];
+        return $this;
     }
 }

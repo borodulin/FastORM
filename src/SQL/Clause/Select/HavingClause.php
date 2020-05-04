@@ -13,6 +13,6 @@ class HavingClause extends CompoundClauseContainer
     {
         $having = parent::build($expression);
 
-        return $having === '' ? '' : trim('HAVING' . $having);
+        return '' === $having ? '' : trim('HAVING'.$having);
     }
 }

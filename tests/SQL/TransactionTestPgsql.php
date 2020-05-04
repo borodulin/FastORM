@@ -16,7 +16,7 @@ class TransactionTestPgsql extends TestCase
     /**
      * @throws NotSupportedException
      */
-    public function testIsolation()
+    public function testIsolation(): void
     {
         $db1 = $this->createConnection();
         $db1->setTransactionIsolationLevel(Transaction::SERIALIZABLE);
@@ -41,7 +41,7 @@ class TransactionTestPgsql extends TestCase
      * @throws NotSupportedException
      * @throws DbException
      */
-    public function testSavePoint()
+    public function testSavePoint(): void
     {
         $db1 = $this->createConnection();
         $tran1 = $db1->beginTransaction();

@@ -23,7 +23,7 @@ class DriverFactory
 
     /**
      * @param $dsn
-     * @return DriverInterface
+     *
      * @throws NotSupportedException
      */
     public function __invoke($dsn): DriverInterface
@@ -32,7 +32,7 @@ class DriverFactory
         if (!$classname = static::$driverMap[$driver] ?? null) {
             throw new NotSupportedException();
         }
-        /** @var DriverInterface $instance */
+        /* @var DriverInterface $instance */
         return new $classname();
     }
 }

@@ -10,22 +10,21 @@ use FastOrm\Tests\TestCase;
 
 class SelectClauseTest extends TestCase
 {
-    public function testString()
+    public function testString(): void
     {
         $query = (new SelectQuery($this->db))
             ->select(new Expression('1'));
-        $this->assertEquals('SELECT 1', (string)$query);
+        $this->assertEquals('SELECT 1', (string) $query);
     }
 
-
-    public function testSelect()
+    public function testSelect(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select([
                 'id' => 'TrackId',
                 'Name as name1',
                 'Name as name2',
-                new Expression('5 as "5"')
+                new Expression('5 as "5"'),
             ])->select('t.*')
             ->from('Track')->as('t')
             ->limit(10)
@@ -38,7 +37,7 @@ class SelectClauseTest extends TestCase
         $this->assertArrayHasKey('5', $row);
     }
 
-    public function testSelectQuery()
+    public function testSelectQuery(): void
     {
         $query = (new SelectQuery($this->db))
             ->select([
@@ -55,12 +54,12 @@ class SelectClauseTest extends TestCase
         $this->assertArrayHasKey('TrackId', $row);
     }
 
-    public function testUnionAll()
+    public function testUnionAll(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select([
                 'TrackId as id',
-                'Name'
+                'Name',
             ])
             ->from('Track t')
             ->limit(10)
@@ -74,12 +73,12 @@ class SelectClauseTest extends TestCase
         $this->assertCount(10, $rows);
     }
 
-    public function testUnion()
+    public function testUnion(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select([
                 'TrackId as id',
-                'Name'
+                'Name',
             ])
             ->from('Track t')
             ->limit(10)
@@ -93,7 +92,7 @@ class SelectClauseTest extends TestCase
         $this->assertCount(10, $rows);
     }
 
-    public function testDistinct()
+    public function testDistinct(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select('ArtistId as id')

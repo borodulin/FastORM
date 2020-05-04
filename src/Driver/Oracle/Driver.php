@@ -10,10 +10,9 @@ use PDO;
 
 class Driver extends AbstractDriver implements SavepointInterface
 {
-
     /**
      * Creates a new savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function createSavepoint(PDO $pdo, string $name): void
@@ -23,7 +22,7 @@ class Driver extends AbstractDriver implements SavepointInterface
 
     /**
      * Releases an existing savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function releaseSavepoint(PDO $pdo, string $name): void
@@ -33,7 +32,7 @@ class Driver extends AbstractDriver implements SavepointInterface
 
     /**
      * Rolls back to a previously created savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function rollBackSavepoint(PDO $pdo, string $name): void

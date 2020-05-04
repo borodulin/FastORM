@@ -10,7 +10,7 @@ trait SavepointTrait
 {
     /**
      * Creates a new savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function createSavepoint(PDO $pdo, string $name): void
@@ -20,7 +20,7 @@ trait SavepointTrait
 
     /**
      * Releases an existing savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function releaseSavepoint(PDO $pdo, string $name): void
@@ -30,7 +30,7 @@ trait SavepointTrait
 
     /**
      * Rolls back to a previously created savepoint.
-     * @param PDO $pdo
+     *
      * @param string $name the savepoint name
      */
     public function rollBackSavepoint(PDO $pdo, string $name): void

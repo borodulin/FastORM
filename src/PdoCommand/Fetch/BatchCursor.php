@@ -4,55 +4,83 @@ declare(strict_types=1);
 
 namespace FastOrm\PdoCommand\Fetch;
 
-class BatchCursor extends Cursor implements BatchCursorInterface
+use PDO;
+use PDOStatement;
+
+class BatchCursor implements \IteratorAggregate
 {
-    private $batchSize;
-    private $batchHandler;
-
-    private $batchRows = [];
-
-    protected function handleRow($row): void
-    {
-        if ($row === false) {
-            $this->handleBatch();
-            parent::handleRow($row);
-            return;
-        }
-        if (is_callable($this->batchHandler)) {
-            $this->batchRows[] = $row;
-        }
-        if ($this->batchSize && (count($this->batchRows) % $this->batchSize === 0)) {
-            $this->handleBatch();
-        }
-        parent::handleRow($row);
-    }
-
-    private function handleBatch()
-    {
-        if (is_callable($this->batchHandler)) {
-            call_user_func($this->batchHandler, $this->batchRows);
-            $this->batchRows = [];
-        }
-    }
-
-
     /**
-     * @param int $batchSize
-     * @return BatchCursorInterface
+     * @var PDOStatement
      */
-    public function setBatchSize(int $batchSize): BatchCursorInterface
+    private $statement;
+    /**
+     * @var int
+     */
+    private $fetchStyle;
+    /**
+     * @var int
+     */
+    private $limit;
+    /**
+     * @var int
+     */
+    private $batchSize = 25;
+
+    public function __construct(PDOStatement $statement, int $fetchStyle = PDO::FETCH_ASSOC)
+    {
+        $this->statement = $statement;
+        $this->fetchStyle = $fetchStyle;
+    }
+
+    private function fetchNextBatch(): array
+    {
+        $key = 0;
+        $batchRows = [];
+        while (true) {
+            $row = $this->statement->fetch($this->fetchStyle);
+            if (false === $row) {
+                $this->statement->closeCursor();
+                break;
+            }
+
+            $batchRows[] = $row;
+
+            ++$key;
+            if ($this->limit && ($key >= $this->limit)) {
+                $this->statement->closeCursor();
+                break;
+            }
+
+            if ($key >= $this->batchSize) {
+                break;
+            }
+        }
+
+        return $batchRows;
+    }
+
+    public function getIterator(): iterable
+    {
+        while (true) {
+            $batchRows = $this->fetchNextBatch();
+            if (empty($batchRows)) {
+                break;
+            }
+            yield $batchRows;
+        }
+    }
+
+    public function setBatchSize(int $batchSize): self
     {
         $this->batchSize = $batchSize;
+
         return $this;
     }
 
-    /**
-     * @param callable $batchHandler
-     * @return BatchCursorInterface
-     */
-    public function setBatchHandler(callable $batchHandler): BatchCursorInterface
+    public function setLimit(?int $limit): self
     {
-        $this->batchHandler = $batchHandler;
+        $this->limit = $limit;
+
         return $this;
     }
 }

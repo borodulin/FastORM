@@ -13,7 +13,7 @@ class GroupByClause implements ExpressionInterface
     public function addGroupBy($columns): void
     {
         if (!empty($columns)) {
-            if (is_array($columns)) {
+            if (\is_array($columns)) {
                 foreach ($columns as $column) {
                     $this->columns[] = $column;
                 }

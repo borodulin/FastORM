@@ -22,69 +22,67 @@ use FastOrm\Tests\TestCase;
 
 class OperatorErrorTest extends TestCase
 {
-    /**
-     */
-    public function testBetweenColumnsOperator()
+    public function testBetweenColumnsOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new BetweenColumnsOperator('', '', ''))->build(new AliasClause());
     }
 
-    public function testBetweenOperator()
+    public function testBetweenOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new BetweenOperator('', '', ''))->build(new AliasClause());
     }
 
-    public function testCompareOperator()
+    public function testCompareOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new CompareOperator('', '', ''))->build(new AliasClause());
     }
 
-    public function testEqualOperator()
+    public function testEqualOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new EqualOperator('', ''))->build(new AliasClause());
     }
 
-    public function testExistsOperator()
+    public function testExistsOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new ExistsOperator(new SelectQuery($this->db)))->build(new AliasClause());
     }
 
-    public function testExpressionOperator()
+    public function testExpressionOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new ExpressionOperator(''))->build(new AliasClause());
     }
 
-    public function testFilterHashConditionOperator()
+    public function testFilterHashConditionOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new FilterHashConditionOperator([]))->build(new AliasClause());
     }
 
-    public function testHashConditionOperator()
+    public function testHashConditionOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new HashConditionOperator([]))->build(new AliasClause());
     }
 
-    public function testInOperator()
+    public function testInOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new InOperator('', ''))->build(new AliasClause());
     }
 
-    public function testLikeOperatorBuilder()
+    public function testLikeOperatorBuilder(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new LikeOperatorBuilder())->build(new AliasClause());
     }
 
-    public function testCompareColumnsOperator()
+    public function testCompareColumnsOperator(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new CompareColumnsOperator('', '', ''))->build(new AliasClause());

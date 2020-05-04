@@ -10,5 +10,6 @@ use FastOrm\SQL\Clause\ExecuteInterface;
 interface CompoundInterface extends ExecuteInterface, Countable
 {
     public function and(): ConditionInterface;
+
     public function or(): ConditionInterface;
 }

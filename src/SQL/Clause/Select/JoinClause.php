@@ -24,9 +24,6 @@ class JoinClause implements ExpressionInterface
         $this->joins->add(0, new JoinItem($join, $joinType));
     }
 
-    /**
-     * @return SplStack
-     */
     public function getJoins(): SplStack
     {
         return $this->joins;

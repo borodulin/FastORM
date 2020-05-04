@@ -28,10 +28,10 @@ class EqualOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof EqualOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
-        if ($expression->value instanceof ExpressionInterface || is_array($expression->value)) {
+        if ($expression->value instanceof ExpressionInterface || \is_array($expression->value)) {
             return $this->compiler->compile(new InOperator(
                 $expression->column,
                 $expression->value
@@ -39,6 +39,7 @@ class EqualOperator implements
         }
         $paramName = $this->compiler->getParams()->bindValue($expression->value);
         $column = $this->compiler->quoteColumnName($expression->column);
+
         return "$column = :$paramName";
     }
 }

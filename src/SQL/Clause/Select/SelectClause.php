@@ -22,26 +22,26 @@ class SelectClause implements ExpressionInterface
     {
         if ($columns instanceof ExpressionInterface) {
             $this->columns[] = $columns;
-        } elseif (!is_array($columns)) {
+        } elseif (!\is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         foreach ($columns as $columnAlias => $columnDefinition) {
-            if (is_string($columnAlias)) {
+            if (\is_string($columnAlias)) {
                 // Already in the normalized format, good for them
                 $this->columns[$columnAlias] = $columnDefinition;
                 continue;
             }
-            if (is_string($columnDefinition)) {
+            if (\is_string($columnDefinition)) {
                 if (
                     preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_.]+)$/', $columnDefinition, $matches) &&
                     !preg_match('/^\d+$/', $matches[2]) &&
-                    strpos($matches[2], '.') === false
+                    false === strpos($matches[2], '.')
                 ) {
                     // Using "columnName as alias" or "columnName alias" syntax
                     $this->columns[$matches[2]] = $matches[1];
                     continue;
                 }
-                if (strpos($columnDefinition, '(') === false) {
+                if (false === strpos($columnDefinition, '(')) {
                     // Normal column name, just alias it to itself to ensure it's not selected twice
                     $this->columns[$columnDefinition] = $columnDefinition;
                     continue;
@@ -50,20 +50,15 @@ class SelectClause implements ExpressionInterface
             // Either a string calling a function, DB expression, or sub-query
             $this->columns[] = $columnDefinition;
         }
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isDistinct(): bool
     {
         return $this->distinct;
     }
 
-    /**
-     * @param bool $distinct
-     */
     public function setDistinct(bool $distinct): void
     {
         $this->distinct = $distinct;
@@ -77,17 +72,11 @@ class SelectClause implements ExpressionInterface
         return $this->option;
     }
 
-    /**
-     * @param string $option
-     */
     public function setOption(string $option): void
     {
         $this->option = $option;
     }
 
-    /**
-     * @return array
-     */
     public function getColumns(): array
     {
         return $this->columns;

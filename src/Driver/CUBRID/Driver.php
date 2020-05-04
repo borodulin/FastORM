@@ -8,5 +8,4 @@ use FastOrm\Driver\AbstractDriver;
 
 class Driver extends AbstractDriver
 {
-
 }

@@ -61,13 +61,9 @@ class Compiler implements CompilerInterface
         $this->params = new Params();
     }
 
-    /**
-     * @param ExpressionInterface $expression
-     * @return string
-     */
     public function compile(ExpressionInterface $expression): string
     {
-        $classBuilder = $this->classMap[get_class($expression)] ?? null;
+        $classBuilder = $this->classMap[\get_class($expression)] ?? null;
         if ($classBuilder) {
             $instance = new $classBuilder();
             if (!$instance instanceof ExpressionBuilderInterface) {
@@ -84,6 +80,7 @@ class Compiler implements CompilerInterface
         if ($this->logger && $instance instanceof LoggerAwareInterface) {
             $instance->setLogger($this->logger);
         }
+
         return $instance->build($expression);
     }
 
@@ -91,12 +88,13 @@ class Compiler implements CompilerInterface
     {
         if ($this->quoteColumnChar) {
             if (preg_match('/^([\w]+)(?i:\.)([\w*]+)$/', $name, $matches)) {
-                return $this->quoteName($matches[1], $this->quoteColumnChar) . '.'
-                    . (($matches[2] === '*') ? $matches[2] : $this->quoteName($matches[2], $this->quoteColumnChar));
+                return $this->quoteName($matches[1], $this->quoteColumnChar).'.'
+                    .(('*' === $matches[2]) ? $matches[2] : $this->quoteName($matches[2], $this->quoteColumnChar));
             } else {
                 return $this->quoteName($name, $this->quoteColumnChar);
             }
         }
+
         return $name;
     }
 
@@ -112,6 +110,6 @@ class Compiler implements CompilerInterface
 
     protected function quoteName($name, $quoteChar)
     {
-        return $quoteChar . trim($name, $quoteChar) . $quoteChar;
+        return $quoteChar.trim($name, $quoteChar).$quoteChar;
     }
 }

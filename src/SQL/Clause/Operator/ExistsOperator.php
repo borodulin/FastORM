@@ -30,10 +30,11 @@ class ExistsOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof ExistsOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $sql = $this->compiler->compile($expression->query);
+
         return "EXISTS($sql)";
     }
 }

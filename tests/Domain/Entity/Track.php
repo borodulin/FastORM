@@ -15,7 +15,7 @@ class Track
      */
     private $name;
     /**
-     * @var int
+     * @var int|null
      */
     private $albumId;
     /**
@@ -23,11 +23,11 @@ class Track
      */
     private $mediaTypeId;
     /**
-     * @var int
+     * @var int|null
      */
     private $genreId;
     /**
-     * @var string
+     * @var string|null
      */
     private $composer;
     /**
@@ -35,7 +35,7 @@ class Track
      */
     private $milliseconds;
     /**
-     * @var int
+     * @var int|null
      */
     private $bytes;
     /**
@@ -58,51 +58,147 @@ class Track
      */
     private $genre;
 
-    /**
-     * @return Album
-     */
+    public function getTrackId(): int
+    {
+        return $this->trackId;
+    }
+
+    public function setTrackId(int $trackId): self
+    {
+        $this->trackId = $trackId;
+
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getAlbumId(): ?int
+    {
+        return $this->albumId;
+    }
+
+    public function setAlbumId(?int $albumId): self
+    {
+        $this->albumId = $albumId;
+
+        return $this;
+    }
+
+    public function getMediaTypeId(): int
+    {
+        return $this->mediaTypeId;
+    }
+
+    public function setMediaTypeId(int $mediaTypeId): self
+    {
+        $this->mediaTypeId = $mediaTypeId;
+
+        return $this;
+    }
+
+    public function getGenreId(): ?int
+    {
+        return $this->genreId;
+    }
+
+    public function setGenreId(?int $genreId): self
+    {
+        $this->genreId = $genreId;
+
+        return $this;
+    }
+
+    public function getComposer(): ?string
+    {
+        return $this->composer;
+    }
+
+    public function setComposer(?string $composer): self
+    {
+        $this->composer = $composer;
+
+        return $this;
+    }
+
+    public function getMilliseconds(): int
+    {
+        return $this->milliseconds;
+    }
+
+    public function setMilliseconds(int $milliseconds): self
+    {
+        $this->milliseconds = $milliseconds;
+
+        return $this;
+    }
+
+    public function getBytes(): ?int
+    {
+        return $this->bytes;
+    }
+
+    public function setBytes(?int $bytes): self
+    {
+        $this->bytes = $bytes;
+
+        return $this;
+    }
+
+    public function getUnitPrice(): string
+    {
+        return $this->unitPrice;
+    }
+
+    public function setUnitPrice(string $unitPrice): self
+    {
+        $this->unitPrice = $unitPrice;
+
+        return $this;
+    }
+
     public function getAlbum(): Album
     {
         return $this->album;
     }
 
-    /**
-     * @param Album $album
-     */
-    public function setAlbum(Album $album): void
+    public function setAlbum(Album $album): self
     {
         $this->album = $album;
+
+        return $this;
     }
 
-    /**
-     * @return MediaType
-     */
     public function getMediaType(): MediaType
     {
         return $this->mediaType;
     }
 
-    /**
-     * @param MediaType $mediaType
-     */
-    public function setMediaType(MediaType $mediaType): void
+    public function setMediaType(MediaType $mediaType): self
     {
         $this->mediaType = $mediaType;
+
+        return $this;
     }
 
-    /**
-     * @return Genre
-     */
     public function getGenre(): Genre
     {
         return $this->genre;
     }
 
-    /**
-     * @param Genre $genre
-     */
-    public function setGenre(Genre $genre): void
+    public function setGenre(Genre $genre): self
     {
         $this->genre = $genre;
+
+        return $this;
     }
 }

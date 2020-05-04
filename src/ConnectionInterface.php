@@ -12,7 +12,7 @@ interface ConnectionInterface extends LoggerAwareInterface, EventDispatcherAware
 {
     /**
      * Starts a transaction.
-     * @param string|null $isolationLevel
+     *
      * @return Transaction the transaction initiated
      * @See TransactionInterface::begin() for details.
      */
@@ -26,7 +26,7 @@ interface ConnectionInterface extends LoggerAwareInterface, EventDispatcherAware
 
     /**
      * Sets the isolation level of the current transaction.
-     * @param string $isolationLevel
+     *
      * @see Transaction::READ_UNCOMMITTED
      * @see Transaction::READ_COMMITTED
      * @see Transaction::REPEATABLE_READ

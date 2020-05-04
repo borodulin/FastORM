@@ -24,7 +24,7 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
         }
 
         $aliases = $expression->getFrom();
-        if (count($aliases) === 0) {
+        if (0 === \count($aliases)) {
             return '';
         }
 
@@ -38,14 +38,14 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
             $aliasName = $alias->getAlias();
             if ($from instanceof SelectClauseInterface) {
                 $sql = $this->compiler->compile($from);
-                $aliasName = $aliasName ?? 's' . ++$counter;
-                $result[] = "($sql) " . $this->compiler->quoteTableName($aliasName);
+                $aliasName = $aliasName ?? 's'.++$counter;
+                $result[] = "($sql) ".$this->compiler->quoteTableName($aliasName);
             } elseif ($from instanceof ExpressionInterface) {
                 $sql = $this->compiler->compile($from);
-                $aliasName = $aliasName ? ' ' . $this->compiler->quoteTableName($aliasName) : '';
-                $result[] = "$sql" . $aliasName;
-            } elseif (is_string($from)) {
-                if (strpos($from, '(') === false) {
+                $aliasName = $aliasName ? ' '.$this->compiler->quoteTableName($aliasName) : '';
+                $result[] = "$sql".$aliasName;
+            } elseif (\is_string($from)) {
+                if (false === strpos($from, '(')) {
                     if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $from, $matches)) { // with alias
                         $from = $matches[1];
                         $aliasName = $matches[2];
@@ -56,7 +56,8 @@ class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInte
                 $result[] = $aliasName ? "$from $aliasName" : $from;
             }
         }
-        $from = 'FROM ' . implode(', ', $result);
+        $from = 'FROM '.implode(', ', $result);
+
         return $from;
     }
 }

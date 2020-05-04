@@ -30,7 +30,7 @@ class CompareOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof CompareOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         if ($expression->value instanceof ExpressionInterface) {
@@ -38,6 +38,7 @@ class CompareOperator implements
         }
         $paramName = $this->compiler->getParams()->bindValue($expression->value);
         $column = $this->compiler->quoteColumnName($expression->column);
+
         return "$column $expression->operator :$paramName";
     }
 }

@@ -11,8 +11,7 @@ use FastOrm\SQL\ExpressionBuilderInterface;
 use FastOrm\SQL\ExpressionInterface;
 
 /**
- * Class InOperator
- * @package FastOrm\SQL\Operator
+ * Class InOperator.
  */
 class InOperator implements
     OperatorInterface,
@@ -26,6 +25,7 @@ class InOperator implements
 
     /**
      * InOperator constructor.
+     *
      * @param $column
      * @param $values
      */
@@ -47,12 +47,13 @@ class InOperator implements
                 ->bindValue($value);
             $result[] = ":$paramName";
         }
+
         return $result;
     }
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof InOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $values = $expression->values;
@@ -64,14 +65,14 @@ class InOperator implements
 
         if ($values instanceof ExpressionInterface) {
             $sql = $this->compiler->compile($values);
-            if (strpos($sql, '(') !== 0) {
+            if (0 !== strpos($sql, '(')) {
                 $sql = "($sql)";
             }
+
             return "$column IN $sql";
         }
 
-        $values = is_array($values) ? $values : (array)$values;
-
+        $values = \is_array($values) ? $values : (array) $values;
 
         $sqlValues = $this->buildValues($values);
         if (empty($sqlValues)) {

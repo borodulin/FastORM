@@ -10,9 +10,9 @@ use FastOrm\Tests\TestCase;
 
 class GroupByClauseTest extends TestCase
 {
-    public function testGroupBy()
+    public function testGroupBy(): void
     {
-        $count = (int)(new SelectQuery($this->db))
+        $count = (int) (new SelectQuery($this->db))
             ->select(new Expression('count(1)'))
             ->from('Genre')
             ->fetch()
@@ -26,7 +26,7 @@ class GroupByClauseTest extends TestCase
         $this->assertCount($count, $rows);
     }
 
-    public function testString()
+    public function testString(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select(['GenreId', 'MediaTypeId', new Expression('count(1) as cnt')])
@@ -37,7 +37,7 @@ class GroupByClauseTest extends TestCase
         $this->assertCount(38, $rows);
     }
 
-    public function testExpression()
+    public function testExpression(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->select(['GenreId', 'MediaTypeId', new Expression('count(1) as cnt')])

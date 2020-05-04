@@ -9,7 +9,7 @@ use FastOrm\Tests\TransactionTestCase;
 
 class UpdateClauseTest extends TransactionTestCase
 {
-    public function testUpdate()
+    public function testUpdate(): void
     {
         $count = (new UpdateQuery($this->db))
             ->update('Artist')

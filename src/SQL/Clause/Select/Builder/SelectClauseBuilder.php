@@ -22,35 +22,35 @@ class SelectClauseBuilder implements ExpressionBuilderInterface, CompilerAwareIn
         }
 
         $select = $expression->isDistinct() ? 'SELECT DISTINCT' : 'SELECT';
-        if ($selectOption = $expression->getOption() !== null) {
-            $select .= ' ' . $selectOption;
+        if ($selectOption = null !== $expression->getOption()) {
+            $select .= ' '.$selectOption;
         }
         $columns = $expression->getColumns();
         if (empty($columns)) {
-            return $select . ' *';
+            return $select.' *';
         }
 
         foreach ($columns as $i => $column) {
             if ($column instanceof ExpressionInterface) {
                 $sql = $this->compiler->compile($column);
-                if (is_int($i)) {
+                if (\is_int($i)) {
                     $columns[$i] = $sql;
                 } else {
-                    $columns[$i] = "($sql) AS " . $this->compiler->quoteColumnName($i);
+                    $columns[$i] = "($sql) AS ".$this->compiler->quoteColumnName($i);
                 }
-            } elseif (is_string($i) && $i !== $column) {
+            } elseif (\is_string($i) && $i !== $column) {
                 $column = $this->compiler->quoteColumnName($column);
-                $columns[$i] = "$column AS " . $this->compiler->quoteColumnName($i);
-            } elseif (strpos($column, '(') === false) {
+                $columns[$i] = "$column AS ".$this->compiler->quoteColumnName($i);
+            } elseif (false === strpos($column, '(')) {
                 if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_.]+)$/', $column, $matches)) {
                     $columns[$i] = $this->compiler->quoteColumnName($matches[1])
-                        . ' AS ' . $this->compiler->quoteColumnName($matches[2]);
+                        .' AS '.$this->compiler->quoteColumnName($matches[2]);
                 } else {
                     $columns[$i] = $this->compiler->quoteColumnName($column);
                 }
             }
         }
 
-        return $select . ' ' . implode(', ', $columns);
+        return $select.' '.implode(', ', $columns);
     }
 }

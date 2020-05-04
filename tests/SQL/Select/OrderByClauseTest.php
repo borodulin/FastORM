@@ -9,7 +9,7 @@ use FastOrm\Tests\TestCase;
 
 class OrderByClauseTest extends TestCase
 {
-    public function testOrderBy()
+    public function testOrderBy(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
@@ -20,7 +20,7 @@ class OrderByClauseTest extends TestCase
         $this->assertGreaterThan(100, $row['TrackId']);
     }
 
-    public function testArray()
+    public function testArray(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')
@@ -31,7 +31,7 @@ class OrderByClauseTest extends TestCase
         $this->assertEquals(1, $row['TrackId']);
     }
 
-    public function testString()
+    public function testString(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')

@@ -30,7 +30,7 @@ class EntityHandler
 
     /**
      * ClassRowHandler constructor.
-     * @param string $classname
+     *
      * @throws ReflectionException
      */
     public function __construct(string $classname)
@@ -39,7 +39,7 @@ class EntityHandler
         if (!$this->reflection->implementsInterface(EntityInterface::class)) {
             throw new InvalidArgumentException();
         }
-        /** @var EntityInterface $classname */
+        /* @var EntityInterface $classname */
         $this->classname = $classname;
         foreach ($this->reflection->getProperties() as $property) {
             $property->setAccessible(true);
@@ -54,11 +54,12 @@ class EntityHandler
         $instance = $this->reflection->newInstance();
         $row = array_change_key_case($row);
         foreach ($this->lowerNames as $lowerName => $property) {
-            if (array_key_exists($lowerName, $row)) {
+            if (\array_key_exists($lowerName, $row)) {
                 $property->setValue($instance, $row[$lowerName]);
             }
         }
         $key = implode(',', array_intersect_key($row, $this->lowerKey));
+
         return [$instance, $key];
     }
 }

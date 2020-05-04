@@ -9,19 +9,19 @@ use FastOrm\Tests\TestCase;
 
 class ImmutableTest extends TestCase
 {
-    public function testSelect()
+    public function testSelect(): void
     {
         $query1 = (new SelectQuery($this->db))
             ->from('Album');
         $query2 = clone $query1;
-        $countAll1 = count($query1->fetch()->column());
-        $countAll2 = (int)$query2->select('count(1)')->fetch()->scalar();
+        $countAll1 = \count($query1->fetch()->column());
+        $countAll2 = (int) $query2->select('count(1)')->fetch()->scalar();
         $this->assertEquals($countAll1, $countAll2);
-        $count = count($query1->limit(100));
+        $count = \count($query1->limit(100));
         $this->assertEquals(100, $count);
     }
 
-    public function testWhere()
+    public function testWhere(): void
     {
         $query1 = (new SelectQuery($this->db))
             ->from('Album')

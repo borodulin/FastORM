@@ -12,20 +12,16 @@ use PDO;
 class Driver extends AbstractDriver
 {
     /**
-     * @param PDO $pdo
-     * @param string $isolationLevel
      * @throws NotSupportedException
      */
-    public function setTransactionIsolationLevel(PDO $pdo, string $isolationLevel)
+    public function setTransactionIsolationLevel(PDO $pdo, string $isolationLevel): void
     {
-        if ($isolationLevel === Transaction::SERIALIZABLE) {
+        if (Transaction::SERIALIZABLE === $isolationLevel) {
             $pdo->exec('PRAGMA read_uncommitted = False;');
-        } elseif ($isolationLevel === Transaction::READ_UNCOMMITTED) {
+        } elseif (Transaction::READ_UNCOMMITTED === $isolationLevel) {
             $pdo->exec('PRAGMA read_uncommitted = True;');
         } else {
-            throw new NotSupportedException(
-                'Sqlite3  only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.'
-            );
+            throw new NotSupportedException('Sqlite3  only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
         }
     }
 }

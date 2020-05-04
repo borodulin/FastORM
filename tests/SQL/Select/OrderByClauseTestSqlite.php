@@ -10,7 +10,7 @@ use FastOrm\Tests\TestCase;
 
 class OrderByClauseTestSqlite extends TestCase
 {
-    public function testExpression()
+    public function testExpression(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')

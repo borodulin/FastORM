@@ -29,7 +29,7 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * @param $dsn
-     * @return ConnectionInterface
+     *
      * @throws NotSupportedException
      */
     protected function createConnection(): ConnectionInterface

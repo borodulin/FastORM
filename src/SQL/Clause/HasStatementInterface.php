@@ -8,9 +8,5 @@ use FastOrm\PdoCommand\StatementInterface;
 
 interface HasStatementInterface
 {
-    /**
-     * @param array $options
-     * @return StatementInterface
-     */
     public function statement(array $options = []): StatementInterface;
 }

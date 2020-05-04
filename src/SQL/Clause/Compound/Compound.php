@@ -50,28 +50,24 @@ class Compound implements
     {
         $compoundItem = $this->getCompoundItem();
         $compoundItem->setOperator($operator);
+
         return $this;
     }
 
     public function getCompoundItem(): CompoundItem
     {
-        if ($this->compounds->count() === 0) {
+        if (0 === $this->compounds->count()) {
             $this->compounds->add(0, new CompoundItem($this, ''));
         }
+
         return $this->compounds->bottom();
     }
 
-    /**
-     * @return SplStack
-     */
     public function getCompounds(): SplStack
     {
         return $this->compounds;
     }
 
-    /**
-     * @return ConnectionInterface
-     */
     public function getConnection(): ConnectionInterface
     {
         return $this->connection;
@@ -79,7 +75,7 @@ class Compound implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof Compound) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $conditions = [];
@@ -93,7 +89,8 @@ class Compound implements
                 $conditions[] = $text;
             }
         }
-        return $conditions ? ' (' . implode(' ', $conditions) . ') ' : '';
+
+        return $conditions ? ' ('.implode(' ', $conditions).') ' : '';
     }
 
     public function __clone()

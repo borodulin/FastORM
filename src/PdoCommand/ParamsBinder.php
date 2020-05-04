@@ -7,7 +7,7 @@ namespace FastOrm\PdoCommand;
 use PDO;
 use PDOStatement;
 
-class BindParams
+class ParamsBinder
 {
     /**
      * @var iterable
@@ -19,7 +19,7 @@ class BindParams
         $this->params = $params;
     }
 
-    public function __invoke(PDOStatement $statement)
+    public function __invoke(PDOStatement $statement): void
     {
         foreach ($this->params as $name => $value) {
             if ($value instanceof PdoValue) {
@@ -35,11 +35,12 @@ class BindParams
         $result = [];
         foreach ($this->params as $name => $value) {
             if ($value instanceof PdoValue) {
-                $result[] = ":$name=" . $value->getValue();
+                $result[] = ":$name=".$value->getValue();
             } else {
-                $result[] = ":$name=" . $value;
+                $result[] = ":$name=".$value;
             }
         }
+
         return implode(',', $result);
     }
 
@@ -53,7 +54,8 @@ class BindParams
             'resource' => PDO::PARAM_LOB,
             'NULL' => PDO::PARAM_NULL,
         ];
-        $type = gettype($data);
+        $type = \gettype($data);
+
         return $typeMap[$type] ?? PDO::PARAM_STR;
     }
 }

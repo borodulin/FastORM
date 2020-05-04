@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FastOrm\SQL\Clause;
 
 use Countable;
-use FastOrm\PdoCommand\Fetch\CursorFactoryInterface;
 use FastOrm\PdoCommand\Fetch\FetchInterface;
 use FastOrm\SQL\Clause\Select\ConditionInterface;
 use FastOrm\SQL\Clause\Select\FromClauseInterface;
@@ -24,23 +23,21 @@ interface SelectClauseInterface extends
 
     public function from($from): FromClauseInterface;
 
-    public function groupBy($columns): SelectClauseInterface;
+    public function groupBy($columns): self;
 
     public function having(): ConditionInterface;
 
     public function limit(int $limit): OffsetClauseInterface;
 
-    public function orderBy($columns): SelectClauseInterface;
+    public function orderBy($columns): self;
 
-    public function union(SelectClauseInterface $query): SelectClauseInterface;
+    public function union(self $query): self;
 
-    public function unionAll(SelectClauseInterface $query): SelectClauseInterface;
+    public function unionAll(self $query): self;
 
     public function where(): ConditionInterface;
 
     public function fetch(array $params = []): FetchInterface;
-
-    public function setCursorFactory(CursorFactoryInterface $factory): SelectClauseInterface;
 
     public function toArray(): array;
 }

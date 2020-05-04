@@ -31,8 +31,7 @@ class QueryBuilder
 
     /**
      * QueryBuilder constructor.
-     * @param ConnectionInterface $connection
-     * @param string $entityClass
+     *
      * @param $tableName
      */
     public function __construct(
@@ -45,26 +44,38 @@ class QueryBuilder
         $this->tableName = $tableName;
     }
 
-
     public function select($columns = []): SelectDistinctInterface
     {
         return (new SelectQuery($this->connection))
-            ->setCursorFactory(new CursorFactory($this->entityClass))
-            ->from($this->tableName)->select($columns);
+            ->from($this->tableName)
+            ->select($columns);
     }
 
     public function update(): UpdateClauseInterface
     {
-        return (new UpdateQuery($this->connection))->update($this->tableName);
+        return (new UpdateQuery($this->connection))
+            ->update($this->tableName);
     }
 
     public function insert(): ColumnsClauseInterface
     {
-        return (new InsertQuery($this->connection))->into($this->tableName);
+        return (new InsertQuery($this->connection))
+            ->into($this->tableName);
     }
 
     public function delete(): WhereClauseInterface
     {
-        return (new DeleteQuery($this->connection))->from($this->tableName);
+        return (new DeleteQuery($this->connection))
+            ->from($this->tableName);
+    }
+
+    public function getEntityClass(): string
+    {
+        return $this->entityClass;
+    }
+
+    public function getTableName(): string
+    {
+        return $this->tableName;
     }
 }

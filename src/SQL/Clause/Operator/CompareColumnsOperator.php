@@ -30,12 +30,13 @@ class CompareColumnsOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof CompareColumnsOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
 
         $column1 = $this->compiler->quoteColumnName($expression->column1);
         $column2 = $this->compiler->quoteColumnName($expression->column2);
+
         return "{$column1} {$this->operator} {$column2}";
     }
 }

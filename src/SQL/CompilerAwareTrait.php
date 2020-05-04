@@ -11,7 +11,7 @@ trait CompilerAwareTrait
      */
     protected $compiler;
 
-    public function setCompiler(CompilerInterface $compiler)
+    public function setCompiler(CompilerInterface $compiler): void
     {
         $this->compiler = $compiler;
     }

@@ -38,9 +38,6 @@ class FromClause implements ExpressionInterface
         $aliasClause->setAlias($alias);
     }
 
-    /**
-     * @return SplStack
-     */
     public function getFrom(): SplStack
     {
         return $this->from;

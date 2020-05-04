@@ -10,7 +10,7 @@ use FastOrm\Transaction;
 
 class ConnectionTestSqlite extends TestCase
 {
-    public function testError()
+    public function testError(): void
     {
         $this->expectException(NotSupportedException::class);
         $this->db->setTransactionIsolationLevel(Transaction::REPEATABLE_READ);

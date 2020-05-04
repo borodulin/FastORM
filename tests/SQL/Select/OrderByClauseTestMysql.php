@@ -8,9 +8,9 @@ use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestCase;
 
-class OrderByClauseTestSqlite extends TestCase
+class OrderByClauseTestMysql extends TestCase
 {
-    public function testExpression()
+    public function testExpression(): void
     {
         $fetch = (new SelectQuery($this->db))
             ->from('Track')->as('t')

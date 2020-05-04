@@ -7,20 +7,17 @@ namespace FastOrm\Tests\SQL\Select;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\Tests\TestCase;
 
-
 class CursorTest extends TestCase
 {
-    /**
-     */
-    public function testCursor()
+    public function testCursor(): void
     {
         $query = (new SelectQuery($this->db))
             ->from('Album')->as('t1');
-        $count = count($query);
+        $count = \count($query);
         $rows = [];
         foreach ($query as $row) {
             $rows[] = $row;
         }
-        $this->assertEquals($count, count($rows));
+        $this->assertEquals($count, \count($rows));
     }
 }

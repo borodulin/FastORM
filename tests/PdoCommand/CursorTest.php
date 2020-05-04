@@ -11,7 +11,7 @@ use FastOrm\Tests\TestCase;
 
 class CursorTest extends TestCase
 {
-    public function testCursor()
+    public function testCursor(): void
     {
         $count = (new SelectQuery($this->db))
             ->select(new Expression('count(*)'))
@@ -24,31 +24,16 @@ class CursorTest extends TestCase
             ->cursor();
         $array = iterator_to_array($cursor);
         $this->assertIsArray($array);
-        $this->assertCount((int)$count, $array);
+        $this->assertCount((int) $count, $array);
     }
 
-    /**
-     */
-    public function testRewind()
-    {
-        $cursor = $cursor = (new SelectQuery($this->db))
-            ->from('Album')
-            ->fetch()
-            ->cursor();
-        foreach ($cursor as $row) {
-            break;
-        }
-        $this->expectException(NotSupportedException::class);
-        $cursor->rewind();
-    }
-
-    public function testLimit()
+    public function testLimit(): void
     {
         $cursor = (new SelectQuery($this->db))
             ->from('Album')
             ->fetch()
-            ->cursor()
-            ->setLimit(10);
+            ->cursor([], 10)
+        ;
         $array = iterator_to_array($cursor);
         $this->assertIsArray($array);
         $this->assertCount(10, $array);

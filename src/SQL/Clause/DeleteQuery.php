@@ -52,9 +52,10 @@ class DeleteQuery implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof DeleteQuery) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
+
         return $this->compiler->compile($this->container);
     }
 
@@ -65,17 +66,21 @@ class DeleteQuery implements
 
     public function __toString()
     {
-        return (string)$this->container;
+        return (string) $this->container;
     }
 
     /**
-     * Count elements of an object
-     * @link https://php.net/manual/en/countable.count.php
+     * Count elements of an object.
+     *
+     * @see https://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
+     *             </p>
+     *             <p>
+     *             The return value is cast to an integer.
+     *
      * @since 5.1.0
+     *
      * @throws DbException
      */
     public function count()
@@ -84,8 +89,6 @@ class DeleteQuery implements
     }
 
     /**
-     * @param array $options
-     * @return StatementInterface
      * @throws DbException
      */
     public function statement(array $options = []): StatementInterface

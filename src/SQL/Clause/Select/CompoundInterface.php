@@ -9,5 +9,6 @@ use FastOrm\SQL\Clause\SelectClauseInterface;
 interface CompoundInterface extends SelectClauseInterface
 {
     public function and(): ConditionInterface;
+
     public function or(): ConditionInterface;
 }

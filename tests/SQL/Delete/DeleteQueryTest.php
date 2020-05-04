@@ -12,14 +12,14 @@ use FastOrm\Tests\TransactionTestCase;
 
 class DeleteQueryTest extends TransactionTestCase
 {
-    public function testToString()
+    public function testToString(): void
     {
         $delete = new DeleteQuery($this->db);
         $delete->from(new Expression('Album'));
-        $this->assertEquals('DELETE FROM Album', (string)$delete);
+        $this->assertEquals('DELETE FROM Album', (string) $delete);
     }
 
-    public function testImmutable()
+    public function testImmutable(): void
     {
         $delete1 = (new DeleteQuery($this->db))->from('InvoiceLine')
             ->where()->equal('InvoiceLineId', 1);
@@ -30,7 +30,7 @@ class DeleteQueryTest extends TransactionTestCase
         $this->assertEquals(0, $cnt2);
     }
 
-    public function testBuildError()
+    public function testBuildError(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new DeleteQuery($this->db))->build(new HashConditionOperator([]));

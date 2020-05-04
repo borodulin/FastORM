@@ -12,7 +12,6 @@ class TransactionEvent
     public const EVENT_COMMIT = 'commit';
     public const EVENT_ROLLBACK = 'rollback';
 
-
     /**
      * @var Transaction
      */

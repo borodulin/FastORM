@@ -15,7 +15,7 @@ class LoggerTest extends TestCase
     /**
      * @throws DbException
      */
-    public function testLogger()
+    public function testLogger(): void
     {
         $logger = new DummyLogger();
         $this->db->setLogger($logger);

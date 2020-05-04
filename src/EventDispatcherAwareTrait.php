@@ -8,7 +8,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 trait EventDispatcherAwareTrait
 {
-
     /**
      * @var EventDispatcherInterface
      */

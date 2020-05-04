@@ -33,6 +33,6 @@ class GroupByClauseBuilder implements ExpressionBuilderInterface, CompilerAwareI
             $columns[$i] = $column;
         }
 
-        return 'GROUP BY ' . implode(', ', $columns);
+        return 'GROUP BY '.implode(', ', $columns);
     }
 }

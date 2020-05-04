@@ -11,7 +11,6 @@ use PDO;
 
 class StatementTestSqlite extends TestCase
 {
-
 //    public function testErrorExecute()
 //    {
 //        $statement = new Statement(
@@ -30,7 +29,7 @@ class StatementTestSqlite extends TestCase
     /**
      * @throws DbException
      */
-    public function testErrorOptions()
+    public function testErrorOptions(): void
     {
         $this->expectException(DbException::class);
         (new Statement(
@@ -44,7 +43,7 @@ class StatementTestSqlite extends TestCase
     /**
      * @throws DbException
      */
-    public function testErrorExecute()
+    public function testErrorExecute(): void
     {
         $this->expectException(DbException::class);
         (new Statement($this->db->getPdo(), 'select * from Album where AlbumId=1111111111111111111'))

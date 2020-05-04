@@ -30,10 +30,10 @@ class OrderByClauseBuilder implements ExpressionBuilderInterface, CompilerAwareI
                 $orders[] = $this->compiler->compile($direction);
             } else {
                 $name = $this->compiler->quoteColumnName($name);
-                $orders[] = $name . ($direction === SORT_DESC ? ' DESC' : '');
+                $orders[] = $name.(SORT_DESC === $direction ? ' DESC' : '');
             }
         }
 
-        return 'ORDER BY ' . implode(', ', $orders);
+        return 'ORDER BY '.implode(', ', $orders);
     }
 }

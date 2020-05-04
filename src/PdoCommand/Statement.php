@@ -40,7 +40,7 @@ class Statement implements StatementInterface, LoggerAwareInterface
 
     /**
      * @param array $params
-     * @return PDOStatement
+     *
      * @throws DbException
      */
     public function prepare(iterable $params = []): PDOStatement
@@ -50,50 +50,51 @@ class Statement implements StatementInterface, LoggerAwareInterface
         }
         try {
             $this->statement = $this->pdo->prepare($this->sql, $this->options);
-            if ($this->statement === false) {
+            if (false === $this->statement) {
                 throw new DbException("Failed to prepare SQL: $this->sql", null);
             }
-            $bindParams = new BindParams($params);
+            $bindParams = new ParamsBinder($params);
             $bindParams($this->statement);
             $this->logger && $this->logger->debug('Statement prepared');
+
             return $this->statement;
         } catch (PDOException $e) {
-            $message = $e->getMessage() . "\nFailed to prepare SQL: " . $this->dumpParams($this->statement, $this->sql);
+            $message = $e->getMessage()."\nFailed to prepare SQL: ".$this->dumpParams($this->statement, $this->sql);
             throw new DbException($message, $e->errorInfo, (int) $e->getCode(), $e);
         }
     }
 
     /**
-     * @param array $params
-     * @return PDOStatement
      * @throws DbException
      */
     public function execute(iterable $params = []): PDOStatement
     {
         $statement = $this->prepare();
         try {
-            $bindParams = new BindParams($params);
+            $bindParams = new ParamsBinder($params);
             $bindParams($statement);
             if (!$statement->execute()) {
                 throw new DbException("Failed to execute SQL: $this->sql");
             }
             $this->logger && $this->logger->debug('Statement executed');
+
             return $statement;
         } catch (PDOException $e) {
-            $message = $e->getMessage() . "\nFailed to execute SQL: " . $this->dumpParams($statement, $this->sql);
+            $message = $e->getMessage()."\nFailed to execute SQL: ".$this->dumpParams($statement, $this->sql);
             throw new DbException($message, $e->errorInfo, (int) $e->getCode(), $e);
         }
     }
 
     protected function dumpParams(?PDOStatement $statement, string $sql)
     {
-        if ($statement === null) {
+        if (null === $statement) {
             return $sql;
         }
         ob_start();
         $statement->debugDumpParams();
         $params = ob_get_contents();
         ob_end_clean();
+
         return $params;
     }
 }

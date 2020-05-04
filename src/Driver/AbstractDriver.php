@@ -20,6 +20,7 @@ abstract class AbstractDriver implements DriverInterface
         $compiler = new Compiler();
         $this->logger && $compiler->setLogger($this->logger);
         $this->eventDispatcher && $compiler->setEventDispatcher($this->eventDispatcher);
+
         return $compiler;
     }
 
@@ -32,11 +33,7 @@ abstract class AbstractDriver implements DriverInterface
         return new PDO($dsn, $username, $passwd, $options);
     }
 
-    /**
-     * @param PDO $pdo
-     * @param string $isolationLevel
-     */
-    public function setTransactionIsolationLevel(PDO $pdo, string $isolationLevel)
+    public function setTransactionIsolationLevel(PDO $pdo, string $isolationLevel): void
     {
         $pdo->exec("SET TRANSACTION ISOLATION LEVEL $isolationLevel");
     }

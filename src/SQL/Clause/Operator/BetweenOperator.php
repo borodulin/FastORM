@@ -30,13 +30,14 @@ class BetweenOperator implements
 
     public function build(ExpressionInterface $expression): string
     {
-        if (!$expression instanceof BetweenOperator) {
+        if (!$expression instanceof self) {
             throw new InvalidArgumentException();
         }
         $params = $this->compiler->getParams();
         $paramStart = $params->bindValue($expression->intervalStart);
         $paramEnd = $params->bindValue($expression->intervalEnd);
         $column = $this->compiler->quoteColumnName($expression->column);
+
         return "$column BETWEEN :$paramStart AND :$paramEnd";
     }
 }
