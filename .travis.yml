@@ -2,7 +2,6 @@
 language: php
 
 php:
-  - '7.2'
   - '7.3'
 
 services:
@@ -29,5 +28,5 @@ script:
   - vendor/bin/phpunit -c phpunit.mysql.xml --coverage-php build/logs/mysql.cov
   - vendor/bin/phpunit -c phpunit.pgsql.xml --coverage-php build/logs/pgsql.cov
 after_success:
-  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then vendor/bin/phpcov merge build/logs --clover build/logs/clover.xml; fi;
-  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then vendor/bin/php-coveralls --no-interaction; fi;
+  - vendor/bin/phpcov merge build/logs --clover build/logs/clover.xml;
+  - then vendor/bin/php-coveralls --no-interaction;
