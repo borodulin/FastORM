@@ -23,7 +23,7 @@ before_script:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS chinook;'
 
 script:
-  - vendor/bin/phpcs --standard=psr12 --extensions=php src
+  - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no
   - vendor/bin/phpstan analyse ./src/
   - vendor/bin/phpunit -c phpunit.sqlite.xml --coverage-php build/logs/sqlite.cov
   - vendor/bin/phpunit -c phpunit.mysql.xml --coverage-php build/logs/mysql.cov

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FastOrm\Tests\PdoCommand;
 
-use FastOrm\NotSupportedException;
 use FastOrm\SQL\Clause\SelectQuery;
 use FastOrm\SQL\Expression;
 use FastOrm\Tests\TestCase;
