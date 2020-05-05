@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver\Oracle;
+namespace Borodulin\ORM\Driver\Oracle;
 
-use FastOrm\Driver\AbstractDriver;
-use FastOrm\Driver\SavepointInterface;
+use Borodulin\ORM\Driver\AbstractDriver;
+use Borodulin\ORM\Driver\SavepointInterface;
 use PDO;
 
 class Driver extends AbstractDriver implements SavepointInterface

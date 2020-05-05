@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Compound;
+namespace Borodulin\ORM\SQL\Clause\Compound;
 
 interface NotOperatorListInterface extends OperatorListInterface
 {

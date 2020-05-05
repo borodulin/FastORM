@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\PdoCommand;
+namespace Borodulin\ORM\Tests\PdoCommand;
 
-use FastOrm\PdoCommand\DbException;
-use FastOrm\PdoCommand\PdoValue;
-use FastOrm\PdoCommand\Statement;
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\PdoCommand\PdoValue;
+use Borodulin\ORM\PdoCommand\Statement;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\Tests\TestCase;
 use PDO;
 
 class StatementTest extends TestCase

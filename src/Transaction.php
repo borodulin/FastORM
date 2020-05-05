@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm;
+namespace Borodulin\ORM;
 
-use FastOrm\Driver\SavepointInterface;
-use FastOrm\Event\TransactionEvent;
-use FastOrm\PdoCommand\DbException;
+use Borodulin\ORM\Driver\SavepointInterface;
+use Borodulin\ORM\Event\TransactionEvent;
+use Borodulin\ORM\PdoCommand\DbException;
 use Psr\Log\LoggerAwareTrait;
 
 class Transaction implements EventDispatcherAwareInterface

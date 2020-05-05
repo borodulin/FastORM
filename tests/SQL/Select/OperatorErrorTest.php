@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Select;
+namespace Borodulin\ORM\Tests\SQL\Select;
 
-use FastOrm\Driver\Postgres\LikeOperatorBuilder;
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Operator\BetweenColumnsOperator;
-use FastOrm\SQL\Clause\Operator\BetweenOperator;
-use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
-use FastOrm\SQL\Clause\Operator\CompareOperator;
-use FastOrm\SQL\Clause\Operator\EqualOperator;
-use FastOrm\SQL\Clause\Operator\ExistsOperator;
-use FastOrm\SQL\Clause\Operator\ExpressionOperator;
-use FastOrm\SQL\Clause\Operator\FilterHashConditionOperator;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Clause\Operator\InOperator;
-use FastOrm\SQL\Clause\Select\AliasClause;
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\Driver\Postgres\LikeOperatorBuilder;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Operator\BetweenColumnsOperator;
+use Borodulin\ORM\SQL\Clause\Operator\BetweenOperator;
+use Borodulin\ORM\SQL\Clause\Operator\CompareColumnsOperator;
+use Borodulin\ORM\SQL\Clause\Operator\CompareOperator;
+use Borodulin\ORM\SQL\Clause\Operator\EqualOperator;
+use Borodulin\ORM\SQL\Clause\Operator\ExistsOperator;
+use Borodulin\ORM\SQL\Clause\Operator\ExpressionOperator;
+use Borodulin\ORM\SQL\Clause\Operator\FilterHashConditionOperator;
+use Borodulin\ORM\SQL\Clause\Operator\HashConditionOperator;
+use Borodulin\ORM\SQL\Clause\Operator\InOperator;
+use Borodulin\ORM\SQL\Clause\Select\AliasClause;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\Tests\TestCase;
 
 class OperatorErrorTest extends TestCase
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause;
+namespace Borodulin\ORM\SQL\Clause;
 
-use FastOrm\PdoCommand\StatementInterface;
+use Borodulin\ORM\PdoCommand\StatementInterface;
 
 interface HasStatementInterface
 {

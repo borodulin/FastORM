@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL;
+namespace Borodulin\ORM\SQL;
 
-use FastOrm\Exception;
+use Borodulin\ORM\Exception;
 
 class InvalidSQLException extends Exception
 {

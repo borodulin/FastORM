@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver\CUBRID;
+namespace Borodulin\ORM\Driver\CUBRID;
 
-use FastOrm\Driver\AbstractDriver;
+use Borodulin\ORM\Driver\AbstractDriver;
 
 class Driver extends AbstractDriver
 {

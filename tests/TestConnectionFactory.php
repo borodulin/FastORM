@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests;
+namespace Borodulin\ORM\Tests;
 
-use FastOrm\Connection;
-use FastOrm\ConnectionInterface;
-use FastOrm\NotSupportedException;
+use Borodulin\ORM\Connection;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\NotSupportedException;
 use PDO;
 use PDOException;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Delete;
+namespace Borodulin\ORM\SQL\Clause\Delete;
 
 interface NotOperatorListInterface extends OperatorListInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Compound;
+namespace Borodulin\ORM\SQL\Clause\Compound;
 
-use FastOrm\SQL\Clause\SelectClauseInterface;
+use Borodulin\ORM\SQL\Clause\SelectClauseInterface;
 
 interface OperatorListInterface
 {

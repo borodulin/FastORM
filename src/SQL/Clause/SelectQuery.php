@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause;
+namespace Borodulin\ORM\SQL\Clause;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\EventDispatcherAwareInterface;
-use FastOrm\EventDispatcherAwareTrait;
-use FastOrm\InvalidArgumentException;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\PdoCommand\Fetch\FetchInterface;
-use FastOrm\PdoCommand\StatementInterface;
-use FastOrm\SQL\Clause\Select\ClauseContainer;
-use FastOrm\SQL\Clause\Select\ConditionInterface;
-use FastOrm\SQL\Clause\Select\FromClauseInterface;
-use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
-use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\EventDispatcherAwareInterface;
+use Borodulin\ORM\EventDispatcherAwareTrait;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\PdoCommand\Fetch\FetchInterface;
+use Borodulin\ORM\PdoCommand\StatementInterface;
+use Borodulin\ORM\SQL\Clause\Select\ClauseContainer;
+use Borodulin\ORM\SQL\Clause\Select\ConditionInterface;
+use Borodulin\ORM\SQL\Clause\Select\FromClauseInterface;
+use Borodulin\ORM\SQL\Clause\Select\OffsetClauseInterface;
+use Borodulin\ORM\SQL\Clause\Select\SelectDistinctInterface;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Traversable;

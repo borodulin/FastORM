@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Select\Builder;
+namespace Borodulin\ORM\SQL\Clause\Select\Builder;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Select\SelectClause;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Select\SelectClause;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 class SelectClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {

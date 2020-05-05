@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL;
+namespace Borodulin\ORM\SQL;
 
-use FastOrm\EventDispatcherAwareTrait;
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Operator\Builder\LikeOperatorBuilder;
-use FastOrm\SQL\Clause\Operator\LikeOperator;
-use FastOrm\SQL\Clause\Select\Builder\FromClauseBuilder;
-use FastOrm\SQL\Clause\Select\Builder\GroupByClauseBuilder;
-use FastOrm\SQL\Clause\Select\Builder\JoinClauseBuilder;
-use FastOrm\SQL\Clause\Select\Builder\LimitClauseBuilder;
-use FastOrm\SQL\Clause\Select\Builder\OrderByClauseBuilder;
-use FastOrm\SQL\Clause\Select\Builder\SelectClauseBuilder;
-use FastOrm\SQL\Clause\Select\Builder\UnionClauseBuilder;
-use FastOrm\SQL\Clause\Select\FromClause;
-use FastOrm\SQL\Clause\Select\GroupByClause;
-use FastOrm\SQL\Clause\Select\JoinClause;
-use FastOrm\SQL\Clause\Select\LimitClause;
-use FastOrm\SQL\Clause\Select\OrderByClause;
-use FastOrm\SQL\Clause\Select\SelectClause;
-use FastOrm\SQL\Clause\Select\UnionClause;
+use Borodulin\ORM\EventDispatcherAwareTrait;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Operator\Builder\LikeOperatorBuilder;
+use Borodulin\ORM\SQL\Clause\Operator\LikeOperator;
+use Borodulin\ORM\SQL\Clause\Select\Builder\FromClauseBuilder;
+use Borodulin\ORM\SQL\Clause\Select\Builder\GroupByClauseBuilder;
+use Borodulin\ORM\SQL\Clause\Select\Builder\JoinClauseBuilder;
+use Borodulin\ORM\SQL\Clause\Select\Builder\LimitClauseBuilder;
+use Borodulin\ORM\SQL\Clause\Select\Builder\OrderByClauseBuilder;
+use Borodulin\ORM\SQL\Clause\Select\Builder\SelectClauseBuilder;
+use Borodulin\ORM\SQL\Clause\Select\Builder\UnionClauseBuilder;
+use Borodulin\ORM\SQL\Clause\Select\FromClause;
+use Borodulin\ORM\SQL\Clause\Select\GroupByClause;
+use Borodulin\ORM\SQL\Clause\Select\JoinClause;
+use Borodulin\ORM\SQL\Clause\Select\LimitClause;
+use Borodulin\ORM\SQL\Clause\Select\OrderByClause;
+use Borodulin\ORM\SQL\Clause\Select\SelectClause;
+use Borodulin\ORM\SQL\Clause\Select\UnionClause;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 

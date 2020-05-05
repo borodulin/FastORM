@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Compound;
+namespace Borodulin\ORM\SQL\Clause\Compound;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Operator\BetweenColumnsOperator;
-use FastOrm\SQL\Clause\Operator\BetweenOperator;
-use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
-use FastOrm\SQL\Clause\Operator\CompareOperator;
-use FastOrm\SQL\Clause\Operator\EqualOperator;
-use FastOrm\SQL\Clause\Operator\ExistsOperator;
-use FastOrm\SQL\Clause\Operator\ExpressionOperator;
-use FastOrm\SQL\Clause\Operator\FilterHashConditionOperator;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Clause\Operator\InOperator;
-use FastOrm\SQL\Clause\Operator\LikeOperator;
-use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Operator\BetweenColumnsOperator;
+use Borodulin\ORM\SQL\Clause\Operator\BetweenOperator;
+use Borodulin\ORM\SQL\Clause\Operator\CompareColumnsOperator;
+use Borodulin\ORM\SQL\Clause\Operator\CompareOperator;
+use Borodulin\ORM\SQL\Clause\Operator\EqualOperator;
+use Borodulin\ORM\SQL\Clause\Operator\ExistsOperator;
+use Borodulin\ORM\SQL\Clause\Operator\ExpressionOperator;
+use Borodulin\ORM\SQL\Clause\Operator\FilterHashConditionOperator;
+use Borodulin\ORM\SQL\Clause\Operator\HashConditionOperator;
+use Borodulin\ORM\SQL\Clause\Operator\InOperator;
+use Borodulin\ORM\SQL\Clause\Operator\LikeOperator;
+use Borodulin\ORM\SQL\Clause\SelectClauseInterface;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 class ClauseContainer implements
     ConditionInterface,

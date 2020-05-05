@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL;
+namespace Borodulin\ORM\SQL;
 
-use FastOrm\InvalidArgumentException;
+use Borodulin\ORM\InvalidArgumentException;
 
 class ExpressionBuilder extends Expression implements ExpressionBuilderInterface, CompilerAwareInterface
 {

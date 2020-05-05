@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Insert;
+namespace Borodulin\ORM\Tests\SQL\Insert;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\InsertQuery;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Expression;
-use FastOrm\Tests\TransactionTestCase;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\InsertQuery;
+use Borodulin\ORM\SQL\Clause\Operator\HashConditionOperator;
+use Borodulin\ORM\SQL\Expression;
+use Borodulin\ORM\Tests\TransactionTestCase;
 
 class InsertQueryTest extends TransactionTestCase
 {

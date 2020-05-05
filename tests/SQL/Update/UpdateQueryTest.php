@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Update;
+namespace Borodulin\ORM\Tests\SQL\Update;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Clause\UpdateQuery;
-use FastOrm\SQL\Expression;
-use FastOrm\Tests\TransactionTestCase;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\SQL\Clause\Operator\HashConditionOperator;
+use Borodulin\ORM\SQL\Clause\UpdateQuery;
+use Borodulin\ORM\SQL\Expression;
+use Borodulin\ORM\Tests\TransactionTestCase;
 
 class UpdateQueryTest extends TransactionTestCase
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver\Postgres;
+namespace Borodulin\ORM\Driver\Postgres;
 
-use FastOrm\SQL\Compiler as BaseCompiler;
+use Borodulin\ORM\SQL\Compiler as BaseCompiler;
 
 class Compiler extends BaseCompiler
 {

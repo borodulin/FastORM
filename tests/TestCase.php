@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests;
+namespace Borodulin\ORM\Tests;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\NotSupportedException;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\NotSupportedException;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase

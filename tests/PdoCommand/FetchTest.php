@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\PdoCommand;
+namespace Borodulin\ORM\Tests\PdoCommand;
 
-use FastOrm\SQL\QueryBuilder;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\SQL\QueryBuilder;
+use Borodulin\ORM\Tests\TestCase;
 
 class FetchTest extends TestCase
 {

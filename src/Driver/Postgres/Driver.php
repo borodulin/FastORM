@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver\Postgres;
+namespace Borodulin\ORM\Driver\Postgres;
 
-use FastOrm\Driver\AbstractDriver;
-use FastOrm\Driver\SavepointInterface;
-use FastOrm\Driver\SavepointTrait;
-use FastOrm\SQL\Clause\Operator\LikeOperator;
-use FastOrm\SQL\CompilerInterface;
+use Borodulin\ORM\Driver\AbstractDriver;
+use Borodulin\ORM\Driver\SavepointInterface;
+use Borodulin\ORM\Driver\SavepointTrait;
+use Borodulin\ORM\SQL\Clause\Operator\LikeOperator;
+use Borodulin\ORM\SQL\CompilerInterface;
 
 class Driver extends AbstractDriver implements SavepointInterface
 {

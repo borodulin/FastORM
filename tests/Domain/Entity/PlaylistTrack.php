@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\Domain\Entity;
+namespace Borodulin\ORM\Tests\Domain\Entity;
 
 class PlaylistTrack
 {

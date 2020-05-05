@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Select\Builder;
+namespace Borodulin\ORM\SQL\Clause\Select\Builder;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Select\AliasClause;
-use FastOrm\SQL\Clause\Select\FromClause;
-use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Select\AliasClause;
+use Borodulin\ORM\SQL\Clause\Select\FromClause;
+use Borodulin\ORM\SQL\Clause\SelectClauseInterface;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 class FromClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {

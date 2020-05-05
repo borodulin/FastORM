@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Operator;
+namespace Borodulin\ORM\SQL\Clause\Operator;
 
 interface NotOperatorInterface extends OperatorInterface
 {

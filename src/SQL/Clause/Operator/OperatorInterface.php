@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Operator;
+namespace Borodulin\ORM\SQL\Clause\Operator;
 
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 interface OperatorInterface extends ExpressionInterface
 {

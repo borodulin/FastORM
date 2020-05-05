@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Select;
+namespace Borodulin\ORM\Tests\SQL\Select;
 
-use FastOrm\SQL\Params;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\SQL\Params;
+use Borodulin\ORM\Tests\TestCase;
 
 class ParamsTest extends TestCase
 {

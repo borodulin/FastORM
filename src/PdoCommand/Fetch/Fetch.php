@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\PdoCommand\Fetch;
+namespace Borodulin\ORM\PdoCommand\Fetch;
 
-use FastOrm\PdoCommand\StatementInterface;
+use Borodulin\ORM\PdoCommand\StatementInterface;
 use PDO;
 
 class Fetch implements FetchInterface

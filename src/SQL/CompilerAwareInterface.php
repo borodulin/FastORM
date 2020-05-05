@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL;
+namespace Borodulin\ORM\SQL;
 
 interface CompilerAwareInterface
 {

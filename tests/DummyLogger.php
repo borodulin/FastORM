@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests;
+namespace Borodulin\ORM\Tests;
 
 use Psr\Log\LoggerInterface;
 

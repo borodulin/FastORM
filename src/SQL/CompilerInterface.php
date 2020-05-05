@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL;
+namespace Borodulin\ORM\SQL;
 
-use FastOrm\EventDispatcherAwareInterface;
+use Borodulin\ORM\EventDispatcherAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 
 interface CompilerInterface extends LoggerAwareInterface, EventDispatcherAwareInterface

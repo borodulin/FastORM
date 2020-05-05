@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Select;
+namespace Borodulin\ORM\Tests\SQL\Select;
 
-use FastOrm\NotSupportedException;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\Tests\DummyEventDispatcher;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\NotSupportedException;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\Tests\DummyEventDispatcher;
+use Borodulin\ORM\Tests\TestCase;
 
 class EventTest extends TestCase
 {

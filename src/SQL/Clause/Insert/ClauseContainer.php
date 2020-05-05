@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Insert;
+namespace Borodulin\ORM\SQL\Clause\Insert;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\InvalidArgumentException;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\SQL\Clause\HasStatementTrait;
-use FastOrm\SQL\Clause\InsertClauseInterface;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\SQL\Clause\HasStatementTrait;
+use Borodulin\ORM\SQL\Clause\InsertClauseInterface;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Throwable;

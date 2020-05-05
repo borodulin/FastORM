@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm;
+namespace Borodulin\ORM;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 

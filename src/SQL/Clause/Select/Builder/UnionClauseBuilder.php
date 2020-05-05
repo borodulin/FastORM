@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Select\Builder;
+namespace Borodulin\ORM\SQL\Clause\Select\Builder;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Select\UnionClause;
-use FastOrm\SQL\Clause\Select\UnionItem;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Select\UnionClause;
+use Borodulin\ORM\SQL\Clause\Select\UnionItem;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 class UnionClauseBuilder implements ExpressionBuilderInterface, CompilerAwareInterface
 {

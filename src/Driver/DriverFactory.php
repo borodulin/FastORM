@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver;
+namespace Borodulin\ORM\Driver;
 
-use FastOrm\NotSupportedException;
+use Borodulin\ORM\NotSupportedException;
 
 class DriverFactory
 {
     private static $driverMap = [
-        'pgsql' => 'FastOrm\Driver\Postgres\Driver', // PostgreSQL
-        'mysqli' => 'FastOrm\Driver\MySQL\Driver', // MySQL
-        'mysql' => 'FastOrm\Driver\MySQL\Driver', // MySQL
-        'sqlite' => 'FastOrm\Driver\Sqlite\Driver', // sqlite 3
-        'sqlite2' => 'FastOrm\Driver\Sqlite\Driver', // sqlite 2
-        'sqlsrv' => 'FastOrm\Driver\MSSQL\Driver', // newer MSSQL driver on MS Windows hosts
-        'mssql' => 'FastOrm\Driver\MSSQL\Driver', // older MSSQL driver on MS Windows hosts
-        'dblib' => 'FastOrm\Driver\MSSQL\Driver', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'oci' => 'FastOrm\Driver\Oracle\Driver', // Oracle driver
-        'cubrid' => 'FastOrm\Driver\CUBRID\Driver', // CUBRID
+        'pgsql' => 'Borodulin\ORM\Driver\Postgres\Driver', // PostgreSQL
+        'mysqli' => 'Borodulin\ORM\Driver\MySQL\Driver', // MySQL
+        'mysql' => 'Borodulin\ORM\Driver\MySQL\Driver', // MySQL
+        'sqlite' => 'Borodulin\ORM\Driver\Sqlite\Driver', // sqlite 3
+        'sqlite2' => 'Borodulin\ORM\Driver\Sqlite\Driver', // sqlite 2
+        'sqlsrv' => 'Borodulin\ORM\Driver\MSSQL\Driver', // newer MSSQL driver on MS Windows hosts
+        'mssql' => 'Borodulin\ORM\Driver\MSSQL\Driver', // older MSSQL driver on MS Windows hosts
+        'dblib' => 'Borodulin\ORM\Driver\MSSQL\Driver', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+        'oci' => 'Borodulin\ORM\Driver\Oracle\Driver', // Oracle driver
+        'cubrid' => 'Borodulin\ORM\Driver\CUBRID\Driver', // CUBRID
     ];
 
     /**

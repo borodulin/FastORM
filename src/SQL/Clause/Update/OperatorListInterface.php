@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Update;
+namespace Borodulin\ORM\SQL\Clause\Update;
 
-use FastOrm\SQL\Clause\SelectClauseInterface;
+use Borodulin\ORM\SQL\Clause\SelectClauseInterface;
 
 interface OperatorListInterface
 {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Compound;
+namespace Borodulin\ORM\SQL\Clause\Compound;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Operator\OperatorInterface;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Operator\OperatorInterface;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 use SplStack;
 
 class Compound implements

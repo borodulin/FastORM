@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\PdoCommand;
+namespace Borodulin\ORM\PdoCommand;
 
-use FastOrm\Exception;
+use Borodulin\ORM\Exception;
 
 class DbException extends Exception
 {

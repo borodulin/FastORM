@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver\Postgres;
+namespace Borodulin\ORM\Driver\Postgres;
 
-use FastOrm\SQL\Clause\Operator\Builder\LikeOperatorBuilder as BaseLikeOperatorBuilder;
+use Borodulin\ORM\SQL\Clause\Operator\Builder\LikeOperatorBuilder as BaseLikeOperatorBuilder;
 
 class LikeOperatorBuilder extends BaseLikeOperatorBuilder
 {

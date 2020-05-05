@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace Borodulin\ORM\Tests\SQL;
 
-use FastOrm\NotSupportedException;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Clause\UpdateQuery;
-use FastOrm\Tests\TestCase;
-use FastOrm\Transaction;
+use Borodulin\ORM\NotSupportedException;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\SQL\Clause\UpdateQuery;
+use Borodulin\ORM\Tests\TestCase;
+use Borodulin\ORM\Transaction;
 
 class TransactionTestPgsql extends TestCase
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Delete;
+namespace Borodulin\ORM\Tests\SQL\Delete;
 
-use FastOrm\SQL\Clause\DeleteQuery;
-use FastOrm\Tests\TransactionTestCase;
+use Borodulin\ORM\SQL\Clause\DeleteQuery;
+use Borodulin\ORM\Tests\TransactionTestCase;
 
 class DeleteClauseTest extends TransactionTestCase
 {

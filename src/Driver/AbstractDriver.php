@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver;
+namespace Borodulin\ORM\Driver;
 
-use FastOrm\EventDispatcherAwareTrait;
-use FastOrm\SQL\Compiler;
-use FastOrm\SQL\CompilerInterface;
+use Borodulin\ORM\EventDispatcherAwareTrait;
+use Borodulin\ORM\SQL\Compiler;
+use Borodulin\ORM\SQL\CompilerInterface;
 use PDO;
 use Psr\Log\LoggerAwareTrait;
 

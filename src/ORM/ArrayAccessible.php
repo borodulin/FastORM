@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\ORM;
+namespace Borodulin\ORM\ORM;
 
 use ArrayAccess;
-use FastOrm\NotSupportedException;
-use FastOrm\SQL\Clause\SelectClauseInterface;
+use Borodulin\ORM\NotSupportedException;
+use Borodulin\ORM\SQL\Clause\SelectClauseInterface;
 
 class ArrayAccessible implements ArrayAccess
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause;
+namespace Borodulin\ORM\SQL\Clause;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\PdoCommand\Statement;
-use FastOrm\PdoCommand\StatementInterface;
-use FastOrm\SQL\Compiler;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\PdoCommand\Statement;
+use Borodulin\ORM\PdoCommand\StatementInterface;
+use Borodulin\ORM\SQL\Compiler;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 trait HasStatementTrait
 {

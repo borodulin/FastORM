@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\ORM\CursorHandler;
+namespace Borodulin\ORM\ORM\CursorHandler;
 
 class BatchRelationHandler
 {

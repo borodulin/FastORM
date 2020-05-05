@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\PdoCommand;
+namespace Borodulin\ORM\PdoCommand;
 
 use PDOStatement;
 

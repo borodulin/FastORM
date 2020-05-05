@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Delete;
+namespace Borodulin\ORM\Tests\SQL\Delete;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\DeleteQuery;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Expression;
-use FastOrm\Tests\TransactionTestCase;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\DeleteQuery;
+use Borodulin\ORM\SQL\Clause\Operator\HashConditionOperator;
+use Borodulin\ORM\SQL\Expression;
+use Borodulin\ORM\Tests\TransactionTestCase;
 
 class DeleteQueryTest extends TransactionTestCase
 {

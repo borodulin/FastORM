@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Select;
+namespace Borodulin\ORM\Tests\SQL\Select;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Compound\Compound;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Clause\Select\AliasClause;
-use FastOrm\SQL\Clause\Select\ClauseContainer;
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Compiler;
-use FastOrm\SQL\ExpressionBuilder;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Compound\Compound;
+use Borodulin\ORM\SQL\Clause\Operator\HashConditionOperator;
+use Borodulin\ORM\SQL\Clause\Select\AliasClause;
+use Borodulin\ORM\SQL\Clause\Select\ClauseContainer;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\SQL\Compiler;
+use Borodulin\ORM\SQL\ExpressionBuilder;
+use Borodulin\ORM\Tests\TestCase;
 
 class ErrorTest extends TestCase
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Select;
+namespace Borodulin\ORM\Tests\SQL\Select;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\SQL\Clause\Operator\HashConditionOperator;
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Expression;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\SQL\Clause\Operator\HashConditionOperator;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\SQL\Expression;
+use Borodulin\ORM\Tests\TestCase;
 
 class SelectQueryTest extends TestCase
 {

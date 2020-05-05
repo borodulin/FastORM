@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver\MSSQL;
+namespace Borodulin\ORM\Driver\MSSQL;
 
 use PDO;
 

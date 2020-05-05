@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Select;
+namespace Borodulin\ORM\Tests\SQL\Select;
 
-use FastOrm\SQL\Clause\Compound\ConditionInterface;
-use FastOrm\SQL\Clause\Operator\CompareColumnsOperator;
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Expression;
-use FastOrm\SQL\QueryBuilder;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\SQL\Clause\Compound\ConditionInterface;
+use Borodulin\ORM\SQL\Clause\Operator\CompareColumnsOperator;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\SQL\Expression;
+use Borodulin\ORM\SQL\QueryBuilder;
+use Borodulin\ORM\Tests\TestCase;
 
 /**
  * Class QueryBuilderTest.

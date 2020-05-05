@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Driver\Sqlite;
+namespace Borodulin\ORM\Driver\Sqlite;
 
-use FastOrm\Driver\AbstractDriver;
-use FastOrm\NotSupportedException;
-use FastOrm\Transaction;
+use Borodulin\ORM\Driver\AbstractDriver;
+use Borodulin\ORM\NotSupportedException;
+use Borodulin\ORM\Transaction;
 use PDO;
 
 class Driver extends AbstractDriver

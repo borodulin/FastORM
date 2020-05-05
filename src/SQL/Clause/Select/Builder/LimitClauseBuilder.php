@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Select\Builder;
+namespace Borodulin\ORM\SQL\Clause\Select\Builder;
 
-use FastOrm\InvalidArgumentException;
-use FastOrm\SQL\Clause\Select\LimitClause;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\SQL\Clause\Select\LimitClause;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 class LimitClauseBuilder implements ExpressionBuilderInterface
 {

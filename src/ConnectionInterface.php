@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm;
+namespace Borodulin\ORM;
 
-use FastOrm\Driver\DriverInterface;
+use Borodulin\ORM\Driver\DriverInterface;
 use PDO;
 use Psr\Log\LoggerAwareInterface;
 

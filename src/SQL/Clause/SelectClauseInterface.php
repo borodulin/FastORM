@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause;
+namespace Borodulin\ORM\SQL\Clause;
 
+use Borodulin\ORM\PdoCommand\Fetch\FetchInterface;
+use Borodulin\ORM\SQL\Clause\Select\ConditionInterface;
+use Borodulin\ORM\SQL\Clause\Select\FromClauseInterface;
+use Borodulin\ORM\SQL\Clause\Select\OffsetClauseInterface;
+use Borodulin\ORM\SQL\Clause\Select\SelectDistinctInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 use Countable;
-use FastOrm\PdoCommand\Fetch\FetchInterface;
-use FastOrm\SQL\Clause\Select\ConditionInterface;
-use FastOrm\SQL\Clause\Select\FromClauseInterface;
-use FastOrm\SQL\Clause\Select\OffsetClauseInterface;
-use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
-use FastOrm\SQL\ExpressionInterface;
 use IteratorAggregate;
 
 interface SelectClauseInterface extends

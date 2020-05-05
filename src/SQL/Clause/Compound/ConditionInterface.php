@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Compound;
+namespace Borodulin\ORM\SQL\Clause\Compound;
 
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 interface ConditionInterface extends NotOperatorListInterface, ExpressionInterface
 {

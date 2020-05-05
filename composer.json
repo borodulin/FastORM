@@ -1,5 +1,5 @@
 {
-    "name": "borodulin/fast-orm",
+    "name": "borodulin/orm",
     "description": "Fast ORM",
     "type": "library",
     "license": "MIT",
@@ -20,20 +20,20 @@
         "php-ds/php-ds": "^1.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.2",
+        "phpunit/phpunit": "^9.1",
         "phpstan/phpstan": "^0.11.15",
         "php-coveralls/php-coveralls": "^2.1",
         "friendsofphp/php-cs-fixer": "^2.15",
-        "phpunit/phpcov": "^6.0"
+        "phpunit/phpcov": "^7.0"
     },
     "autoload": {
         "psr-4": {
-            "FastOrm\\": "src/"
+            "Borodulin\\ORM\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "FastOrm\\Tests\\": "tests/"
+            "Borodulin\\ORM\\Tests\\": "tests/"
         }
     }
 }

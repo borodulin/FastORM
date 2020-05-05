@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\PdoCommand;
+namespace Borodulin\ORM\Tests\PdoCommand;
 
-use FastOrm\NotSupportedException;
-use FastOrm\Tests\TestCase;
-use FastOrm\Transaction;
+use Borodulin\ORM\NotSupportedException;
+use Borodulin\ORM\Tests\TestCase;
+use Borodulin\ORM\Transaction;
 
 class ConnectionTestSqlite extends TestCase
 {

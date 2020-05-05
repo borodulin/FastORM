@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests;
+namespace Borodulin\ORM\Tests;
 
-use FastOrm\Transaction;
+use Borodulin\ORM\Transaction;
 
 class TransactionTestCase extends TestCase
 {

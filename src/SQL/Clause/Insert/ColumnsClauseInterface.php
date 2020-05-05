@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Insert;
+namespace Borodulin\ORM\SQL\Clause\Insert;
 
+use Borodulin\ORM\SQL\Clause\ExecuteInterface;
 use Countable;
-use FastOrm\SQL\Clause\ExecuteInterface;
 
 interface ColumnsClauseInterface extends ExecuteInterface, Countable
 {

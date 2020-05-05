@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL\Select;
+namespace Borodulin\ORM\Tests\SQL\Select;
 
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\Tests\TestCase;
 
 class FromClauseTestMysql extends TestCase
 {

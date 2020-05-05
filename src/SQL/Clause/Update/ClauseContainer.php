@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Update;
+namespace Borodulin\ORM\SQL\Clause\Update;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\InvalidArgumentException;
-use FastOrm\PdoCommand\DbException;
-use FastOrm\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
-use FastOrm\SQL\Clause\HasStatementTrait;
-use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\Clause\UpdateClauseInterface;
-use FastOrm\SQL\CompilerAwareInterface;
-use FastOrm\SQL\CompilerAwareTrait;
-use FastOrm\SQL\ExpressionBuilderInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\InvalidArgumentException;
+use Borodulin\ORM\PdoCommand\DbException;
+use Borodulin\ORM\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
+use Borodulin\ORM\SQL\Clause\HasStatementTrait;
+use Borodulin\ORM\SQL\Clause\SelectClauseInterface;
+use Borodulin\ORM\SQL\Clause\UpdateClauseInterface;
+use Borodulin\ORM\SQL\CompilerAwareInterface;
+use Borodulin\ORM\SQL\CompilerAwareTrait;
+use Borodulin\ORM\SQL\ExpressionBuilderInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Throwable;

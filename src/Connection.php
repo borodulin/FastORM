@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm;
+namespace Borodulin\ORM;
 
-use FastOrm\Driver\DriverFactory;
-use FastOrm\Driver\DriverInterface;
-use FastOrm\Event\ConnectionEvent;
+use Borodulin\ORM\Driver\DriverFactory;
+use Borodulin\ORM\Driver\DriverInterface;
+use Borodulin\ORM\Event\ConnectionEvent;
 use PDO;
 use Psr\Log\LoggerAwareTrait;
 

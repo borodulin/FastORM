@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Event;
+namespace Borodulin\ORM\Event;
 
-use FastOrm\Transaction;
+use Borodulin\ORM\Transaction;
 
 class TransactionEvent
 {

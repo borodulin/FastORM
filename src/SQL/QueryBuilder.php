@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL;
+namespace Borodulin\ORM\SQL;
 
-use FastOrm\ConnectionInterface;
-use FastOrm\SQL\Clause\Delete\WhereClauseInterface;
-use FastOrm\SQL\Clause\DeleteQuery;
-use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
-use FastOrm\SQL\Clause\InsertQuery;
-use FastOrm\SQL\Clause\Select\SelectDistinctInterface;
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Clause\UpdateClauseInterface;
-use FastOrm\SQL\Clause\UpdateQuery;
+use Borodulin\ORM\ConnectionInterface;
+use Borodulin\ORM\SQL\Clause\Delete\WhereClauseInterface;
+use Borodulin\ORM\SQL\Clause\DeleteQuery;
+use Borodulin\ORM\SQL\Clause\Insert\ColumnsClauseInterface;
+use Borodulin\ORM\SQL\Clause\InsertQuery;
+use Borodulin\ORM\SQL\Clause\Select\SelectDistinctInterface;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\SQL\Clause\UpdateClauseInterface;
+use Borodulin\ORM\SQL\Clause\UpdateQuery;
 
 class QueryBuilder implements QueryBuilderInterface
 {

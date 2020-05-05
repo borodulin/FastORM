@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Select;
+namespace Borodulin\ORM\SQL\Clause\Select;
 
-use FastOrm\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\SQL\Clause\Compound\ClauseContainer as CompoundClauseContainer;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 class WhereClause extends CompoundClauseContainer
 {

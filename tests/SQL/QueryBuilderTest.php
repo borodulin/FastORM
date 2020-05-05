@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\SQL;
+namespace Borodulin\ORM\Tests\SQL;
 
-use FastOrm\SQL\Expression;
-use FastOrm\SQL\QueryBuilder;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\SQL\Expression;
+use Borodulin\ORM\SQL\QueryBuilder;
+use Borodulin\ORM\Tests\TestCase;
 
 class QueryBuilderTest extends TestCase
 {

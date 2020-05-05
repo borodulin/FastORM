@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Select;
+namespace Borodulin\ORM\SQL\Clause\Select;
 
-use FastOrm\SQL\Clause\SelectClauseInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\SQL\Clause\SelectClauseInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 class UnionClause implements ExpressionInterface
 {

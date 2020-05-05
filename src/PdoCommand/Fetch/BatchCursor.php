@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\PdoCommand\Fetch;
+namespace Borodulin\ORM\PdoCommand\Fetch;
 
 use PDO;
 use PDOStatement;

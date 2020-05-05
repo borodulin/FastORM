@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause;
+namespace Borodulin\ORM\SQL\Clause;
 
+use Borodulin\ORM\SQL\Clause\Delete\WhereClauseInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 use Countable;
-use FastOrm\SQL\Clause\Delete\WhereClauseInterface;
-use FastOrm\SQL\ExpressionInterface;
 
 interface DeleteClauseInterface extends
     ExpressionInterface,

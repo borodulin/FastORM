@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\Tests\PdoCommand;
+namespace Borodulin\ORM\Tests\PdoCommand;
 
-use FastOrm\SQL\Clause\SelectQuery;
-use FastOrm\SQL\Expression;
-use FastOrm\Tests\TestCase;
+use Borodulin\ORM\SQL\Clause\SelectQuery;
+use Borodulin\ORM\SQL\Expression;
+use Borodulin\ORM\Tests\TestCase;
 
 class CursorTest extends TestCase
 {

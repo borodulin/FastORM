@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause\Update;
+namespace Borodulin\ORM\SQL\Clause\Update;
 
+use Borodulin\ORM\SQL\Clause\ExecuteInterface;
 use Countable;
-use FastOrm\SQL\Clause\ExecuteInterface;
 
 interface CompoundInterface extends ExecuteInterface, Countable
 {

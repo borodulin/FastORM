@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FastOrm\SQL\Clause;
+namespace Borodulin\ORM\SQL\Clause;
 
-use FastOrm\SQL\Clause\Insert\ColumnsClauseInterface;
-use FastOrm\SQL\ExpressionInterface;
+use Borodulin\ORM\SQL\Clause\Insert\ColumnsClauseInterface;
+use Borodulin\ORM\SQL\ExpressionInterface;
 
 interface InsertClauseInterface extends ExpressionInterface, HasStatementInterface
 {
